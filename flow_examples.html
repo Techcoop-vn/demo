@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goods &amp; Money Flow — 3 Kịch bản</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F4EFE6;
+    --paper-raised: #FAF5EC;
+    --paper-sunken: #EDE6D8;
+    --ink: #1B1B1B;
+    --ink-muted: #5C564D;
+    --ink-soft: #8C8374;
+    --rule: #D8CFBE;
+    --rule-strong: #B8AE98;
+
+    --accent: #2D5E3C;
+    --accent-deep: #1F4529;
+    --accent-tint: #D9E4DD;
+    --accent-bg: #E8F0EB;
+
+    --danger: #8B1A1A;
+    --danger-tint: #F0DCDC;
+    --danger-bg: #FBF0F0;
+
+    --warn: #A86B0A;
+    --warn-tint: #F2E4C4;
+
+    --blue: #1E4A7A;
+    --blue-tint: #D6E0EE;
+    --blue-bg: #EEF2F8;
+
+    --purple: #5A3A7A;
+    --purple-tint: #E2D9EC;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(45,94,60,0.04), transparent 35%),
+      radial-gradient(circle at 85% 92%, rgba(139,26,26,0.03), transparent 40%);
+    min-height: 100vh;
+  }
+  .app { max-width: 1400px; margin: 0 auto; padding: 28px 28px 80px; }
+
+  /* ============ HEADER ============ */
+  header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px; padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 40px;
+    line-height: 1.02; letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144;
+    margin: 0;
+  }
+  .title em { font-style: italic; font-weight: 400; color: var(--accent-deep); }
+  .subtitle {
+    color: var(--ink-muted); font-size: 13px; margin-top: 7px;
+    font-style: italic; font-family: 'Fraunces', serif;
+    max-width: 720px;
+  }
+  .tabs {
+    display: inline-flex; background: var(--paper-sunken);
+    border: 1px solid var(--rule-strong); border-radius: 999px; padding: 4px;
+    flex-shrink: 0;
+  }
+  .tabs button {
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 9px 18px; border: none; background: transparent; cursor: pointer;
+    border-radius: 999px; color: var(--ink-muted);
+    transition: all 0.2s ease;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tabs button .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; padding: 2px 6px; border-radius: 3px;
+    background: var(--paper); color: var(--ink-soft);
+    letter-spacing: 0;
+  }
+  .tabs button.active {
+    background: var(--ink); color: var(--paper);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+  .tabs button.active .badge { background: rgba(255,255,255,0.18); color: var(--paper); }
+  .tabs button:not(.active):hover { color: var(--ink); }
+
+  /* ============ VIEW SWITCH ============ */
+  .view { display: none; }
+  .view.active { display: block; animation: fadein 0.3s ease; }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ SCENARIO CARD ============ */
+  .scenario {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 24px 26px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 28px;
+    position: relative;
+  }
+  .scenario::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: 12px 12px 0 0;
+  }
+  .scenario.ex1::before { background: var(--accent); }
+  .scenario.ex2::before { background: var(--warn); }
+  .scenario.ex3::before { background: var(--danger); }
+
+  .sc-col h3 {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-soft);
+    margin: 0 0 12px; padding-bottom: 8px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .sc-col .title-line {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 500; line-height: 1.15;
+    letter-spacing: -0.01em; margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .sc-col .title-line em { font-style: italic; }
+  .scenario.ex1 .sc-col .title-line em { color: var(--accent); }
+  .scenario.ex2 .sc-col .title-line em { color: var(--warn); }
+  .scenario.ex3 .sc-col .title-line em { color: var(--danger); }
+
+  .sc-col .desc {
+    font-size: 12.5px; color: var(--ink-muted);
+    line-height: 1.55;
+  }
+
+  .sc-party { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .sc-party .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sc-party .dot.supplier { background: var(--danger); }
+  .sc-party .dot.techcoop { background: var(--ink); }
+  .sc-party .dot.customer { background: var(--accent); }
+  .sc-party .role {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-soft);
+    min-width: 74px;
+  }
+  .sc-party .n {
+    font-family: 'Fraunces', serif;
+    font-size: 13.5px; font-weight: 500;
+  }
+
+  .sc-numbers { display: grid; gap: 8px; }
+  .sc-num-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .sc-num-row:last-child { border-bottom: none; }
+  .sc-num-row .lbl {
+    font-size: 11px; color: var(--ink-muted);
+  }
+  .sc-num-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .sc-num-row.total .lbl { font-weight: 700; color: var(--ink); letter-spacing: 0.03em; text-transform: uppercase; font-size: 10.5px; }
+  .sc-num-row.total .val { font-size: 15px; font-weight: 600; color: var(--accent-deep); }
+  .scenario.ex2 .sc-num-row.total .val { color: var(--warn); }
+  .scenario.ex3 .sc-num-row.total .val { color: var(--danger); }
+
+  /* ============ SECTION HEAD ============ */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 8px 0 14px;
+  }
+  .section-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 20px; letter-spacing: -0.01em; margin: 0;
+  }
+  .section-head h2 .num {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--accent);
+    background: var(--accent-tint);
+    padding: 3px 7px; border-radius: 3px;
+    vertical-align: middle; margin-right: 10px;
+    transform: translateY(-3px);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .section-head .sub {
+    font-size: 12px; color: var(--ink-muted);
+    font-style: italic; font-family: 'Fraunces', serif;
+  }
+
+  /* ============ TIMELINE ============ */
+  .timeline-wrap {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px 20px 24px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .timeline-svg { min-width: 1160px; width: 100%; height: auto; display: block; }
+
+  /* ============ EVENT TABLE ============ */
+  .event-table-wrap {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  table.events {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.events thead th {
+    background: var(--paper-sunken);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+  }
+  table.events tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  table.events tbody tr:last-child td { border-bottom: none; }
+  table.events tbody tr:hover { background: rgba(45,94,60,0.025); }
+  table.events .day {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-muted); white-space: nowrap;
+    width: 64px;
+  }
+  table.events .event {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  table.events .event .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; font-weight: 700;
+    padding: 2px 6px; border-radius: 3px;
+    margin-right: 8px; letter-spacing: 0.05em;
+    vertical-align: middle;
+    display: inline-block;
+  }
+  .tag.in { background: var(--accent-tint); color: var(--accent-deep); }
+  .tag.out { background: var(--danger-tint); color: var(--danger); }
+  .tag.goods { background: var(--paper-sunken); color: var(--ink); border: 1px solid var(--rule-strong); }
+  .tag.doc { background: var(--blue-tint); color: var(--blue); }
+  .tag.adj { background: var(--warn-tint); color: var(--warn); }
+  .tag.setup { background: transparent; color: var(--ink-soft); border: 1px dashed var(--rule-strong); }
+
+  table.events .desc {
+    font-size: 12px; color: var(--ink-muted);
+    line-height: 1.5;
+    font-family: 'Fraunces', serif; font-style: italic;
+  }
+  table.events .amt {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right; white-space: nowrap;
+    font-size: 12.5px;
+    width: 110px;
+  }
+  table.events .amt.in { color: var(--accent-deep); font-weight: 500; }
+  table.events .amt.out { color: var(--danger); font-weight: 500; }
+  table.events .amt.neutral { color: var(--ink-muted); }
+  table.events .balance {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    width: 130px;
+  }
+  table.events .balance .b-lbl {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9px; color: var(--ink-soft);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    display: block; margin-bottom: 2px;
+  }
+
+  /* ============ SETTLEMENT CARDS ============ */
+  .settlement {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .set-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .set-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .set-card.rev::before { background: var(--accent); }
+  .set-card.cost::before { background: var(--danger); }
+  .set-card.profit::before { background: var(--warn); }
+  .set-card.osd::before { background: var(--blue); }
+  .set-card .lbl {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft); margin-bottom: 10px;
+  }
+  .set-card .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink); line-height: 1.1;
+  }
+  .set-card.rev .val { color: var(--accent-deep); }
+  .set-card.cost .val { color: var(--danger); }
+  .set-card.profit .val { color: var(--warn); }
+  .set-card .val .unit { font-size: 11px; color: var(--ink-soft); margin-left: 3px; font-weight: 500; }
+  .set-card .formula {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 11px; color: var(--ink-soft); margin-top: 6px;
+  }
+
+  /* ============ RESOLUTION PATH PANELS (Ex3) ============ */
+  .path-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .path-panel {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px 22px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .path-panel::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: 12px 12px 0 0;
+  }
+  .path-panel.p1::before { background: var(--warn); }
+  .path-panel.p2::before { background: var(--purple); }
+  .path-panel.p3::before { background: var(--danger); }
+
+  .path-head {
+    display: flex; align-items: baseline; gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .path-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 7px; border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .path-panel.p1 .path-num { background: var(--warn-tint); color: var(--warn); }
+  .path-panel.p2 .path-num { background: var(--purple-tint); color: var(--purple); }
+  .path-panel.p3 .path-num { background: var(--danger-tint); color: var(--danger); }
+  .path-head .path-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .path-head .path-title em { font-style: italic; font-weight: 400; color: var(--ink-muted); }
+
+  .path-desc {
+    font-size: 12.5px; color: var(--ink-muted);
+    line-height: 1.55;
+    font-family: 'Fraunces', serif; font-style: italic;
+  }
+
+  .path-events {
+    display: flex; flex-direction: column;
+    gap: 7px;
+    padding: 10px 0;
+    border-top: 1px dashed var(--rule);
+    border-bottom: 1px dashed var(--rule);
+  }
+  .path-event {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 8px;
+    font-size: 11.5px;
+    align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .path-event .d {
+    font-size: 10px; color: var(--ink-soft); font-weight: 600;
+  }
+  .path-event .l {
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+  }
+  .path-event .a {
+    font-variant-numeric: tabular-nums; font-weight: 500;
+    color: var(--ink);
+  }
+  .path-event .a.in { color: var(--accent-deep); }
+  .path-event .a.out { color: var(--danger); }
+  .path-event .a.alloc { color: var(--warn); font-style: italic; font-size: 10px; }
+
+  .path-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--paper-sunken);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .path-summary .row {
+    display: flex; justify-content: space-between;
+    gap: 4px;
+  }
+  .path-summary .row .l {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--ink-muted); font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+  .path-summary .row .v { color: var(--ink); font-weight: 500; }
+  .path-summary .row.bad .v { color: var(--danger); }
+  .path-summary .row.ok .v { color: var(--accent-deep); }
+
+  .path-variants {
+    margin-top: 4px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border: 1px dashed var(--rule);
+    border-radius: 6px;
+  }
+  .path-variants .vh {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft); margin-bottom: 6px;
+  }
+  .path-variants .v {
+    display: flex; gap: 8px; padding: 3px 0;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .path-variants .v .k {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-soft); font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .path-variants .v .t {
+    font-family: 'Fraunces', serif; font-style: italic;
+    color: var(--ink-muted);
+  }
+
+  /* D32 ambiguity callout */
+  .ambiguity-note {
+    background: var(--warn-tint);
+    border: 1px solid var(--warn);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .ambiguity-note .mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 700;
+    color: var(--warn);
+    background: var(--paper);
+    padding: 3px 8px; border-radius: 4px;
+    border: 1px solid var(--warn);
+    flex-shrink: 0;
+  }
+  .ambiguity-note .body {
+    font-family: 'Fraunces', serif;
+    font-size: 13px; line-height: 1.5;
+    color: var(--ink);
+  }
+  .ambiguity-note .body strong { color: var(--warn); font-weight: 600; }
+  .ambiguity-note .body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 2px;
+    font-size: 11.5px;
+  }
+
+  /* ============ INTERACTIVE R-PAID SELECTOR ============ */
+  .rpaid-control {
+    background: var(--paper-raised);
+    border: 1px solid var(--warn);
+    border-left: 4px solid var(--warn);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .rpaid-control .ctrl-desc h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 16px;
+    letter-spacing: -0.005em;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .rpaid-control .ctrl-desc h4 em {
+    font-style: italic; color: var(--warn);
+  }
+  .rpaid-control .ctrl-desc p {
+    font-family: 'Fraunces', serif;
+    font-size: 12.5px; font-style: italic;
+    color: var(--ink-muted);
+    margin: 0; line-height: 1.5;
+  }
+  .rpaid-control .ctrl-desc p code {
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 2px;
+    font-size: 11px;
+  }
+  .rpaid-control .ctrl-ui {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .rpaid-chips {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .rpaid-chips button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    padding: 7px 12px; border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--rule-strong);
+    background: var(--paper);
+    color: var(--ink);
+    transition: all 0.15s ease;
+    font-variant-numeric: tabular-nums;
+  }
+  .rpaid-chips button:hover {
+    border-color: var(--warn);
+    background: var(--warn-tint);
+  }
+  .rpaid-chips button.active {
+    background: var(--warn);
+    color: #fff;
+    border-color: var(--warn);
+    box-shadow: 0 2px 6px rgba(168,107,10,0.25);
+  }
+  .rpaid-slider-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 12px;
+    background: var(--paper-sunken);
+    border-radius: 6px;
+    border: 1px dashed var(--rule-strong);
+  }
+  .rpaid-slider-row .sl-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .rpaid-slider-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--rule-strong);
+    outline: none;
+    cursor: pointer;
+  }
+  .rpaid-slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--warn);
+    cursor: pointer;
+    border: 2px solid var(--paper);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .rpaid-slider-row input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--warn);
+    cursor: pointer;
+    border: 2px solid var(--paper);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .rpaid-slider-row .sl-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 600;
+    color: var(--warn);
+    font-variant-numeric: tabular-nums;
+    min-width: 76px; text-align: right;
+  }
+
+  /* Make path-summary values pop on change */
+  .path-summary .v[data-dyn] {
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .path-event .a[data-dyn] {
+    transition: color 0.2s ease;
+  }
+
+  /* ============ LEGEND ============ */
+  .legend {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: 11px; color: var(--ink-muted);
+    padding: 12px 18px;
+    background: var(--paper-sunken);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border: 1px dashed var(--rule-strong);
+  }
+  .legend span { display: flex; align-items: center; gap: 7px; }
+  .legend .sw {
+    display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    margin-top: 40px; padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px; color: var(--ink-soft);
+    font-style: italic; font-family: 'Fraunces', serif;
+    text-align: center;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1000px) {
+    .scenario { grid-template-columns: 1fr; gap: 20px; }
+    .settlement { grid-template-columns: 1fr 1fr; }
+    .title { font-size: 28px; }
+    header { flex-direction: column; align-items: flex-start; gap: 14px; }
+  }
+
+  /* ============ SVG CLASSES ============ */
+  .svg-text { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .svg-mono { font-family: 'JetBrains Mono', monospace; }
+  .svg-serif { font-family: 'Fraunces', serif; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div>
+      <h1 class="title">Ba kịch bản <em>theo thời gian</em></h1>
+      <div class="subtitle">Theo dõi từng event của hàng hoá &amp; dòng tiền trên cùng một trục ngày — từ đơn giản (1 cont, happy path) đến phức tạp (cont bị reject với 3 đường xử lý).</div>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="active" data-view="ex1">Ví dụ 1 <span class="badge">Đơn giản</span></button>
+      <button data-view="ex2">Ví dụ 2 <span class="badge">Trung bình</span></button>
+      <button data-view="ex3">Ví dụ 3 <span class="badge">Phức tạp</span></button>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><span class="sw" style="background:#D9E4DD; border-color:#2D5E3C"></span> <strong>IN</strong> — Thu (Customer)</span>
+    <span><span class="sw" style="background:#F0DCDC; border-color:#8B1A1A"></span> <strong>OUT</strong> — Chi (Vendor)</span>
+    <span><span class="sw" style="background:#EDE6D8; border-color:#B8AE98"></span> <strong>GOODS</strong> — Hàng hoá (GR, GD)</span>
+    <span><span class="sw" style="background:#D6E0EE; border-color:#1E4A7A"></span> <strong>DOC</strong> — Chứng từ VAT (Bill, INV)</span>
+    <span><span class="sw" style="background:#F2E4C4; border-color:#A86B0A"></span> <strong>ADJ</strong> — Điều chỉnh / Hoàn ứng</span>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- EXAMPLE 1 — EASY                                                  -->
+  <!-- ================================================================ -->
+  <div class="view active" id="view-ex1">
+
+    <div class="scenario ex1">
+      <div class="sc-col">
+        <h3>Kịch bản</h3>
+        <div class="title-line">1 đơn bán · <em>1 lần giao</em> · happy path</div>
+        <div class="desc">
+          Xuất 1 cont 10 tấn thanh long sang Nhật. Một vendor duy nhất cung cấp cogs. Khách đặt cọc 30%, TechCoop tạm ứng vendor 50%. Mọi thứ suôn sẻ — dùng để làm quen với bộ chứng từ cơ bản PO/GR/Bill ↔ SO/GD/INV.
+        </div>
+      </div>
+      <div class="sc-col">
+        <h3>Các bên</h3>
+        <div class="sc-party"><span class="dot supplier"></span><span class="role">Supplier</span><span class="n">Trang trại HXT</span></div>
+        <div class="sc-party"><span class="dot techcoop"></span><span class="role">TechCoop</span><span class="n">FarmGate VN</span></div>
+        <div class="sc-party"><span class="dot customer"></span><span class="role">Customer</span><span class="n">ABC Corp (Japan)</span></div>
+      </div>
+      <div class="sc-col">
+        <h3>Giá trị hợp đồng</h3>
+        <div class="sc-numbers">
+          <div class="sc-num-row"><span class="lbl">SO-001 / INV-001</span><span class="val">100,000,000</span></div>
+          <div class="sc-num-row"><span class="lbl">PO-001 / Bill-001 (cogs)</span><span class="val">60,000,000</span></div>
+          <div class="sc-num-row total"><span class="lbl">Net profit dự kiến</span><span class="val">40,000,000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">01</span>Timeline — 17 ngày</h2>
+      <div class="sub">Mỗi event được plot trên trục ngày. Đường nối đứt = quan hệ nhân quả (cọc → hoàn ứng).</div>
+    </div>
+
+    <div class="timeline-wrap">
+      <svg class="timeline-svg" viewBox="0 0 1160 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a-dot" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="3" markerHeight="3">
+            <circle cx="3" cy="3" r="2" fill="#A86B0A"/>
+          </marker>
+        </defs>
+
+        <!-- Time axis grid (Day 1 to 17) -->
+        <!-- Left padding 80, right 40, total timeline width = 1040, 17 days => 58px/day -->
+        <!-- Day tick at x = 80 + (day-1)*65 -->
+        <g class="grid">
+          <!-- Day markers -->
+          <!-- D1 at 80, each day = 62px -->
+        </g>
+
+        <!-- Lane backgrounds -->
+        <rect x="80" y="30" width="1040" height="95" fill="#E8F0EB" rx="4" opacity="0.55"/>
+        <rect x="80" y="135" width="1040" height="85" fill="#FAF5EC" rx="4" opacity="0.9"/>
+        <rect x="80" y="230" width="1040" height="95" fill="#FBF0F0" rx="4" opacity="0.55"/>
+
+        <!-- Lane labels -->
+        <text x="70" y="82" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#2D5E3C">THU ↓</text>
+        <text x="70" y="96" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">from Customer</text>
+
+        <text x="70" y="178" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#1B1B1B">HÀNG HOÁ ⇄</text>
+        <text x="70" y="192" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">goods &amp; docs</text>
+
+        <text x="70" y="282" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#8B1A1A">CHI ↑</text>
+        <text x="70" y="296" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">to Vendor</text>
+
+        <!-- Day axis -->
+        <line x1="80" y1="340" x2="1120" y2="340" stroke="#B8AE98" stroke-width="1"/>
+        <g>
+          <!-- Day labels: D1, D3, D5, D8, D10, D12, D15, D16, D17 -->
+          <!-- D1=80, D3=80+130=210, D5=80+260=340, D8=80+455=535, D10=80+585=665, D12=80+715=795, D15=80+910=990, D16=80+975=1055, D17=80+1040=1120 -->
+          <!-- Actually let me distribute 17 days into 1040px: each day = 61.2px, so D_n = 80 + (n-1)*61.2 -->
+          <!-- Let's use: D1=80, D3=202, D5=325, D8=508, D10=630, D12=753, D15=936, D16=997, D17=1058 -->
+          <g font-family="JetBrains Mono, monospace" font-size="10" fill="#8C8374" text-anchor="middle">
+            <line x1="80" y1="340" x2="80" y2="345" stroke="#B8AE98"/>
+            <text x="80" y="356">D1</text>
+            <line x1="202" y1="340" x2="202" y2="345" stroke="#B8AE98"/>
+            <text x="202" y="356">D3</text>
+            <line x1="325" y1="340" x2="325" y2="345" stroke="#B8AE98"/>
+            <text x="325" y="356">D5</text>
+            <line x1="508" y1="340" x2="508" y2="345" stroke="#B8AE98"/>
+            <text x="508" y="356">D8</text>
+            <line x1="630" y1="340" x2="630" y2="345" stroke="#B8AE98"/>
+            <text x="630" y="356">D10</text>
+            <line x1="753" y1="340" x2="753" y2="345" stroke="#B8AE98"/>
+            <text x="753" y="356">D12</text>
+            <line x1="936" y1="340" x2="936" y2="345" stroke="#B8AE98"/>
+            <text x="936" y="356">D15</text>
+            <text x="997" y="356">D16</text>
+            <text x="1058" y="356">D17</text>
+          </g>
+        </g>
+
+        <!-- Vertical day guides (subtle) -->
+        <g stroke="#D8CFBE" stroke-width="0.5" stroke-dasharray="2,4" opacity="0.7">
+          <line x1="80" y1="30" x2="80" y2="325"/>
+          <line x1="202" y1="30" x2="202" y2="325"/>
+          <line x1="325" y1="30" x2="325" y2="325"/>
+          <line x1="508" y1="30" x2="508" y2="325"/>
+          <line x1="630" y1="30" x2="630" y2="325"/>
+          <line x1="753" y1="30" x2="753" y2="325"/>
+          <line x1="936" y1="30" x2="936" y2="325"/>
+          <line x1="1058" y1="30" x2="1058" y2="325"/>
+        </g>
+
+        <!-- ===== MIDDLE LANE: GOODS / DOCS ===== -->
+        <!-- D1: SO + PO created -->
+        <rect x="65" y="150" width="110" height="50" rx="5" fill="#FAF5EC" stroke="#8C8374" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="120" y="167" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#5C564D">D1 · SETUP</text>
+        <text x="120" y="182" text-anchor="middle" class="svg-mono" font-size="10" fill="#1B1B1B">SO-001 / PO-001</text>
+        <text x="120" y="195" text-anchor="middle" class="svg-text" font-size="9" fill="#8C8374" font-style="italic">auto-created</text>
+
+        <!-- D8: GR -->
+        <rect x="476" y="150" width="90" height="50" rx="5" fill="#EDE6D8" stroke="#8C8374" stroke-width="1.2"/>
+        <text x="521" y="167" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#1B1B1B">D8 · GR</text>
+        <text x="521" y="182" text-anchor="middle" class="svg-mono" font-size="10" fill="#1B1B1B">GR-001</text>
+        <text x="521" y="195" text-anchor="middle" class="svg-mono" font-size="10" fill="#5C564D">60M</text>
+
+        <!-- D10: Bill -->
+        <rect x="598" y="150" width="90" height="50" rx="5" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1.2"/>
+        <text x="643" y="167" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#1E4A7A">D10 · BILL</text>
+        <text x="643" y="182" text-anchor="middle" class="svg-mono" font-size="10" fill="#1B1B1B">Bill-001</text>
+        <text x="643" y="195" text-anchor="middle" class="svg-mono" font-size="10" fill="#5C564D">60M</text>
+
+        <!-- D15: GD -->
+        <rect x="891" y="150" width="90" height="50" rx="5" fill="#EDE6D8" stroke="#8C8374" stroke-width="1.2"/>
+        <text x="936" y="167" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#1B1B1B">D15 · GD</text>
+        <text x="936" y="182" text-anchor="middle" class="svg-mono" font-size="10" fill="#1B1B1B">GD-001</text>
+        <text x="936" y="195" text-anchor="middle" class="svg-mono" font-size="10" fill="#5C564D">Used 60M</text>
+
+        <!-- D16: INV -->
+        <rect x="952" y="150" width="90" height="50" rx="5" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1.2"/>
+        <text x="997" y="167" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#1E4A7A">D16 · INV</text>
+        <text x="997" y="182" text-anchor="middle" class="svg-mono" font-size="10" fill="#1B1B1B">INV-001</text>
+        <text x="997" y="195" text-anchor="middle" class="svg-mono" font-size="10" fill="#5C564D">100M</text>
+
+        <!-- ===== TOP LANE: THU (Customer → TechCoop) ===== -->
+        <!-- D3: Customer Advance 30M -->
+        <rect x="170" y="45" width="95" height="60" rx="5" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1.2"/>
+        <text x="217" y="62" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#2D5E3C">D3 · ADVANCE</text>
+        <text x="217" y="78" text-anchor="middle" class="svg-text" font-size="9" fill="#1B1B1B">Customer</text>
+        <text x="217" y="93" text-anchor="middle" class="svg-mono" font-size="12" font-weight="600" fill="#2D5E3C">+30M</text>
+
+        <!-- D17: Customer Repayment 30M (amber) -->
+        <rect x="1005" y="45" width="110" height="30" rx="5" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1.2"/>
+        <text x="1060" y="58" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#A86B0A">D17 · REPAY</text>
+        <text x="1060" y="70" text-anchor="middle" class="svg-mono" font-size="9.5" fill="#1B1B1B">apply 30M</text>
+
+        <!-- D17: Customer Payment 70M -->
+        <rect x="1005" y="82" width="110" height="30" rx="5" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1.2"/>
+        <text x="1060" y="95" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#2D5E3C">D17 · PAYMENT</text>
+        <text x="1060" y="107" text-anchor="middle" class="svg-mono" font-size="10" font-weight="600" fill="#2D5E3C">+70M</text>
+
+        <!-- Causal dashed arrow: Advance → Repayment -->
+        <path d="M 265 68 C 500 35, 800 35, 1005 60" stroke="#A86B0A" stroke-width="1" fill="none" stroke-dasharray="4,3" opacity="0.55"/>
+
+        <!-- ===== BOTTOM LANE: CHI (TechCoop → Vendor) ===== -->
+        <!-- D5: Vendor Advance -30M -->
+        <rect x="290" y="250" width="95" height="60" rx="5" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1.2"/>
+        <text x="337" y="267" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#8B1A1A">D5 · ADVANCE</text>
+        <text x="337" y="283" text-anchor="middle" class="svg-text" font-size="9" fill="#1B1B1B">Vendor</text>
+        <text x="337" y="298" text-anchor="middle" class="svg-mono" font-size="12" font-weight="600" fill="#8B1A1A">−30M</text>
+
+        <!-- D10: Vendor Repayment 30M (apply advance) -->
+        <rect x="578" y="240" width="95" height="30" rx="5" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1.2"/>
+        <text x="625" y="253" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#A86B0A">D10 · REPAY</text>
+        <text x="625" y="265" text-anchor="middle" class="svg-mono" font-size="9.5" fill="#1B1B1B">apply 30M</text>
+
+        <!-- D10: Vendor Payment -30M -->
+        <rect x="578" y="280" width="95" height="30" rx="5" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1.2"/>
+        <text x="625" y="293" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#8B1A1A">D10 · PAYMENT</text>
+        <text x="625" y="305" text-anchor="middle" class="svg-mono" font-size="10" font-weight="600" fill="#8B1A1A">−30M</text>
+
+        <!-- Causal arrow: Advance → Repayment (amber) -->
+        <path d="M 385 275 C 480 260, 530 250, 578 255" stroke="#A86B0A" stroke-width="1" fill="none" stroke-dasharray="4,3" opacity="0.6"/>
+
+        <!-- Causality: GR → Bill -->
+        <path d="M 566 175 L 598 175" stroke="#1B1B1B" stroke-width="1" fill="none" opacity="0.5"/>
+        <!-- Bill → Vendor Payment trigger -->
+        <path d="M 643 200 L 625 240" stroke="#8B1A1A" stroke-width="0.8" fill="none" stroke-dasharray="2,2" opacity="0.5"/>
+        <!-- GD → INV -->
+        <path d="M 981 175 L 952 175" stroke="#1B1B1B" stroke-width="1" fill="none" opacity="0.5"/>
+        <!-- INV → Customer Payment trigger -->
+        <path d="M 997 150 L 1060 112" stroke="#2D5E3C" stroke-width="0.8" fill="none" stroke-dasharray="2,2" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">02</span>Nhật ký event</h2>
+      <div class="sub">Chi tiết từng giao dịch theo thứ tự thời gian với running balance.</div>
+    </div>
+
+    <div class="event-table-wrap">
+      <table class="events">
+        <thead>
+          <tr>
+            <th>Ngày</th>
+            <th>Event</th>
+            <th>Mô tả</th>
+            <th style="text-align:right">IN (Thu)</th>
+            <th style="text-align:right">OUT (Chi)</th>
+            <th style="text-align:right">Balance SO / PO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day">D1 · 01/03</td>
+            <td class="event"><span class="tag setup">SETUP</span>OP WON → auto-create</td>
+            <td class="desc">SO-001 (100M) và PO-001 cogs (60M) tự tạo khi CRM WON. Status: Quotation.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">SO receivable</span>100,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D3 · 03/03</td>
+            <td class="event"><span class="tag in">IN</span>Customer Advance</td>
+            <td class="desc">Khách đặt cọc 30% trước khi xuất hàng. Tạo tại <em>SO/Receipt</em>.</td>
+            <td class="amt in">+30,000,000</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid</span>30,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D5 · 05/03</td>
+            <td class="event"><span class="tag out">OUT</span>Vendor Advance</td>
+            <td class="desc">TechCoop tạm ứng 50% giá PO để vendor chuẩn bị hàng. Tạo tại <em>PO/Payment</em>.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt out">−30,000,000</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>30,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D8 · 08/03</td>
+            <td class="event"><span class="tag goods">GR</span>Nhận hàng từ Vendor</td>
+            <td class="desc">GR-001: 10 tấn thanh long, ký BBGH 2 bên. Hàng vào kho/ cảng chờ xuất.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Goods received</span>10 tấn</td>
+          </tr>
+          <tr>
+            <td class="day">D10 · 10/03</td>
+            <td class="event"><span class="tag doc">BILL</span>Confirm Bill đầu vào</td>
+            <td class="desc">Vendor xuất HĐ GTGT. Khi Confirm → chi phí được ghi nhận.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Bill value</span>60,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D10 · 10/03</td>
+            <td class="event"><span class="tag adj">ADJ</span>Vendor Repayment</td>
+            <td class="desc">Phân bổ Vendor Advance 30M vào Bill-001. Không đi tiền thực, chỉ chuyển dổi nội bộ.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">(apply 30M)</td>
+            <td class="balance"><span class="b-lbl">Bill remain</span>30,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D10 · 10/03</td>
+            <td class="event"><span class="tag out">OUT</span>Vendor Payment</td>
+            <td class="desc">Thanh toán phần còn lại của Bill-001. Bill status → Paid.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt out">−30,000,000</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>60,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D15 · 15/03</td>
+            <td class="event"><span class="tag goods">GD</span>Giao hàng cho Customer</td>
+            <td class="desc">GD-001: Xếp cont, thông quan, đi biển. Khai báo <em>Used = 60M từ PO-001</em> tại Costs &amp; Profit.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Goods shipped</span>10 tấn</td>
+          </tr>
+          <tr>
+            <td class="day">D16 · 16/03</td>
+            <td class="event"><span class="tag doc">INV</span>Confirm INV đầu ra</td>
+            <td class="desc">HĐ GTGT đầu ra (100M) cho Customer. Khi Confirm → doanh thu được ghi nhận.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">INV value</span>100,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D17 · 17/03</td>
+            <td class="event"><span class="tag adj">ADJ</span>Customer Repayment</td>
+            <td class="desc">Phân bổ Customer Advance 30M vào INV-001.</td>
+            <td class="amt neutral">(apply 30M)</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">INV remain</span>70,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D17 · 17/03</td>
+            <td class="event"><span class="tag in">IN</span>Customer Payment</td>
+            <td class="desc">Khách thanh toán phần còn lại 70M. INV status → Paid.</td>
+            <td class="amt in">+70,000,000</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid</span>100,000,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">03</span>Quyết toán</h2>
+      <div class="sub">Trạng thái cuối kỳ của SO-001.</div>
+    </div>
+
+    <div class="settlement">
+      <div class="set-card rev">
+        <div class="lbl">Revenue (INV value)</div>
+        <div class="val">100,000,000 <span class="unit">₫</span></div>
+        <div class="formula">= Σ INV confirmed</div>
+      </div>
+      <div class="set-card cost">
+        <div class="lbl">Cost (Used × Unit price)</div>
+        <div class="val">60,000,000 <span class="unit">₫</span></div>
+        <div class="formula">= Σ Used tại GD × Unit price</div>
+      </div>
+      <div class="set-card profit">
+        <div class="lbl">Net Profit</div>
+        <div class="val">40,000,000 <span class="unit">₫</span></div>
+        <div class="formula">= Revenue − Cost</div>
+      </div>
+      <div class="set-card osd">
+        <div class="lbl">Outstanding SO</div>
+        <div class="val">0 <span class="unit">₫</span></div>
+        <div class="formula">✓ Đã tất toán</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- EXAMPLE 2 — MEDIUM                                                 -->
+  <!-- ================================================================ -->
+  <div class="view" id="view-ex2">
+
+    <div class="scenario ex2">
+      <div class="sc-col">
+        <h3>Kịch bản</h3>
+        <div class="title-line">1 đơn bán · <em>2 lần giao</em> · nhiều PO cost</div>
+        <div class="desc">
+          Xuất 20 tấn chuối sang Hàn Quốc thành 2 cont giao cách nhau 1 tuần. Cogs từ 1 vendor chính (chia đều cho 2 GD), thêm PO bao bì và PO vận chuyển biển dùng chung. Minh hoạ quan hệ <strong>1 PO → nhiều GD</strong> của N:N.
+        </div>
+      </div>
+      <div class="sc-col">
+        <h3>Các bên</h3>
+        <div class="sc-party"><span class="dot supplier"></span><span class="role">Vendor cogs</span><span class="n">Hợp tác xã MNT</span></div>
+        <div class="sc-party"><span class="dot supplier"></span><span class="role">Vendor bao bì</span><span class="n">Công ty Pack Pro</span></div>
+        <div class="sc-party"><span class="dot techcoop"></span><span class="role">TechCoop</span><span class="n">FarmGate VN</span></div>
+        <div class="sc-party"><span class="dot customer"></span><span class="role">Customer</span><span class="n">XYZ Ltd (Korea)</span></div>
+      </div>
+      <div class="sc-col">
+        <h3>Giá trị hợp đồng</h3>
+        <div class="sc-numbers">
+          <div class="sc-num-row"><span class="lbl">SO-001 (INV-001 + INV-002)</span><span class="val">200,000,000</span></div>
+          <div class="sc-num-row"><span class="lbl">PO-001 cogs (chia 2 GD)</span><span class="val">120,000,000</span></div>
+          <div class="sc-num-row"><span class="lbl">PO-002 bao bì (chia 2 GD)</span><span class="val">10,000,000</span></div>
+          <div class="sc-num-row"><span class="lbl">PO-003 vận chuyển (chia 2 GD)</span><span class="val">20,000,000</span></div>
+          <div class="sc-num-row total"><span class="lbl">Net profit dự kiến</span><span class="val">50,000,000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">01</span>Timeline — 32 ngày</h2>
+      <div class="sub">Hai lần giao tuần tự. Chú ý PO-001 được <em>Used</em> tại cả hai GD (N:N).</div>
+    </div>
+
+    <div class="timeline-wrap">
+      <svg class="timeline-svg" viewBox="0 0 1160 420" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Lane backgrounds -->
+        <rect x="80" y="30" width="1040" height="110" fill="#E8F0EB" rx="4" opacity="0.55"/>
+        <rect x="80" y="150" width="1040" height="100" fill="#FAF5EC" rx="4" opacity="0.9"/>
+        <rect x="80" y="260" width="1040" height="130" fill="#FBF0F0" rx="4" opacity="0.55"/>
+
+        <!-- Lane labels -->
+        <text x="70" y="90" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#2D5E3C">THU ↓</text>
+        <text x="70" y="104" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">from Customer</text>
+
+        <text x="70" y="198" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#1B1B1B">HÀNG HOÁ ⇄</text>
+        <text x="70" y="212" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">goods &amp; docs</text>
+
+        <text x="70" y="320" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#8B1A1A">CHI ↑</text>
+        <text x="70" y="334" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">to Vendors</text>
+
+        <!-- Day axis: 32 days, 1040px → 32.5px/day. Key days: D1, D3, D5, D8, D10, D12, D14, D20, D22, D25, D28, D30, D32 -->
+        <!-- D_n = 80 + (n-1) * 32.5 -->
+        <line x1="80" y1="405" x2="1120" y2="405" stroke="#B8AE98" stroke-width="1"/>
+        <g font-family="JetBrains Mono, monospace" font-size="10" fill="#8C8374" text-anchor="middle">
+          <text x="80" y="421">D1</text>
+          <text x="145" y="421">D3</text>
+          <text x="210" y="421">D5</text>
+          <text x="308" y="421">D8</text>
+          <text x="373" y="421">D10</text>
+          <text x="438" y="421">D12</text>
+          <text x="503" y="421">D14</text>
+          <text x="698" y="421">D20</text>
+          <text x="763" y="421">D22</text>
+          <text x="860" y="421">D25</text>
+          <text x="958" y="421">D28</text>
+          <text x="1023" y="421">D30</text>
+          <text x="1088" y="421">D32</text>
+        </g>
+
+        <!-- Phase separators (two deliveries) -->
+        <g>
+          <text x="280" y="20" text-anchor="middle" class="svg-serif" font-size="11" font-style="italic" font-weight="500" fill="#A86B0A">— GD-001 (cont 1) —</text>
+          <text x="870" y="20" text-anchor="middle" class="svg-serif" font-size="11" font-style="italic" font-weight="500" fill="#A86B0A">— GD-002 (cont 2) —</text>
+          <line x1="590" y1="30" x2="590" y2="390" stroke="#A86B0A" stroke-width="0.6" stroke-dasharray="4,4" opacity="0.5"/>
+        </g>
+
+        <!-- Subtle day guides -->
+        <g stroke="#D8CFBE" stroke-width="0.5" stroke-dasharray="2,4" opacity="0.5">
+          <line x1="80" y1="30" x2="80" y2="395"/>
+          <line x1="145" y1="30" x2="145" y2="395"/>
+          <line x1="210" y1="30" x2="210" y2="395"/>
+          <line x1="373" y1="30" x2="373" y2="395"/>
+          <line x1="438" y1="30" x2="438" y2="395"/>
+          <line x1="503" y1="30" x2="503" y2="395"/>
+          <line x1="698" y1="30" x2="698" y2="395"/>
+          <line x1="763" y1="30" x2="763" y2="395"/>
+          <line x1="860" y1="30" x2="860" y2="395"/>
+          <line x1="958" y1="30" x2="958" y2="395"/>
+          <line x1="1023" y1="30" x2="1023" y2="395"/>
+          <line x1="1088" y1="30" x2="1088" y2="395"/>
+        </g>
+
+        <!-- ===== MIDDLE LANE ===== -->
+        <!-- D1: Setup -->
+        <rect x="40" y="175" width="85" height="50" rx="5" fill="#FAF5EC" stroke="#8C8374" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="82" y="192" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#5C564D">D1 · SETUP</text>
+        <text x="82" y="205" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">SO + PO-001</text>
+        <text x="82" y="217" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">PO-002,003</text>
+
+        <!-- D10: GR-001 cogs -->
+        <rect x="348" y="168" width="68" height="28" rx="4" fill="#EDE6D8" stroke="#8C8374" stroke-width="1"/>
+        <text x="382" y="179" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D10 · GR</text>
+        <text x="382" y="190" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">cogs 60M</text>
+
+        <!-- D10: GR bao bì -->
+        <rect x="348" y="200" width="68" height="28" rx="4" fill="#EDE6D8" stroke="#8C8374" stroke-width="1"/>
+        <text x="382" y="211" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D10 · GR</text>
+        <text x="382" y="222" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">bao bì 10M</text>
+
+        <!-- D12: Bills -->
+        <rect x="415" y="168" width="68" height="28" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="449" y="179" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D12 · BILL</text>
+        <text x="449" y="190" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">Bill-001 60M</text>
+
+        <rect x="415" y="200" width="68" height="28" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="449" y="211" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D12 · BILL</text>
+        <text x="449" y="222" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">Bill-002 10M</text>
+
+        <!-- D14: GD-001 -->
+        <rect x="475" y="168" width="96" height="60" rx="5" fill="#EDE6D8" stroke="#8C8374" stroke-width="1.3"/>
+        <text x="523" y="184" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#1B1B1B">D14 · GD-001</text>
+        <text x="523" y="198" text-anchor="middle" class="svg-mono" font-size="9" fill="#1B1B1B">10 tấn · cont 1</text>
+        <text x="523" y="212" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">Used: 60+5+10</text>
+        <text x="523" y="222" text-anchor="middle" class="svg-text" font-size="8" fill="#A86B0A" font-style="italic">Cost: 75M</text>
+
+        <!-- D20: GR cogs 2 -->
+        <rect x="665" y="168" width="68" height="28" rx="4" fill="#EDE6D8" stroke="#8C8374" stroke-width="1"/>
+        <text x="699" y="179" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D20 · GR</text>
+        <text x="699" y="190" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">cogs 60M</text>
+
+        <!-- D20: GR shipping -->
+        <rect x="665" y="200" width="68" height="28" rx="4" fill="#EDE6D8" stroke="#8C8374" stroke-width="1"/>
+        <text x="699" y="211" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D20 · GR</text>
+        <text x="699" y="222" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">ship 20M</text>
+
+        <!-- D22: Bills -->
+        <rect x="730" y="168" width="68" height="28" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="764" y="179" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D22 · BILL</text>
+        <text x="764" y="190" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">Bill-003 60M</text>
+
+        <rect x="730" y="200" width="68" height="28" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="764" y="211" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D22 · BILL</text>
+        <text x="764" y="222" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">Bill-004 20M</text>
+
+        <!-- D25: GD-002 -->
+        <rect x="810" y="168" width="96" height="60" rx="5" fill="#EDE6D8" stroke="#8C8374" stroke-width="1.3"/>
+        <text x="858" y="184" text-anchor="middle" class="svg-text" font-size="9" font-weight="700" fill="#1B1B1B">D25 · GD-002</text>
+        <text x="858" y="198" text-anchor="middle" class="svg-mono" font-size="9" fill="#1B1B1B">10 tấn · cont 2</text>
+        <text x="858" y="212" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">Used: 60+5+10</text>
+        <text x="858" y="222" text-anchor="middle" class="svg-text" font-size="8" fill="#A86B0A" font-style="italic">Cost: 75M</text>
+
+        <!-- D14 INV-001 -->
+        <rect x="522" y="110" width="72" height="26" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="558" y="121" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D14 · INV-001</text>
+        <text x="558" y="132" text-anchor="middle" class="svg-mono" font-size="9" fill="#1B1B1B">100M</text>
+
+        <!-- D25 INV-002 -->
+        <rect x="855" y="110" width="72" height="26" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="891" y="121" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D25 · INV-002</text>
+        <text x="891" y="132" text-anchor="middle" class="svg-mono" font-size="9" fill="#1B1B1B">100M</text>
+
+        <!-- ===== TOP LANE: THU ===== -->
+        <!-- D3: Customer Advance 60M (shared) -->
+        <rect x="113" y="50" width="90" height="52" rx="5" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1.2"/>
+        <text x="158" y="65" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#2D5E3C">D3 · ADVANCE</text>
+        <text x="158" y="78" text-anchor="middle" class="svg-text" font-size="8.5" fill="#1B1B1B">Customer</text>
+        <text x="158" y="94" text-anchor="middle" class="svg-mono" font-size="11" font-weight="600" fill="#2D5E3C">+60M</text>
+
+        <!-- D14: Customer Repayment (30M) + Payment (70M) for INV-001 -->
+        <rect x="536" y="46" width="85" height="24" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="578" y="62" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#A86B0A">D14 · REPAY 30M</text>
+        <rect x="536" y="73" width="85" height="24" rx="4" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1"/>
+        <text x="578" y="82" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#2D5E3C">D15 · PAY</text>
+        <text x="578" y="92" text-anchor="middle" class="svg-mono" font-size="9" font-weight="600" fill="#2D5E3C">+70M</text>
+
+        <!-- D28: Customer Repayment + Payment for INV-002 -->
+        <rect x="935" y="46" width="85" height="24" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="977" y="62" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#A86B0A">D28 · REPAY 30M</text>
+        <rect x="935" y="73" width="85" height="24" rx="4" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1"/>
+        <text x="977" y="82" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#2D5E3C">D30 · PAY</text>
+        <text x="977" y="92" text-anchor="middle" class="svg-mono" font-size="9" font-weight="600" fill="#2D5E3C">+70M</text>
+
+        <!-- Causal: Advance splits -->
+        <path d="M 203 70 C 350 30, 450 30, 536 58" stroke="#A86B0A" stroke-width="0.9" fill="none" stroke-dasharray="4,3" opacity="0.55"/>
+        <path d="M 203 80 C 450 40, 800 40, 935 58" stroke="#A86B0A" stroke-width="0.9" fill="none" stroke-dasharray="4,3" opacity="0.45"/>
+
+        <!-- ===== BOTTOM LANE: CHI ===== -->
+        <!-- D5: Vendor Advance to PO-001 cogs -->
+        <rect x="177" y="280" width="88" height="50" rx="5" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1.2"/>
+        <text x="221" y="296" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#8B1A1A">D5 · ADVANCE</text>
+        <text x="221" y="310" text-anchor="middle" class="svg-text" font-size="8.5" fill="#1B1B1B">PO-001 cogs</text>
+        <text x="221" y="324" text-anchor="middle" class="svg-mono" font-size="11" font-weight="600" fill="#8B1A1A">−60M</text>
+
+        <!-- D12: Vendor Repayment (split for Bill-001) + Vendor Payment bao bi -->
+        <rect x="415" y="273" width="68" height="22" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="449" y="287" text-anchor="middle" class="svg-text" font-size="7.5" font-weight="700" fill="#A86B0A">REPAY 30M</text>
+        <rect x="415" y="297" width="68" height="22" rx="4" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1"/>
+        <text x="449" y="311" text-anchor="middle" class="svg-mono" font-size="8" fill="#8B1A1A">PO-001 −30M</text>
+        <rect x="415" y="321" width="68" height="22" rx="4" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1"/>
+        <text x="449" y="335" text-anchor="middle" class="svg-mono" font-size="8" fill="#8B1A1A">PO-002 −10M</text>
+
+        <!-- D22: Vendor Repayment + Payment (PO-001 + PO-003) -->
+        <rect x="730" y="273" width="68" height="22" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="764" y="287" text-anchor="middle" class="svg-text" font-size="7.5" font-weight="700" fill="#A86B0A">REPAY 30M</text>
+        <rect x="730" y="297" width="68" height="22" rx="4" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1"/>
+        <text x="764" y="311" text-anchor="middle" class="svg-mono" font-size="8" fill="#8B1A1A">PO-001 −30M</text>
+        <rect x="730" y="321" width="68" height="22" rx="4" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1"/>
+        <text x="764" y="335" text-anchor="middle" class="svg-mono" font-size="8" fill="#8B1A1A">PO-003 −20M</text>
+
+        <!-- Causal arrows: Vendor Advance → Repayments -->
+        <path d="M 265 295 C 340 285, 380 280, 415 280" stroke="#A86B0A" stroke-width="0.8" fill="none" stroke-dasharray="4,3" opacity="0.55"/>
+        <path d="M 265 305 C 500 290, 650 290, 730 280" stroke="#A86B0A" stroke-width="0.8" fill="none" stroke-dasharray="4,3" opacity="0.45"/>
+
+        <!-- Causality: Bill → Payment -->
+        <path d="M 449 196 L 449 273" stroke="#8B1A1A" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.4"/>
+        <path d="M 449 228 L 449 321" stroke="#8B1A1A" stroke-width="0.6" fill="none" stroke-dasharray="2,2" opacity="0.4"/>
+
+        <!-- GD → INV -->
+        <path d="M 523 168 L 558 136" stroke="#1B1B1B" stroke-width="0.7" fill="none" opacity="0.5"/>
+        <path d="M 858 168 L 891 136" stroke="#1B1B1B" stroke-width="0.7" fill="none" opacity="0.5"/>
+
+        <!-- Label: PO-001 used at both -->
+        <path d="M 382 196 C 382 240, 523 228, 523 228" stroke="#5A3A7A" stroke-width="0.8" fill="none" stroke-dasharray="3,2" opacity="0.55"/>
+        <path d="M 699 196 C 699 240, 858 228, 858 228" stroke="#5A3A7A" stroke-width="0.8" fill="none" stroke-dasharray="3,2" opacity="0.55"/>
+        <text x="580" y="250" class="svg-serif" font-size="9" font-style="italic" fill="#5A3A7A">PO-001 Used ở cả 2 GD (N:N)</text>
+      </svg>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">02</span>Nhật ký event</h2>
+      <div class="sub">Tổng 18 events · Chú ý PO-001 (cogs) được Used ở cả 2 GD — đây chính là quan hệ 1 PO → n GD.</div>
+    </div>
+
+    <div class="event-table-wrap">
+      <table class="events">
+        <thead>
+          <tr>
+            <th>Ngày</th>
+            <th>Event</th>
+            <th>Mô tả</th>
+            <th style="text-align:right">IN</th>
+            <th style="text-align:right">OUT</th>
+            <th style="text-align:right">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day">D1</td>
+            <td class="event"><span class="tag setup">SETUP</span>OP WON</td>
+            <td class="desc">SO-001 (200M) + PO-001 cogs (120M) auto-created. Sau đó BO tạo thêm PO-002 (bao bì 10M) và PO-003 (vận chuyển 20M) với Allocations phân bổ đều cho 2 GD.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">SO receivable</span>200,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D3</td>
+            <td class="event"><span class="tag in">IN</span>Customer Advance</td>
+            <td class="desc">Khách đặt cọc 60M cho cả SO (30% × 200M). Phiếu này sẽ được split cho 2 INV sau.</td>
+            <td class="amt in">+60,000,000</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid</span>60,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D5</td>
+            <td class="event"><span class="tag out">OUT</span>Vendor Advance</td>
+            <td class="desc">Tạm ứng 50% cho PO-001 cogs (120M × 50% = 60M). PO-002 và PO-003 không ứng trước.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt out">−60,000,000</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>60,000,000</td>
+          </tr>
+          <tr style="background:rgba(168,107,10,0.05)">
+            <td class="day">D10</td>
+            <td class="event"><span class="tag goods">GR</span>Nhận hàng đợt 1</td>
+            <td class="desc">GR-001: 10 tấn cogs (60M) · GR-002: bao bì toàn phần (10M).</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Goods in</span>10 tấn + bao bì</td>
+          </tr>
+          <tr>
+            <td class="day">D12</td>
+            <td class="event"><span class="tag doc">BILL</span>Confirm Bill-001, Bill-002</td>
+            <td class="desc">Bill-001 (60M cogs) và Bill-002 (10M bao bì) được vendor xuất và confirm.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Bills confirmed</span>70,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D12</td>
+            <td class="event"><span class="tag adj">ADJ</span>Vendor Repayment</td>
+            <td class="desc">Phân bổ Vendor Advance 30M vào Bill-001 (50% của Bill-001).</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">(apply 30M)</td>
+            <td class="balance"><span class="b-lbl">Adv remain</span>30,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D12</td>
+            <td class="event"><span class="tag out">OUT</span>Vendor Payments</td>
+            <td class="desc">Thanh toán Bill-001 còn lại (−30M) và Bill-002 full (−10M).</td>
+            <td class="amt neutral">—</td>
+            <td class="amt out">−40,000,000</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>100,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D14</td>
+            <td class="event"><span class="tag goods">GD</span>Giao cont 1 (GD-001)</td>
+            <td class="desc">Used tại GD-001: 60M cogs + 5M bao bì (½ PO-002) + 10M shipping (½ PO-003) = <strong>Cost 75M</strong>.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Cost GD-001</span>75,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D14</td>
+            <td class="event"><span class="tag doc">INV</span>Confirm INV-001</td>
+            <td class="desc">Xuất HĐ GTGT đầu ra cho cont 1: 100M. Doanh thu ghi nhận cho GD-001.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Revenue GD-001</span>100,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D14</td>
+            <td class="event"><span class="tag adj">ADJ</span>Customer Repayment</td>
+            <td class="desc">Phân bổ ½ Customer Advance (30M của 60M) vào INV-001.</td>
+            <td class="amt neutral">(apply 30M)</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral"><span class="b-lbl">Adv remain</span>30,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D15</td>
+            <td class="event"><span class="tag in">IN</span>Customer Payment</td>
+            <td class="desc">Khách thanh toán INV-001 còn lại (70M). INV-001 → Paid.</td>
+            <td class="amt in">+70,000,000</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid</span>130,000,000</td>
+          </tr>
+          <tr style="background:rgba(168,107,10,0.07); border-top: 2px solid var(--warn)">
+            <td class="day">D20</td>
+            <td class="event"><span class="tag goods">GR</span>Nhận hàng đợt 2</td>
+            <td class="desc">GR-003: 10 tấn cogs (60M) · GR-004: vận chuyển toàn phần (20M).</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Goods in</span>10 tấn + ship</td>
+          </tr>
+          <tr>
+            <td class="day">D22</td>
+            <td class="event"><span class="tag doc">BILL</span>Bill-003, Bill-004</td>
+            <td class="desc">Bill-003 (60M cogs) + Bill-004 (20M shipping) confirmed.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Bills confirmed</span>80,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D22</td>
+            <td class="event"><span class="tag adj">ADJ</span>Vendor Repayment</td>
+            <td class="desc">Phân bổ 30M Advance còn lại vào Bill-003.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">(apply 30M)</td>
+            <td class="balance"><span class="b-lbl">Adv remain</span>0</td>
+          </tr>
+          <tr>
+            <td class="day">D22</td>
+            <td class="event"><span class="tag out">OUT</span>Vendor Payments</td>
+            <td class="desc">Thanh toán Bill-003 còn lại (−30M) + Bill-004 full (−20M).</td>
+            <td class="amt neutral">—</td>
+            <td class="amt out">−50,000,000</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>150,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D25</td>
+            <td class="event"><span class="tag goods">GD</span>Giao cont 2 (GD-002)</td>
+            <td class="desc">Used: 60M cogs (nửa còn lại của PO-001) + 5M bao bì + 10M ship = <strong>Cost 75M</strong>.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Cost GD-002</span>75,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D25</td>
+            <td class="event"><span class="tag doc">INV</span>Confirm INV-002</td>
+            <td class="desc">HĐ đầu ra cho cont 2: 100M.</td>
+            <td class="amt neutral">—</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Revenue GD-002</span>100,000,000</td>
+          </tr>
+          <tr>
+            <td class="day">D28</td>
+            <td class="event"><span class="tag adj">ADJ</span>Customer Repayment</td>
+            <td class="desc">Phân bổ nốt Advance (30M còn lại) vào INV-002.</td>
+            <td class="amt neutral">(apply 30M)</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Adv remain</span>0</td>
+          </tr>
+          <tr>
+            <td class="day">D30</td>
+            <td class="event"><span class="tag in">IN</span>Customer Payment</td>
+            <td class="desc">Khách thanh toán INV-002 còn lại (70M). INV-002 → Paid.</td>
+            <td class="amt in">+70,000,000</td>
+            <td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid</span>200,000,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">03</span>Quyết toán SO-001</h2>
+      <div class="sub">Tổng hợp từ cả 2 lần giao.</div>
+    </div>
+
+    <div class="settlement">
+      <div class="set-card rev">
+        <div class="lbl">Revenue</div>
+        <div class="val">200,000,000 <span class="unit">₫</span></div>
+        <div class="formula">INV-001 + INV-002</div>
+      </div>
+      <div class="set-card cost">
+        <div class="lbl">Cost</div>
+        <div class="val">150,000,000 <span class="unit">₫</span></div>
+        <div class="formula">cogs 120 + pack 10 + ship 20</div>
+      </div>
+      <div class="set-card profit">
+        <div class="lbl">Net Profit</div>
+        <div class="val">50,000,000 <span class="unit">₫</span></div>
+        <div class="formula">25M/GD × 2 lần giao</div>
+      </div>
+      <div class="set-card osd">
+        <div class="lbl">Outstanding SO</div>
+        <div class="val">0 <span class="unit">₫</span></div>
+        <div class="formula">✓ Tất toán đầy đủ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- EXAMPLE 3 — COMPLEX                                                -->
+  <!-- ================================================================ -->
+  <div class="view" id="view-ex3">
+
+    <div class="scenario ex3">
+      <div class="sc-col">
+        <h3>Kịch bản</h3>
+        <div class="title-line">Cont <em>bị reject</em> · 3 cách xử lý</div>
+        <div class="desc">
+          GD-001 giao thành công. GD-002 bị Customer reject tại cảng đích (chất lượng không đạt). Tại thời điểm reject, customer có thể đã trả <strong>toàn bộ · một phần · chưa trả</strong> INV-002 — outstanding của GD-002 tại D32 là ẩn số. Có 3 đường xử lý: <em>(1) Return to Vendor</em>, <em>(2) Realloc sang SO khác</em>, <em>(3) Cancel tại cảng</em>. Lưu ý: <strong>HĐ điều chỉnh giảm</strong> chưa được implement trên FarmGate, nên xử lý hiện tại dùng Vendor Refund + Customer Refund trực tiếp.
+        </div>
+      </div>
+      <div class="sc-col">
+        <h3>Các bên &amp; Contracts</h3>
+        <div class="sc-party"><span class="dot supplier"></span><span class="role">Vendor</span><span class="n">Trang trại HXT</span></div>
+        <div class="sc-party"><span class="dot techcoop"></span><span class="role">TechCoop</span><span class="n">FarmGate VN</span></div>
+        <div class="sc-party"><span class="dot customer"></span><span class="role">Customer</span><span class="n">ABC Corp (Japan)</span></div>
+        <div style="margin-top:10px; font-size:11px; color:var(--ink-muted); font-style:italic; font-family:'Fraunces',serif">
+          SO-001: 200M (2 cont) · PO-001: 120M cogs
+        </div>
+      </div>
+      <div class="sc-col">
+        <h3>3 nhánh xử lý sau reject</h3>
+        <div class="sc-numbers" style="gap:4px">
+          <div class="sc-num-row" style="border-bottom:1px dotted var(--rule); padding:4px 0"><span class="lbl"><strong style="color:var(--warn)">① Return to Vendor</strong></span><span class="val" style="font-size:10.5px; color:var(--ink-soft)">RTE</span></div>
+          <div style="font-size:10.5px; color:var(--ink-muted); font-style:italic; font-family:'Fraunces',serif; padding:2px 0 6px 8px">Vendor nhận lại hàng · <em>(a)</em> vendor gánh hết lỗ, hoặc <em>(b)</em> vendor &amp; TC chia lỗ</div>
+
+          <div class="sc-num-row" style="border-bottom:1px dotted var(--rule); padding:4px 0"><span class="lbl"><strong style="color:var(--purple)">② Realloc sang SO khác</strong></span><span class="val" style="font-size:10.5px; color:var(--ink-soft)">SO-002</span></div>
+          <div style="font-size:10.5px; color:var(--ink-muted); font-style:italic; font-family:'Fraunces',serif; padding:2px 0 6px 8px">PO-001 Used được chuyển <em>toàn bộ</em> hoặc <em>một phần</em> sang GD của SO khác — cấn trừ nội bộ, không đi tiền</div>
+
+          <div class="sc-num-row" style="padding:4px 0"><span class="lbl"><strong style="color:var(--danger)">③ Cancel tại cảng</strong></span><span class="val" style="font-size:10.5px; color:var(--ink-soft)">Abandon</span></div>
+          <div style="font-size:10.5px; color:var(--ink-muted); font-style:italic; font-family:'Fraunces',serif; padding:2px 0 0 8px">Bỏ hàng — <em>(a)</em> vendor gánh hết, hoặc <em>(b)</em> vendor &amp; TC chia lỗ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">01</span>Timeline — 50 ngày, 3 giai đoạn</h2>
+      <div class="sub">Phase III phân nhánh thành 3 paths xử lý khác nhau — xem Section 03 để so sánh.</div>
+    </div>
+
+    <div class="timeline-wrap">
+      <svg class="timeline-svg" viewBox="0 0 1160 450" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Lane backgrounds -->
+        <rect x="80" y="30" width="1040" height="110" fill="#E8F0EB" rx="4" opacity="0.55"/>
+        <rect x="80" y="150" width="1040" height="130" fill="#FAF5EC" rx="4" opacity="0.9"/>
+        <rect x="80" y="290" width="1040" height="130" fill="#FBF0F0" rx="4" opacity="0.55"/>
+
+        <!-- Lane labels -->
+        <text x="70" y="90" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#2D5E3C">THU ↓</text>
+        <text x="70" y="104" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">from Customer</text>
+
+        <text x="70" y="210" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#1B1B1B">HÀNG HOÁ ⇄</text>
+        <text x="70" y="224" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">goods &amp; docs</text>
+
+        <text x="70" y="350" text-anchor="end" class="svg-text" font-size="10" font-weight="700" letter-spacing="1" fill="#8B1A1A">CHI ↑</text>
+        <text x="70" y="364" text-anchor="end" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">to Vendor</text>
+
+        <!-- Phase dividers -->
+        <line x1="410" y1="30" x2="410" y2="425" stroke="#5A3A7A" stroke-width="0.8" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="700" y1="30" x2="700" y2="425" stroke="#5A3A7A" stroke-width="0.8" stroke-dasharray="5,3" opacity="0.6"/>
+
+        <text x="245" y="20" text-anchor="middle" class="svg-serif" font-size="11" font-style="italic" font-weight="500" fill="#5A3A7A">I. Happy GD-001</text>
+        <text x="555" y="20" text-anchor="middle" class="svg-serif" font-size="11" font-style="italic" font-weight="500" fill="#8B1A1A">II. GD-002 gặp khủng hoảng</text>
+        <text x="895" y="20" text-anchor="middle" class="svg-serif" font-size="11" font-style="italic" font-weight="500" fill="#A86B0A">III. Reject → 3 paths</text>
+
+        <!-- Day axis: 50 days, 1040px → 20.8px/day -->
+        <!-- Key days: D1, D3, D5, D10, D12, D15, D18, D22, D28, D32, D38, D42, D45, D48, D50 -->
+        <line x1="80" y1="435" x2="1120" y2="435" stroke="#B8AE98" stroke-width="1"/>
+        <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#8C8374" text-anchor="middle">
+          <text x="80" y="449">D1</text>
+          <text x="122" y="449">D3</text>
+          <text x="164" y="449">D5</text>
+          <text x="267" y="449">D10</text>
+          <text x="309" y="449">D12</text>
+          <text x="371" y="449">D15</text>
+          <text x="434" y="449">D18</text>
+          <text x="517" y="449">D22</text>
+          <text x="643" y="449">D28</text>
+          <text x="726" y="449">D32</text>
+          <text x="851" y="449">D38</text>
+          <text x="934" y="449">D42</text>
+          <text x="996" y="449">D45</text>
+          <text x="1059" y="449">D48</text>
+          <text x="1101" y="449">D50</text>
+        </g>
+
+        <!-- ============ PHASE I: Happy GD-001 (D1-D18) ============ -->
+        <!-- Setup D1 -->
+        <rect x="40" y="175" width="78" height="46" rx="4" fill="#FAF5EC" stroke="#8C8374" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="79" y="190" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#5C564D">D1 · SETUP</text>
+        <text x="79" y="203" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">SO-001 200M</text>
+        <text x="79" y="215" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">PO-001 120M</text>
+
+        <!-- Customer Advance D3 -->
+        <rect x="92" y="50" width="70" height="48" rx="4" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1.2"/>
+        <text x="127" y="63" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#2D5E3C">D3 · ADV</text>
+        <text x="127" y="76" text-anchor="middle" class="svg-text" font-size="8" fill="#1B1B1B">Customer</text>
+        <text x="127" y="91" text-anchor="middle" class="svg-mono" font-size="10" font-weight="600" fill="#2D5E3C">+60M</text>
+
+        <!-- Vendor Advance D5 -->
+        <rect x="134" y="315" width="70" height="48" rx="4" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1.2"/>
+        <text x="169" y="328" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#8B1A1A">D5 · ADV</text>
+        <text x="169" y="341" text-anchor="middle" class="svg-text" font-size="8" fill="#1B1B1B">PO-001</text>
+        <text x="169" y="356" text-anchor="middle" class="svg-mono" font-size="10" font-weight="600" fill="#8B1A1A">−60M</text>
+
+        <!-- GR-001 D10 -->
+        <rect x="237" y="175" width="60" height="28" rx="4" fill="#EDE6D8" stroke="#8C8374" stroke-width="1"/>
+        <text x="267" y="186" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D10 · GR</text>
+        <text x="267" y="197" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">60M · cont 1</text>
+
+        <!-- Bill-001 D12 -->
+        <rect x="279" y="175" width="60" height="28" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="309" y="186" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D12 · BILL</text>
+        <text x="309" y="197" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">60M</text>
+
+        <!-- D12: Vendor Repay -->
+        <rect x="279" y="295" width="60" height="22" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="309" y="308" text-anchor="middle" class="svg-text" font-size="7.5" font-weight="700" fill="#A86B0A">REPAY 30M</text>
+        <!-- Vendor Payment -->
+        <rect x="279" y="319" width="60" height="22" rx="4" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1"/>
+        <text x="309" y="332" text-anchor="middle" class="svg-mono" font-size="8" fill="#8B1A1A">−30M</text>
+
+        <!-- GD-001 D15 -->
+        <rect x="341" y="165" width="65" height="48" rx="5" fill="#EDE6D8" stroke="#8C8374" stroke-width="1.3"/>
+        <text x="373" y="179" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D15 · GD-001</text>
+        <text x="373" y="193" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">10 tấn OK</text>
+        <text x="373" y="206" text-anchor="middle" class="svg-mono" font-size="8" fill="#5C564D">Used 60M</text>
+
+        <!-- INV-001 D15 -->
+        <rect x="341" y="220" width="65" height="24" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="373" y="232" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">INV-001</text>
+        <text x="373" y="242" text-anchor="middle" class="svg-mono" font-size="8" fill="#1B1B1B">100M</text>
+
+        <!-- D18: Customer Repay + Payment -->
+        <rect x="425" y="50" width="65" height="22" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="457" y="63" text-anchor="middle" class="svg-text" font-size="7.5" font-weight="700" fill="#A86B0A">REPAY 30M</text>
+        <rect x="425" y="74" width="65" height="22" rx="4" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1"/>
+        <text x="457" y="86" text-anchor="middle" class="svg-mono" font-size="8" font-weight="600" fill="#2D5E3C">+70M</text>
+
+        <!-- ============ PHASE II: GD-002 (D22-D32) ============ -->
+        <!-- D22: GR-002 cogs -->
+        <rect x="487" y="175" width="60" height="28" rx="4" fill="#EDE6D8" stroke="#8C8374" stroke-width="1"/>
+        <text x="517" y="186" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D22 · GR</text>
+        <text x="517" y="197" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#5C564D">60M · cont 2</text>
+
+        <!-- D24: Bill-002 -->
+        <rect x="550" y="175" width="60" height="28" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="580" y="186" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">D24 · BILL</text>
+        <text x="580" y="197" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">60M</text>
+
+        <!-- D24: Vendor Repay + Payment -->
+        <rect x="550" y="295" width="60" height="22" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="580" y="308" text-anchor="middle" class="svg-text" font-size="7.5" font-weight="700" fill="#A86B0A">REPAY 30M</text>
+        <rect x="550" y="319" width="60" height="22" rx="4" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1"/>
+        <text x="580" y="332" text-anchor="middle" class="svg-mono" font-size="8" fill="#8B1A1A">−30M</text>
+
+        <!-- D28: GD-002 shipped -->
+        <rect x="613" y="165" width="65" height="48" rx="5" fill="#EDE6D8" stroke="#8C8374" stroke-width="1.3"/>
+        <text x="645" y="179" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">D28 · GD-002</text>
+        <text x="645" y="193" text-anchor="middle" class="svg-mono" font-size="8.5" fill="#1B1B1B">shipped ⇨</text>
+        <text x="645" y="206" text-anchor="middle" class="svg-mono" font-size="8" fill="#5C564D">Used 60M</text>
+
+        <!-- INV-002 D28 -->
+        <rect x="613" y="220" width="65" height="24" rx="4" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1"/>
+        <text x="645" y="232" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1E4A7A">INV-002</text>
+        <text x="645" y="242" text-anchor="middle" class="svg-mono" font-size="8" fill="#1B1B1B">100M</text>
+
+        <!-- D32: Customer Payment 100M (paid before reject) -->
+        <rect x="708" y="50" width="65" height="22" rx="4" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1"/>
+        <text x="740" y="63" text-anchor="middle" class="svg-text" font-size="7.5" font-weight="700" fill="#A86B0A">REPAY 30M</text>
+        <rect x="708" y="74" width="65" height="22" rx="4" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1"/>
+        <text x="740" y="86" text-anchor="middle" class="svg-mono" font-size="8" font-weight="600" fill="#2D5E3C">+70M</text>
+
+        <!-- ============ PHASE III: Crisis &amp; Refund (D38-D50) ============ -->
+        <!-- D38: Reject alert with branch indicator -->
+        <g>
+          <polygon points="830,180 880,180 895,205 880,230 830,230 815,205" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1.5"/>
+          <text x="855" y="200" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700" fill="#8B1A1A">D38</text>
+          <text x="855" y="213" text-anchor="middle" class="svg-text" font-size="8" fill="#8B1A1A">REJECT</text>
+          <text x="855" y="225" text-anchor="middle" class="svg-text" font-size="7.5" fill="#8B1A1A" font-style="italic">branch →</text>
+        </g>
+
+        <!-- D42: Return shipment (example: path 1 RTE) -->
+        <rect x="905" y="175" width="60" height="28" rx="4" fill="#FAF5EC" stroke="#A86B0A" stroke-width="1.2" stroke-dasharray="3,2"/>
+        <text x="935" y="186" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#A86B0A">D42 · RESOLVE</text>
+        <text x="935" y="197" text-anchor="middle" class="svg-mono" font-size="7.5" fill="#5C564D">path ① / ② / ③</text>
+
+        <!-- D42: Goods movement depends on path -->
+        <rect x="905" y="208" width="60" height="24" rx="4" fill="#EDE6D8" stroke="#8C8374" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="935" y="220" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#1B1B1B">hàng hoá</text>
+        <text x="935" y="230" text-anchor="middle" class="svg-mono" font-size="7.5" fill="#5C564D">→Vendor/kho/bỏ</text>
+
+        <!-- D45: Vendor Refund (example path 1) -->
+        <rect x="968" y="320" width="70" height="40" rx="5" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1.3"/>
+        <text x="1003" y="333" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#2D5E3C">D45 · REFUND</text>
+        <text x="1003" y="345" text-anchor="middle" class="svg-text" font-size="8" fill="#1B1B1B">from Vendor</text>
+        <text x="1003" y="357" text-anchor="middle" class="svg-mono" font-size="10" font-weight="600" fill="#2D5E3C">+60M*</text>
+
+        <!-- D48: Customer Refund −R-Paid (variable) -->
+        <rect x="1035" y="50" width="70" height="46" rx="5" fill="#F0DCDC" stroke="#8B1A1A" stroke-width="1.3"/>
+        <text x="1070" y="63" text-anchor="middle" class="svg-text" font-size="8" font-weight="700" fill="#8B1A1A">D48 · REFUND</text>
+        <text x="1070" y="76" text-anchor="middle" class="svg-text" font-size="8" fill="#1B1B1B">to Customer</text>
+        <text x="1070" y="91" text-anchor="middle" class="svg-mono" font-size="10" font-weight="600" fill="#8B1A1A">−R-Paid*</text>
+
+        <!-- D50: Final close -->
+        <rect x="1060" y="175" width="55" height="50" rx="5" fill="#FAF5EC" stroke="#A86B0A" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="1088" y="190" text-anchor="middle" class="svg-text" font-size="7.5" font-weight="700" fill="#A86B0A">D50</text>
+        <text x="1088" y="202" text-anchor="middle" class="svg-text" font-size="8" fill="#1B1B1B">GD-002</text>
+        <text x="1088" y="214" text-anchor="middle" class="svg-text" font-size="8" fill="#1B1B1B">closed</text>
+
+        <!-- Disclaimer below timeline: asterisk meaning -->
+        <text x="1115" y="442" text-anchor="end" class="svg-serif" font-style="italic" font-size="9" fill="#8C8374">* giá trị tuỳ path &amp; R-Paid tại D32 — xem section 03</text>
+
+        <!-- Causal arrows -->
+        <!-- Reject (D38) → Resolve (D42) -->
+        <path d="M 895 205 L 905 190" stroke="#8B1A1A" stroke-width="1.2" fill="none"/>
+        <!-- Resolve → Vendor Refund -->
+        <path d="M 935 232 L 1003 320" stroke="#2D5E3C" stroke-width="0.9" fill="none" stroke-dasharray="3,3" opacity="0.5"/>
+        <!-- Resolve → Customer Refund -->
+        <path d="M 965 189 L 1035 85" stroke="#8B1A1A" stroke-width="0.9" fill="none" stroke-dasharray="3,3" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">02</span>Nhật ký event (trước reject)</h2>
+      <div class="sub">Events giống Ví dụ 2 cho tới D32. Tại D32, số tiền khách trả là biến — ảnh hưởng tới refund sau này.</div>
+    </div>
+
+    <div class="event-table-wrap">
+      <table class="events">
+        <thead>
+          <tr>
+            <th>Ngày</th>
+            <th>Event</th>
+            <th>Mô tả</th>
+            <th style="text-align:right">IN</th>
+            <th style="text-align:right">OUT</th>
+            <th style="text-align:right">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Phase I header -->
+          <tr style="background:var(--accent-tint)">
+            <td colspan="6" style="padding:8px 14px; font-family:'Fraunces',serif; font-style:italic; font-weight:500; color:var(--accent-deep)">Phase I — GD-001 (cont 1) hoàn thành tốt đẹp</td>
+          </tr>
+          <tr>
+            <td class="day">D1</td>
+            <td class="event"><span class="tag setup">SETUP</span>SO-001 (200M) + PO-001 (120M)</td>
+            <td class="desc">Auto-created khi OP WON. Kế hoạch: 2 cont × 100M; cogs 60M/cont.</td>
+            <td class="amt neutral">—</td><td class="amt neutral">—</td>
+            <td class="balance">—</td>
+          </tr>
+          <tr>
+            <td class="day">D3</td>
+            <td class="event"><span class="tag in">IN</span>Customer Advance</td>
+            <td class="desc">60M cọc trước cho cả SO (30% × 200M).</td>
+            <td class="amt in">+60M</td><td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid</span>60M</td>
+          </tr>
+          <tr>
+            <td class="day">D5</td>
+            <td class="event"><span class="tag out">OUT</span>Vendor Advance</td>
+            <td class="desc">60M cọc cho PO-001 (50%).</td>
+            <td class="amt neutral">—</td><td class="amt out">−60M</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>60M</td>
+          </tr>
+          <tr>
+            <td class="day">D10–12</td>
+            <td class="event"><span class="tag goods">GR</span>+<span class="tag doc">BILL</span> + Payment</td>
+            <td class="desc">GR-001 (60M cogs đợt 1) → Bill-001 confirmed → Repay 30M + Payment −30M.</td>
+            <td class="amt neutral">—</td><td class="amt out">−30M</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>90M</td>
+          </tr>
+          <tr>
+            <td class="day">D15</td>
+            <td class="event"><span class="tag goods">GD</span>+<span class="tag doc">INV</span>GD-001 + INV-001</td>
+            <td class="desc">Cont 1 xuất đi. Used: 60M cogs. INV-001 100M confirmed.</td>
+            <td class="amt neutral">—</td><td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Revenue</span>100M · Cost 60M</td>
+          </tr>
+          <tr>
+            <td class="day">D18</td>
+            <td class="event"><span class="tag in">IN</span>Customer Repay + Payment</td>
+            <td class="desc">Repay 30M (½ Advance) + Payment 70M. INV-001 → Paid.</td>
+            <td class="amt in">+70M</td><td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid</span>130M</td>
+          </tr>
+
+          <!-- Phase II header -->
+          <tr style="background:var(--danger-tint)">
+            <td colspan="6" style="padding:8px 14px; font-family:'Fraunces',serif; font-style:italic; font-weight:500; color:var(--danger)">Phase II — GD-002 (cont 2) gặp khủng hoảng</td>
+          </tr>
+          <tr>
+            <td class="day">D22–24</td>
+            <td class="event"><span class="tag goods">GR</span>+<span class="tag doc">BILL</span>GR-002 + Bill-002</td>
+            <td class="desc">Nhận nốt 60M cogs cho cont 2. Bill-002 confirmed → Repay 30M + Payment −30M.</td>
+            <td class="amt neutral">—</td><td class="amt out">−30M</td>
+            <td class="balance"><span class="b-lbl">P-Paid</span>120M</td>
+          </tr>
+          <tr>
+            <td class="day">D28</td>
+            <td class="event"><span class="tag goods">GD</span>+<span class="tag doc">INV</span>GD-002 + INV-002</td>
+            <td class="desc">Cont 2 xuất đi. INV-002 100M confirmed. Used 60M cogs.</td>
+            <td class="amt neutral">—</td><td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">Revenue</span>200M · Cost 120M</td>
+          </tr>
+          <tr>
+            <td class="day">D32</td>
+            <td class="event"><span class="tag in">IN?</span>Customer Payment (khả biến)</td>
+            <td class="desc">Đến hạn thanh toán INV-002. Ở đây khách <strong>có thể</strong> đã trả <em>toàn bộ (100M) · một phần (30–90M) · chưa trả (0)</em>. Outstanding của GD-002 tại D32 tuỳ kịch bản — ảnh hưởng thẳng đến số tiền Customer Refund phải trả lại (nếu có).</td>
+            <td class="amt in">0 – 70M</td><td class="amt neutral">—</td>
+            <td class="balance"><span class="b-lbl">R-Paid GD-002</span>variable</td>
+          </tr>
+          <tr style="background:rgba(139,26,26,0.08)">
+            <td class="day">D38</td>
+            <td class="event"><span class="tag out">!</span>Customer REJECT — 3 đường xử lý</td>
+            <td class="desc">Hàng đến cảng Nhật, Customer inspect → không đạt. Claim refund. Từ đây có <strong>3 resolution paths</strong> — xem Section 03 bên dưới để so sánh số liệu theo từng đường.</td>
+            <td class="amt neutral">—</td><td class="amt neutral">—</td>
+            <td class="balance" style="color:var(--danger)">⚠ branch</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rpaid-control">
+      <div class="ctrl-desc">
+        <h4>D32 — khách đã trả bao nhiêu cho <em>INV-002</em>?</h4>
+        <p>Tuỳ hợp đồng thanh toán (<code>LC</code>, <code>TT trước</code>, <code>TT sau</code>), <code>R-Paid</code> tại D32 có thể bất kỳ giá trị nào từ 0 đến 100M. Chọn giá trị để xem 3 paths xử lý tự tính lại.</p>
+      </div>
+      <div class="ctrl-ui">
+        <div class="rpaid-chips" id="rpaidChips">
+          <button data-val="0">0 (chưa trả)</button>
+          <button data-val="30000000">30M (cọc)</button>
+          <button data-val="70000000">70M (một phần)</button>
+          <button data-val="100000000" class="active">100M (toàn bộ)</button>
+        </div>
+        <div class="rpaid-slider-row">
+          <span class="sl-label">Custom</span>
+          <input type="range" id="rpaidSlider" min="0" max="100000000" step="1000000" value="100000000"/>
+          <span class="sl-value" id="rpaidValue">100M ₫</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2><span class="num">03</span>3 đường xử lý sau reject</h2>
+      <div class="sub">So sánh các khoản tiền &amp; nghiệp vụ cho từng path — <span id="currentScenario">R-Paid = 100M</span> · con số màu cam thay đổi theo R-Paid.</div>
+    </div>
+
+    <div class="path-grid" id="pathGrid">
+
+      <!-- PATH 1: Return to Vendor (RTE) -->
+      <div class="path-panel p1">
+        <div class="path-head">
+          <span class="path-num">① RTE</span>
+          <div class="path-title">Return <em>to</em> Vendor</div>
+        </div>
+        <div class="path-desc">Vendor nhận lại toàn bộ hàng đã Used cho GD-002. TechCoop refund khách phần khách đã trả.</div>
+
+        <div class="path-events">
+          <div class="path-event"><span class="d">D42</span><span class="l">Hàng về VN + trả Vendor</span><span class="a alloc">RTE</span></div>
+          <div class="path-event"><span class="d">D45</span><span class="l">Vendor Refund cogs</span><span class="a in">+60M</span></div>
+          <div class="path-event"><span class="d">D48</span><span class="l">Customer Refund</span><span class="a out" data-dyn data-path="1" data-field="custRefund">−100M</span></div>
+          <div class="path-event"><span class="d">D50</span><span class="l">GD-002 closed</span><span class="a alloc">✓</span></div>
+        </div>
+
+        <div class="path-summary">
+          <div class="row"><span class="l">Revenue net</span><span class="v" data-dyn data-path="1" data-field="revenue">100M</span></div>
+          <div class="row"><span class="l">Cost net</span><span class="v">60M</span></div>
+          <div class="row ok"><span class="l">Profit</span><span class="v" data-dyn data-path="1" data-field="profit">40M</span></div>
+          <div class="row"><span class="l">Loss</span><span class="v" data-dyn data-path="1" data-field="loss">0</span></div>
+        </div>
+
+        <div class="path-variants">
+          <div class="vh">Phân bổ lỗ (nếu có phí/chênh)</div>
+          <div class="v"><span class="k">1a</span><span class="t">Vendor gánh toàn bộ lỗ — thông lệ khi vendor chịu trách nhiệm chất lượng.</span></div>
+          <div class="v"><span class="k">1b</span><span class="t">Vendor &amp; TC chia lỗ theo thoả thuận (ví dụ 50/50 phí logistics về cảng VN).</span></div>
+        </div>
+      </div>
+
+      <!-- PATH 2: Realloc to another SO -->
+      <div class="path-panel p2">
+        <div class="path-head">
+          <span class="path-num">② REALLOC</span>
+          <div class="path-title">Chuyển PO <em>sang</em> SO khác</div>
+        </div>
+        <div class="path-desc">Hàng về kho, bán lại qua SO-002 (khách khác). PO-001 Used tại GD-002 được cấn trừ sang GD của SO-002 — cross-SO allocation.</div>
+
+        <div class="path-events">
+          <div class="path-event"><span class="d">D42</span><span class="l">Hàng về kho VN</span><span class="a alloc">restock</span></div>
+          <div class="path-event"><span class="d">D44</span><span class="l">SO-002 tạo (khách khác)</span><span class="a alloc">100M</span></div>
+          <div class="path-event"><span class="d">D45</span><span class="l">PO-001 Used realloc → GD-SO2</span><span class="a alloc">cấn trừ 60M</span></div>
+          <div class="path-event"><span class="d">D48</span><span class="l">Customer Refund SO-001</span><span class="a out" data-dyn data-path="2" data-field="custRefund">−100M</span></div>
+          <div class="path-event"><span class="d">D50</span><span class="l">Customer SO-002 payment</span><span class="a in">+100M</span></div>
+        </div>
+
+        <div class="path-summary">
+          <div class="row"><span class="l">Revenue (SO-002)</span><span class="v">100M</span></div>
+          <div class="row"><span class="l">Cost (cấn trừ)</span><span class="v">60M*</span></div>
+          <div class="row ok"><span class="l">Profit GD-SO2</span><span class="v">40M</span></div>
+          <div class="row ok"><span class="l">Total profit</span><span class="v" data-dyn data-path="2" data-field="profit">80M</span></div>
+        </div>
+
+        <div class="path-variants">
+          <div class="vh">Mức độ realloc</div>
+          <div class="v"><span class="k">2a</span><span class="t">Toàn bộ PO-001 Used (60M) chuyển sang SO-002 — nếu chất lượng còn tốt, chỉ customer gốc không chịu.</span></div>
+          <div class="v"><span class="k">2b</span><span class="t">Chỉ một phần — còn lại xử lý theo path ① hoặc ③ (ví dụ chia 40M realloc + 20M bỏ).</span></div>
+        </div>
+      </div>
+
+      <!-- PATH 3: Cancel at port -->
+      <div class="path-panel p3">
+        <div class="path-head">
+          <span class="path-num">③ CANCEL</span>
+          <div class="path-title">Bỏ hàng <em>tại cảng</em></div>
+        </div>
+        <div class="path-desc">Hàng không đưa về (quá đắt) và cũng không có người nhận. Bỏ tại cảng đích. Cost đã chi không thu hồi được — ghi nhận lỗ.</div>
+
+        <div class="path-events">
+          <div class="path-event"><span class="d">D40</span><span class="l">Quyết định bỏ hàng</span><span class="a alloc">abandon</span></div>
+          <div class="path-event"><span class="d">D42</span><span class="l">Phí huỷ / phạt hãng tàu</span><span class="a out">−5M</span></div>
+          <div class="path-event"><span class="d">D48</span><span class="l">Customer Refund</span><span class="a out" data-dyn data-path="3" data-field="custRefund">−100M</span></div>
+          <div class="path-event"><span class="d">D50</span><span class="l">GD-002 close với lỗ</span><span class="a alloc">✗</span></div>
+        </div>
+
+        <div class="path-summary">
+          <div class="row"><span class="l">Revenue net</span><span class="v">100M</span></div>
+          <div class="row"><span class="l">Cost (mất)</span><span class="v">60M</span></div>
+          <div class="row ok"><span class="l">Profit GD-001</span><span class="v">40M</span></div>
+          <div class="row bad"><span class="l">Loss GD-002</span><span class="v" data-dyn data-path="3" data-field="loss">−65M</span></div>
+        </div>
+
+        <div class="path-variants">
+          <div class="vh">Phân bổ lỗ 65M</div>
+          <div class="v"><span class="k">3a</span><span class="t">Vendor gánh 100% — nếu lỗi chất lượng thuộc về vendor và hợp đồng có điều khoản.</span></div>
+          <div class="v"><span class="k">3b</span><span class="t">Vendor &amp; TC chia theo tỉ lệ (ví dụ 70/30) — khi nguyên nhân có yếu tố logistics hoặc timing.</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background:var(--paper-sunken); border:1px dashed var(--rule-strong); border-radius:10px; padding:14px 18px; margin-top:16px; display:flex; gap:12px; align-items:flex-start">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-muted); background:var(--paper); padding:3px 8px; border-radius:4px; border:1px solid var(--rule-strong); flex-shrink:0">!</div>
+      <div style="font-family:'Fraunces',serif; font-size:13px; color:var(--ink); line-height:1.55">
+        <strong>Lưu ý về HĐ điều chỉnh giảm:</strong> FarmGate <em>hiện chưa implement</em> nghiệp vụ HĐ điều chỉnh giảm (credit note). Các path trên dùng <code style="font-family:'JetBrains Mono',monospace; background:rgba(0,0,0,0.05); padding:1px 4px; border-radius:2px">Customer Refund</code> trực tiếp thay thế. Khi feature này được bổ sung, Revenue net sẽ được phản ánh qua HĐ ĐC giảm thay vì cancel-then-refund pattern — nhưng số profit cuối cùng không đổi.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Ba kịch bản dòng chảy · dựa trên logic Sale.FarmGate v1.0 · mọi số liệu là ví dụ minh hoạ
+  </footer>
+</div>
+
+<script>
+  // ============ TAB SWITCHING ============
+  document.getElementById('tabs').addEventListener('click', (e) => {
+    let btn = e.target;
+    while (btn && btn.tagName !== 'BUTTON') btn = btn.parentElement;
+    if (!btn) return;
+    const view = btn.dataset.view;
+    document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
+  });
+
+  // ============ INTERACTIVE R-PAID CONTROL (Ex3) ============
+  // The 3 resolution paths all depend on how much the customer paid
+  // for INV-002 at D32 — this "R-Paid" drives the Customer Refund amount
+  // and cascades into profit / loss figures.
+
+  const GD002_INV = 100_000_000;       // INV-002 face value
+  const GD002_COST = 60_000_000;       // Cost Used for GD-002 (PO-001 cogs)
+  const GD001_PROFIT = 40_000_000;     // Profit from GD-001 (unchanged)
+  const GD001_REVENUE = 100_000_000;
+  const GD001_COST = 60_000_000;
+  const CANCEL_PORT_FEE = 5_000_000;   // Path 3 port / cancel fees
+  const SO2_REVENUE = 100_000_000;     // Path 2 SO-002 revenue (assumed same price)
+  const SO2_COST = 60_000_000;         // Path 2 cost realloc from PO-001
+
+  function fmtShort(n, signed = false) {
+    if (n === 0) return signed ? '0' : '0';
+    const abs = Math.abs(n);
+    const sign = n < 0 ? '−' : (signed ? '+' : '');
+    // Only strip trailing zeros after a decimal point (not from whole numbers)
+    function trim(s) { return s.includes('.') ? s.replace(/\.?0+$/, '') : s; }
+    let str;
+    if (abs >= 1e9) str = trim((abs / 1e9).toFixed(2)) + ' tỷ';
+    else if (abs >= 1e6) str = trim((abs / 1e6).toFixed(abs % 1e6 === 0 ? 0 : 1)) + 'M';
+    else if (abs >= 1e3) str = (abs / 1e3).toFixed(0) + 'k';
+    else str = abs.toFixed(0);
+    return sign + str;
+  }
+
+  // Compute values per path given R-Paid at D32
+  function computePaths(rpaid) {
+    return {
+      1: {
+        // Path 1 — RTE: Vendor refunds cost, Customer gets back whatever they paid
+        custRefund: -rpaid,                         // always equals what they paid
+        revenue: GD001_REVENUE,                      // GD-002 is "neutralized" by refunds
+        cost: GD001_COST,                             // GD-001 cost only (GD-002 cost refunded)
+        profit: GD001_PROFIT,                         // 40M regardless
+        loss: 0                                       // no loss if clean RTE
+      },
+      2: {
+        // Path 2 — Realloc: GD-002 cost becomes GD-SO2 cost (cấn trừ internal),
+        // SO-001 customer gets refund, SO-002 customer pays normally
+        custRefund: -rpaid,
+        revenue: GD001_REVENUE + SO2_REVENUE,         // both sales realized
+        cost: GD001_COST + SO2_COST,                   // same cost aggregate (PO-001 covered both)
+        profitGDSO2: SO2_REVENUE - SO2_COST,
+        profit: GD001_PROFIT + (SO2_REVENUE - SO2_COST)   // 40 + 40 = 80
+      },
+      3: {
+        // Path 3 — Cancel: Cost of GD-002 is lost; port fees extra; customer refunded
+        custRefund: -rpaid,
+        revenue: GD001_REVENUE,                       // only GD-001 recognized
+        cost: GD001_COST,
+        profitGD001: GD001_PROFIT,
+        // Loss = Cost GD-002 lost + port fees. Note: rpaid came in as cash, went back out as refund → net 0 on that side
+        loss: -(GD002_COST + CANCEL_PORT_FEE)         // −65M regardless of R-Paid
+      }
+    };
+  }
+
+  // Update a path's dynamic cells
+  function renderPath(pathNum, vals) {
+    document.querySelectorAll(`[data-path="${pathNum}"][data-dyn]`).forEach(el => {
+      const field = el.dataset.field;
+      const v = vals[field];
+      if (v === undefined) return;
+      // Format based on field type
+      if (field === 'custRefund') {
+        // Event line — show signed
+        el.textContent = v === 0 ? '—' : fmtShort(v);
+        el.style.opacity = v === 0 ? '0.4' : '1';
+      } else if (field === 'revenue' || field === 'profit') {
+        el.textContent = fmtShort(v);
+      } else if (field === 'loss') {
+        el.textContent = v === 0 ? '0' : fmtShort(v);
+      }
+    });
+  }
+
+  function updateScenario(rpaid) {
+    const vals = computePaths(rpaid);
+    renderPath(1, vals[1]);
+    renderPath(2, vals[2]);
+    renderPath(3, vals[3]);
+    // Update the scenario indicator in section head
+    const label = document.getElementById('currentScenario');
+    if (label) label.textContent = `R-Paid = ${fmtShort(rpaid)}`;
+    // Update slider display
+    const val = document.getElementById('rpaidValue');
+    if (val) val.textContent = fmtShort(rpaid) + ' ₫';
+    // Sync slider if not the source
+    const slider = document.getElementById('rpaidSlider');
+    if (slider && +slider.value !== rpaid) slider.value = rpaid;
+    // Highlight matching chip
+    document.querySelectorAll('#rpaidChips button').forEach(btn => {
+      btn.classList.toggle('active', +btn.dataset.val === rpaid);
+    });
+  }
+
+  // Wire up controls (if Ex3 is in the DOM)
+  const chipsEl = document.getElementById('rpaidChips');
+  const sliderEl = document.getElementById('rpaidSlider');
+  if (chipsEl) {
+    chipsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-val]');
+      if (!btn) return;
+      updateScenario(+btn.dataset.val);
+    });
+  }
+  if (sliderEl) {
+    sliderEl.addEventListener('input', (e) => {
+      updateScenario(+e.target.value);
+    });
+  }
+  // Init with default
+  if (chipsEl || sliderEl) {
+    updateScenario(100_000_000);
+  }
+</script>
+</body>
+</html>

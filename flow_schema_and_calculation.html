@@ -1,0 +1,3331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schema · Outstanding · Profit Share</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F4EFE6;
+    --paper-raised: #FAF5EC;
+    --paper-sunken: #EDE6D8;
+    --ink: #1B1B1B;
+    --ink-muted: #5C564D;
+    --ink-soft: #8C8374;
+    --rule: #D8CFBE;
+    --rule-strong: #B8AE98;
+
+    --accent: #2D5E3C;
+    --accent-deep: #1F4529;
+    --accent-tint: #D9E4DD;
+
+    --danger: #8B1A1A;
+    --danger-tint: #F0DCDC;
+
+    --warn: #A86B0A;
+    --warn-tint: #F2E4C4;
+
+    --blue: #1E4A7A;
+    --blue-tint: #D6E0EE;
+
+    --purple: #5A3A7A;
+    --purple-tint: #E2D9EC;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(45,94,60,0.04), transparent 35%),
+      radial-gradient(circle at 85% 92%, rgba(139,26,26,0.03), transparent 40%);
+    min-height: 100vh;
+  }
+  .app { max-width: 1400px; margin: 0 auto; padding: 28px 28px 80px; }
+
+  /* header */
+  header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px; padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 40px;
+    line-height: 1.02; letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144;
+    margin: 0;
+  }
+  .title em { font-style: italic; font-weight: 400; color: var(--accent-deep); }
+  .subtitle {
+    color: var(--ink-muted); font-size: 13px; margin-top: 7px;
+    font-style: italic; font-family: 'Fraunces', serif;
+    max-width: 720px;
+  }
+  .tabs {
+    display: inline-flex; background: var(--paper-sunken);
+    border: 1px solid var(--rule-strong); border-radius: 999px; padding: 4px;
+    flex-shrink: 0;
+  }
+  .tabs button {
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 9px 16px; border: none; background: transparent; cursor: pointer;
+    border-radius: 999px; color: var(--ink-muted);
+    transition: all 0.2s ease;
+  }
+  .tabs button.active {
+    background: var(--ink); color: var(--paper);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+  .tabs button:not(.active):hover { color: var(--ink); }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fadein 0.3s ease; }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* section heads */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 8px 0 14px; gap: 16px; flex-wrap: wrap;
+  }
+  .section-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 20px; letter-spacing: -0.01em; margin: 0;
+  }
+  .section-head h2 .num {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--accent);
+    background: var(--accent-tint);
+    padding: 3px 7px; border-radius: 3px;
+    vertical-align: middle; margin-right: 10px;
+    transform: translateY(-3px);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .section-head .sub {
+    font-size: 12px; color: var(--ink-muted);
+    font-style: italic; font-family: 'Fraunces', serif;
+  }
+
+  /* ============ SCHEMA TAB ============ */
+  .schema-hero {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 26px 28px;
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 28px;
+    align-items: center;
+  }
+  .schema-hero .lede {
+    font-family: 'Fraunces', serif;
+    font-size: 17px; line-height: 1.55;
+    color: var(--ink);
+  }
+  .schema-hero .lede strong { color: var(--accent-deep); font-weight: 600; }
+  .schema-hero .lede em { color: var(--warn); font-style: italic; }
+  .schema-hero .equation {
+    background: var(--paper-sunken);
+    border: 1px dashed var(--rule-strong);
+    border-radius: 10px;
+    padding: 18px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.8;
+  }
+  .schema-hero .equation .eq-label {
+    color: var(--ink-soft); font-weight: 600;
+    font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: block; margin-bottom: 8px;
+  }
+  .schema-hero .equation .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 3px 0;
+  }
+  .schema-hero .equation .row.total {
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 8px; margin-top: 8px;
+    font-weight: 600;
+  }
+  .schema-hero .equation .lbl { color: var(--ink-muted); font-size: 12px; }
+  .schema-hero .equation .val { color: var(--ink); }
+  .schema-hero .equation .val.green { color: var(--accent-deep); }
+  .schema-hero .equation .val.red { color: var(--danger); }
+  .schema-hero .equation .val.amber { color: var(--warn); }
+
+  /* ERD layer */
+  .erd-layer {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .erd-layer-label {
+    position: absolute; top: -11px; left: 24px;
+    background: var(--paper);
+    padding: 2px 10px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+  .erd-layer.l1 .erd-layer-label { color: var(--purple); border-color: var(--purple); }
+  .erd-layer.l2 .erd-layer-label { color: var(--accent-deep); border-color: var(--accent); }
+  .erd-layer.l3 .erd-layer-label { color: var(--warn); border-color: var(--warn); }
+
+  .erd-grid {
+    display: grid;
+    gap: 14px;
+  }
+  .erd-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .erd-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .erd-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .entity-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+    transition: transform 0.15s ease;
+  }
+  .entity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .entity-card.supplier { border-top: 2px solid var(--danger); }
+  .entity-card.customer { border-top: 2px solid var(--accent); }
+  .entity-card.guarantor { border-top: 2px solid var(--purple); background: var(--purple-tint); }
+  .entity-card.sales { border-top: 2px solid var(--accent); }
+  .entity-card.purchase { border-top: 2px solid var(--danger); }
+  .entity-card.bridge { border-top: 2px solid var(--purple); }
+  .entity-card.event { border-top: 2px solid var(--warn); background: var(--warn-tint); }
+  .entity-card.derived { border-top: 2px solid var(--blue); background: var(--blue-tint); }
+  .entity-card.settlement { border-top: 2px solid var(--warn); }
+
+  .entity-card .e-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .entity-card .e-name .e-icon {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--paper-sunken);
+    padding: 0 5px; border-radius: 3px;
+    font-weight: 400;
+  }
+  .entity-card .e-desc {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+    line-height: 1.45;
+  }
+  .entity-card .e-fields {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+  .entity-card .e-fields .f {
+    display: flex; justify-content: space-between;
+    gap: 8px;
+  }
+  .entity-card .e-fields .f .fn { color: var(--ink); }
+  .entity-card .e-fields .f .ft { color: var(--ink-soft); font-size: 10px; font-style: italic; }
+  .entity-card .e-fields .f.ref .fn { color: var(--blue); }
+  .entity-card .e-fields .f.pk .fn { color: var(--accent-deep); font-weight: 600; }
+  .entity-card .e-fields .f.key .fn { color: var(--warn); font-weight: 600; }
+
+  .entity-card .e-rel {
+    margin-top: 10px; padding-top: 8px;
+    border-top: 1px dashed var(--rule);
+    font-size: 10px; color: var(--ink-soft);
+    font-style: italic; font-family: 'Fraunces', serif;
+  }
+  .entity-card .e-rel code {
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    background: var(--paper-sunken);
+    padding: 1px 4px; border-radius: 2px;
+    font-size: 10px;
+    color: var(--ink);
+  }
+
+  /* event flow diagram */
+  .event-flow {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+
+  .event-flow-svg { width: 100%; height: auto; display: block; }
+
+  /* ============ EXAMPLE VIEW ============ */
+  .scenario-recap {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 24px;
+    position: relative;
+  }
+  .scenario-recap::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: 12px 12px 0 0;
+  }
+  .scenario-recap.ex1::before { background: var(--accent); }
+  .scenario-recap.ex2::before { background: var(--warn); }
+  .scenario-recap.ex3::before { background: var(--danger); }
+
+  .sr-col h3 {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-soft);
+    margin: 0 0 10px; padding-bottom: 7px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .sr-col .title-line {
+    font-family: 'Fraunces', serif;
+    font-size: 20px; font-weight: 500; line-height: 1.2;
+    letter-spacing: -0.01em; margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .sr-col .title-line em { font-style: italic; }
+  .scenario-recap.ex1 .title-line em { color: var(--accent); }
+  .scenario-recap.ex2 .title-line em { color: var(--warn); }
+  .scenario-recap.ex3 .title-line em { color: var(--danger); }
+  .sr-col .desc {
+    font-size: 12px; color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  .sr-param { display: grid; gap: 7px; }
+  .sr-param .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 5px 0; border-bottom: 1px dotted var(--rule);
+    font-size: 12px;
+  }
+  .sr-param .row:last-child { border-bottom: none; }
+  .sr-param .lbl { color: var(--ink-muted); }
+  .sr-param .val {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .sr-param .val.green { color: var(--accent-deep); }
+
+  /* ============ EDITABLE FIELDS (Operations validation) ============ */
+  .sr-param .row .val.editable {
+    cursor: text;
+    border-bottom: 1px dashed transparent;
+    transition: background 0.12s ease, border-color 0.12s ease;
+    padding: 1px 6px 1px 4px;
+    margin: -1px -6px -1px 0;
+    border-radius: 3px;
+    text-align: right;
+    min-width: 90px;
+  }
+  .sr-param .row .val.editable:hover {
+    background: rgba(168, 107, 10, 0.07);
+    border-bottom-color: var(--rule-strong);
+  }
+  .sr-param .row .val.editable:focus {
+    outline: none;
+    background: var(--paper);
+    border-bottom-color: var(--warn);
+    box-shadow: 0 0 0 1px var(--warn);
+  }
+  .sr-param .row .val.editable.derived {
+    cursor: default; background: rgba(45,94,60,0.05);
+    color: var(--accent-deep);
+  }
+  .sr-param .row .val.editable.derived:hover { background: rgba(45,94,60,0.05); }
+
+  /* Channel toggle */
+  .channel-toggle {
+    display: inline-flex; gap: 0;
+    background: var(--paper-sunken);
+    border: 1px solid var(--rule-strong);
+    border-radius: 6px;
+    padding: 2px;
+    margin-left: auto;
+    transform: translateY(-2px);
+  }
+  .channel-toggle button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; font-weight: 700;
+    padding: 4px 10px; border: none;
+    background: transparent; color: var(--ink-muted);
+    cursor: pointer; border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .channel-toggle button.active {
+    background: var(--ink); color: var(--paper);
+  }
+
+  /* Validation banner */
+  .validate-banner {
+    background: linear-gradient(to right, var(--warn-tint), var(--paper-raised));
+    border-left: 3px solid var(--warn);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .validate-banner .icon {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 18px; font-weight: 600;
+    color: var(--warn);
+    flex-shrink: 0;
+  }
+  .validate-banner .text {
+    color: var(--ink); line-height: 1.5;
+    flex: 1;
+  }
+  .validate-banner .text strong { color: var(--warn); }
+  .validate-banner .text code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px;
+    font-size: 11px;
+  }
+  .reset-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    padding: 6px 12px; border-radius: 5px;
+    background: var(--paper); border: 1px solid var(--rule-strong);
+    color: var(--ink-muted); cursor: pointer;
+    flex-shrink: 0;
+  }
+  .reset-btn:hover {
+    background: var(--warn-tint); color: var(--warn);
+    border-color: var(--warn);
+  }
+
+  /* Toolbar with multiple actions */
+  .scenario-toolbar {
+    display: flex; gap: 6px; flex-shrink: 0;
+  }
+  .scenario-toolbar button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    padding: 6px 12px; border-radius: 5px;
+    background: var(--paper); border: 1px solid var(--rule-strong);
+    color: var(--ink-muted); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+  }
+  .scenario-toolbar button:hover {
+    background: var(--accent-tint); color: var(--accent-deep);
+    border-color: var(--accent);
+  }
+  .scenario-toolbar button.danger:hover {
+    background: var(--warn-tint); color: var(--warn);
+    border-color: var(--warn);
+  }
+  .scenario-toolbar button.confirmed {
+    background: var(--accent); color: var(--paper);
+    border-color: var(--accent);
+  }
+
+  /* Modal for import/export */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(27, 27, 27, 0.55);
+    z-index: 9000;
+    display: none;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+  .modal-backdrop.visible { display: flex; }
+  .modal {
+    background: var(--paper);
+    border: 1px solid var(--rule-strong);
+    border-radius: 12px;
+    width: 600px; max-width: 90vw;
+    max-height: 85vh;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column;
+  }
+  .modal-head {
+    padding: 18px 22px 12px;
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .modal-head h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 18px;
+    margin: 0; letter-spacing: -0.005em;
+  }
+  .modal-head .close {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 700;
+    background: transparent; border: none; cursor: pointer;
+    color: var(--ink-soft); padding: 0; line-height: 1;
+  }
+  .modal-head .close:hover { color: var(--ink); }
+  .modal-body {
+    padding: 18px 22px;
+    overflow-y: auto;
+    flex: 1;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .modal-body p { margin: 0 0 12px; }
+  .modal-body textarea {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; line-height: 1.5;
+    width: 100%; min-height: 220px;
+    padding: 12px; border-radius: 6px;
+    border: 1px solid var(--rule-strong);
+    background: var(--paper-sunken);
+    resize: vertical;
+    color: var(--ink);
+    box-sizing: border-box;
+  }
+  .modal-body textarea:focus {
+    outline: none;
+    border-color: var(--warn);
+    box-shadow: 0 0 0 2px rgba(168,107,10,0.15);
+  }
+  .modal-body .url-row {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+  .modal-body .url-row input {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--rule-strong);
+    background: var(--paper-sunken);
+    color: var(--ink);
+  }
+  .modal-foot {
+    padding: 14px 22px;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+  .modal-foot button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    padding: 7px 14px; border-radius: 5px;
+    cursor: pointer;
+  }
+  .modal-foot .btn-secondary {
+    background: var(--paper); border: 1px solid var(--rule-strong);
+    color: var(--ink-muted);
+  }
+  .modal-foot .btn-secondary:hover {
+    background: var(--paper-sunken);
+  }
+  .modal-foot .btn-primary {
+    background: var(--accent); border: 1px solid var(--accent);
+    color: var(--paper);
+  }
+  .modal-foot .btn-primary:hover {
+    background: var(--accent-deep); border-color: var(--accent-deep);
+  }
+  .modal .err {
+    background: var(--danger-tint); color: var(--danger);
+    padding: 8px 12px; border-radius: 5px;
+    font-size: 11px; margin-top: 10px;
+    border: 1px solid var(--danger);
+    font-family: 'JetBrains Mono', monospace;
+    display: none;
+  }
+  .modal .err.visible { display: block; }
+
+  /* Editable title and description */
+  .scenario-recap .title-line[contenteditable] {
+    cursor: text;
+    padding: 1px 4px; margin: -1px -4px;
+    border-radius: 4px;
+    transition: background 0.12s ease;
+    border-bottom: 1px dashed transparent;
+  }
+  .scenario-recap .title-line[contenteditable]:hover {
+    background: rgba(168, 107, 10, 0.07);
+    border-bottom-color: var(--rule-strong);
+  }
+  .scenario-recap .title-line[contenteditable]:focus {
+    outline: none;
+    background: var(--paper);
+    border-bottom-color: var(--warn);
+    box-shadow: 0 0 0 1px var(--warn);
+  }
+  .scenario-recap .desc[contenteditable] {
+    cursor: text;
+    padding: 4px 6px; margin: -4px -6px;
+    border-radius: 4px;
+    transition: background 0.12s ease;
+    border: 1px dashed transparent;
+  }
+  .scenario-recap .desc[contenteditable]:hover {
+    background: rgba(168, 107, 10, 0.05);
+    border-color: var(--rule);
+  }
+  .scenario-recap .desc[contenteditable]:focus {
+    outline: none;
+    background: var(--paper);
+    border-color: var(--warn);
+    box-shadow: 0 0 0 1px var(--warn);
+  }
+
+  /* Editable note inside event row */
+  .evt-note-input {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed transparent;
+    padding: 1px 3px; margin: 1px -3px 0;
+    border-radius: 2px;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+  }
+  .evt-note-input::placeholder {
+    color: var(--ink-soft); opacity: 0.5;
+  }
+  .evt-note-input:hover {
+    border-bottom-color: var(--rule-strong);
+    background: rgba(168, 107, 10, 0.04);
+  }
+  .evt-note-input:focus {
+    border-bottom-color: var(--warn);
+    background: var(--paper);
+  }
+
+  /* Editable ledger row inputs */
+  table.ledger td.lft input.evt-input,
+  table.ledger td input.evt-input {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed transparent;
+    padding: 1px 4px;
+    margin: -1px -2px;
+    border-radius: 2px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: inherit;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  table.ledger td input.evt-input:hover {
+    border-bottom-color: var(--rule-strong);
+    background: rgba(168, 107, 10, 0.05);
+  }
+  table.ledger td input.evt-input:focus {
+    border-bottom-color: var(--warn);
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--warn);
+  }
+  table.ledger td.lft input.evt-input.day-input { width: 50px; }
+  table.ledger td.lft input.evt-input.label-input {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+  }
+  table.ledger td select.evt-type {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9.5px; font-weight: 700;
+    padding: 2px 6px; border-radius: 3px;
+    border: 1px solid transparent;
+    background: var(--paper-sunken);
+    color: var(--ink-muted);
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  table.ledger td select.evt-type.chi {
+    background: var(--danger-tint); color: var(--danger);
+  }
+  table.ledger td select.evt-type.thu {
+    background: var(--accent-tint); color: var(--accent-deep);
+  }
+  table.ledger td .row-actions {
+    display: inline-flex; gap: 4px;
+    margin-left: 6px;
+  }
+  table.ledger td .row-actions button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    width: 20px; height: 20px;
+    border: 1px solid var(--rule-strong);
+    background: var(--paper);
+    color: var(--ink-muted);
+    border-radius: 3px; cursor: pointer;
+    line-height: 1;
+    padding: 0;
+  }
+  table.ledger td .row-actions button:hover {
+    background: var(--danger-tint); color: var(--danger);
+    border-color: var(--danger);
+  }
+  table.ledger tr.event-row td { vertical-align: middle; }
+  .ledger-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    background: var(--paper-sunken);
+    border-top: 1px solid var(--rule);
+  }
+  .ledger-controls .add-event {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    padding: 6px 14px; border-radius: 5px;
+    background: var(--paper); border: 1px solid var(--rule-strong);
+    color: var(--ink); cursor: pointer;
+  }
+  .ledger-controls .add-event:hover {
+    background: var(--accent-tint); color: var(--accent-deep);
+    border-color: var(--accent);
+  }
+  .ledger-controls .hint {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 11.5px; color: var(--ink-muted);
+  }
+
+  /* global inputs for example */
+  .example-params {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .param-field {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .param-field label {
+    display: block;
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft); margin-bottom: 5px;
+  }
+  .param-field .input-row { display: flex; align-items: baseline; gap: 6px; }
+  .param-field input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px; font-weight: 500; color: var(--ink);
+    border: none; background: transparent; width: 100%;
+    outline: none; padding: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .param-field input:focus ~ .unit { color: var(--accent); }
+  .param-field .unit {
+    font-size: 10.5px; color: var(--ink-soft); font-weight: 600;
+    flex-shrink: 0;
+  }
+  .param-field input[readonly] { color: var(--ink-muted); }
+
+  /* ledger table */
+  .ledger-wrap {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+  table.ledger {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  table.ledger thead th {
+    background: var(--paper-sunken);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 9px 6px;
+    text-align: right;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  table.ledger thead th.lft { text-align: left; }
+  table.ledger thead th .col-letter {
+    display: inline-block;
+    background: var(--ink); color: var(--paper);
+    padding: 1px 4px; border-radius: 2px;
+    font-size: 9px; margin-right: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  table.ledger tbody td { 
+    padding: 6px 6px;
+    border-bottom: 1px solid var(--rule);
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  table.ledger tbody td.lft { text-align: left; overflow: hidden; }
+  table.ledger tbody tr:last-child td { border-bottom: none; }
+  table.ledger tbody tr:hover { background: rgba(45,94,60,0.025); }
+  table.ledger tbody .day {
+    font-size: 11px; font-weight: 500;
+    color: var(--ink-muted);
+  }
+  table.ledger tbody .type-pill {
+    display: inline-block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9.5px; font-weight: 700;
+    padding: 2px 6px; border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  table.ledger tbody .type-pill.chi { background: var(--danger-tint); color: var(--danger); }
+  table.ledger tbody .type-pill.thu { background: var(--accent-tint); color: var(--accent-deep); }
+  table.ledger tbody .type-pill.vat { background: var(--warn-tint); color: var(--warn); }
+  table.ledger tbody .amt-in { color: var(--accent-deep); font-weight: 500; }
+  table.ledger tbody .amt-out { color: var(--danger); font-weight: 500; }
+  table.ledger tbody .amt-zero { color: var(--ink-soft); }
+  table.ledger tbody .hi { background: rgba(168,107,10,0.07); font-weight: 600; color: var(--warn); }
+  table.ledger tbody .neg { color: var(--danger); }
+  table.ledger tbody .pos { color: var(--accent-deep); }
+  table.ledger tfoot td {
+    padding: 9px 6px;
+    background: var(--paper-sunken);
+    border-top: 2px solid var(--rule-strong);
+    font-weight: 600; font-size: 12px;
+    text-align: right;
+  }
+  table.ledger tfoot td.lft { text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); font-weight: 700; }
+
+  /* chart */
+  .chart-wrap {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px 20px 14px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .chart-svg { width: 100%; min-width: 820px; height: auto; display: block; }
+
+  /* profit share cards */
+  .profit-panel {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 22px;
+  }
+  .profit-panel h2 { margin-top: 0; }
+  .profit-flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .profit-box {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 18px;
+    background: var(--paper);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .profit-box.gross { border-top: 3px solid var(--accent); }
+  .profit-box.lncs { border-top: 3px solid var(--warn); background: var(--warn-tint); }
+  .profit-box.share { border-top: 3px solid var(--blue); background: var(--blue-tint); }
+  .profit-box .lbl {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .profit-box .calc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.55;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .profit-box .calc .line {
+    display: flex; justify-content: space-between; padding: 2px 0;
+  }
+  .profit-box .total {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .profit-box .total .unit { font-size: 11px; color: var(--ink-soft); margin-left: 3px; font-weight: 500; }
+  .profit-box.gross .total { color: var(--accent-deep); }
+  .profit-box.lncs .total { color: var(--warn); }
+  .profit-box.share .total { color: var(--blue); }
+
+  .share-split {
+    margin-top: 16px;
+    padding: 18px 20px;
+    background: var(--paper);
+    border: 1px dashed var(--rule-strong);
+    border-radius: 10px;
+  }
+  .share-split .split-head {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-soft); margin-bottom: 10px;
+  }
+  .share-bar {
+    height: 32px;
+    display: flex;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    border: 1px solid var(--rule);
+  }
+  .share-bar .seg {
+    display: flex; align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    padding: 0 12px;
+    color: #fff;
+  }
+  .share-bar .seg.techcoop { background: var(--accent); }
+  .share-bar .seg.guarantor { background: var(--blue); }
+
+  .share-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .share-party h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px; margin: 0 0 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .share-party.techcoop h4 { color: var(--accent-deep); }
+  .share-party.guarantor h4 { color: var(--blue); }
+  .share-party h4 .dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  }
+  .share-party.techcoop h4 .dot { background: var(--accent); }
+  .share-party.guarantor h4 .dot { background: var(--blue); }
+  .share-party .detail {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--ink-muted);
+    line-height: 1.7;
+  }
+  .share-party .detail .row {
+    display: flex; justify-content: space-between;
+    padding: 2px 0;
+  }
+  .share-party .detail .row.total {
+    border-top: 1px solid var(--rule);
+    padding-top: 6px; margin-top: 6px;
+    font-weight: 700; color: var(--ink);
+    font-size: 13px;
+  }
+  .share-party.techcoop .detail .row.total { color: var(--accent-deep); }
+  .share-party.guarantor .detail .row.total { color: var(--blue); }
+
+  /* legend */
+  .legend {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: 11px; color: var(--ink-muted);
+    padding: 12px 18px;
+    background: var(--paper-sunken);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border: 1px dashed var(--rule-strong);
+  }
+  .legend span { display: flex; align-items: center; gap: 7px; }
+  .legend .sw {
+    display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+
+  footer {
+    margin-top: 40px; padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px; color: var(--ink-soft);
+    font-style: italic; font-family: 'Fraunces', serif;
+    text-align: center;
+  }
+
+  /* ============ FORMULA TOOLTIP ============ */
+  .has-formula {
+    cursor: help;
+    position: relative;
+    transition: background 0.15s ease;
+  }
+  .has-formula:hover {
+    background: rgba(168, 107, 10, 0.1) !important;
+    box-shadow: inset 0 0 0 1px rgba(168, 107, 10, 0.4);
+  }
+  .has-formula.hero-cell:hover {
+    background: rgba(168, 107, 10, 0.15) !important;
+  }
+  .formula-tooltip {
+    position: fixed;
+    background: #1B1B1B;
+    color: #F4EFE6;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    line-height: 1.55;
+    max-width: 440px;
+    min-width: 280px;
+    z-index: 10000;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    border: 1px solid #3A3A3A;
+  }
+  .formula-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .formula-tooltip .ft-label {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 500;
+    color: #D9E4DD;
+    margin-bottom: 8px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #3A3A3A;
+  }
+  .formula-tooltip .ft-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #F2E4C4;
+    background: rgba(168, 107, 10, 0.12);
+    padding: 7px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+  }
+  .formula-tooltip .ft-calc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: #E8E8E8;
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+  .formula-tooltip .ft-calc > div {
+    padding: 1px 0;
+  }
+  .formula-tooltip .ft-calc > div:last-child {
+    font-weight: 600;
+    color: #D9E4DD;
+  }
+  .formula-tooltip .ft-note {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: #B8B3A8;
+    padding-top: 7px;
+    border-top: 1px dashed #3A3A3A;
+  }
+  .formula-tooltip .ft-refs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #8C8374;
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+  }
+  .formula-tooltip .ft-refs code {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 4px; border-radius: 3px;
+    color: #D9E4DD;
+  }
+
+  /* Formula hint badge on section headers */
+  .formula-hint {
+    display: inline-block;
+    font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 99px;
+    background: var(--warn-tint);
+    color: var(--warn);
+    border: 1px solid rgba(168, 107, 10, 0.3);
+    margin-left: 10px;
+    letter-spacing: 0.04em;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .formula-hint::before {
+    content: "ƒ";
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    margin-right: 4px;
+    font-weight: 700;
+  }
+
+  /* Entity field rows with formulas get a subtle marker */
+  .entity-card .f.has-formula {
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin: 0 -4px;
+  }
+  .entity-card .f.has-formula::after {
+    content: "ƒ";
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--warn);
+    opacity: 0.5;
+    margin-left: 4px;
+  }
+  .entity-card .f.has-formula:hover {
+    box-shadow: inset 0 0 0 1px rgba(168, 107, 10, 0.4);
+  }
+  .entity-card .f.has-formula:hover::after {
+    opacity: 1;
+  }
+
+  /* Hero equation rows with formulas also get ƒ marker */
+  .schema-hero .equation .row.has-formula {
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+
+  /* svg text */
+  .svg-text { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .svg-mono { font-family: 'JetBrains Mono', monospace; }
+  .svg-serif { font-family: 'Fraunces', serif; }
+
+  @media (max-width: 1000px) {
+    .erd-grid.cols-3, .erd-grid.cols-4 { grid-template-columns: 1fr 1fr; }
+    .scenario-recap, .profit-flow, .share-details { grid-template-columns: 1fr; }
+    .example-params { grid-template-columns: 1fr 1fr; }
+    .schema-hero { grid-template-columns: 1fr; }
+    .title { font-size: 28px; }
+    header { flex-direction: column; align-items: flex-start; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div>
+      <h1 class="title">Schema <em>·</em> Outstanding <em>·</em> Profit Share</h1>
+      <div class="subtitle">Mô hình dữ liệu &amp; công thức tính — <strong>tool dành cho Operations xác thực</strong> cách dòng hàng và dòng tiền thực sự đang chảy. Mọi tham số trong các ví dụ đều có thể chỉnh sửa để test lại logic.</div>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="active" data-view="schema">Schema</button>
+      <button data-view="ex1">Ví dụ 1</button>
+      <button data-view="ex2">Ví dụ 2</button>
+      <button data-view="ex3">Ví dụ 3</button>
+    </div>
+  </header>
+
+  <!-- ================================================================ -->
+  <!-- SCHEMA VIEW                                                        -->
+  <!-- ================================================================ -->
+  <div class="view active" id="view-schema">
+
+    <div class="schema-hero">
+      <div class="lede">
+        Tất cả những gì ta thấy trên timeline — từ đơn đặt hàng, lần nhận hàng, hoá đơn, đến từng đồng tiền di chuyển — đều đổ vào cùng một <strong>event ledger</strong>. TechCoop đóng vai trò trung gian tài chính: customer trả pass-through cho vendor (Cogs + Cost) cộng <em>LNCS</em>; <strong>LNCS chính là nguồn thu duy nhất của TC</strong>. Mọi fee operation (broker, VAT…) trừ từ LNCS để ra Bonus Pool.
+      </div>
+      <div class="equation">
+        <span class="eq-label">Mô hình tài chính — TC là intermediary, LNCS là revenue <span class="formula-hint" style="margin-left:6px">hover from below</span></span>
+
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.1em;color:var(--ink-soft);margin:14px 0 6px;text-transform:uppercase">DÒNG TIỀN — pass-through (informational)</div>
+
+        <div class="row has-formula"
+          data-formula-label="Revenue (customer paid)"
+          data-formula="≈ Cogs + Cost + LNCS  (nếu khách trả vừa)"
+          data-calc="Số tiền customer trả TC (excl. VAT đầu ra)."
+          data-note="Nếu khách overpay → phần dư là customer credit, carry-forward sang SO sau (KHÔNG phải profit). Nếu khách underpay → outstanding của SO này còn dương."
+          data-refs="INV.invoice_value (net)"
+        ><span class="lbl">Revenue (customer paid)</span><span class="val green">≈ pass-through + LNCS</span></div>
+
+        <div class="row has-formula"
+          data-formula-label="Cogs — pass-through to vendor"
+          data-formula="= Σ Used × Unit price (cogs POs)"
+          data-calc="Pass-through: TC nhận từ customer rồi trả thẳng vendor."
+          data-note="Đây KHÔNG phải chi phí của TC — chỉ là dòng tiền đi qua. TC không có biên lời trên Cogs."
+          data-refs="PO_GD_Usage WHERE po.po_type='cogs'"
+        ><span class="lbl">  ↳ Cogs (→ vendor)</span><span class="val" style="color:var(--ink-muted)">pass-through</span></div>
+
+        <div class="row has-formula"
+          data-formula-label="Cost — pass-through to other vendors"
+          data-formula="= Σ Used × Unit price (cost POs) + Σ Other Payments"
+          data-calc="Pass-through: bao bì, vận chuyển, kiểm định… Các khoản TC trả thay cho customer."
+          data-note="Cũng pass-through. TC không lời trên Cost (trừ phần broker/VAT trừ từ LNCS)."
+          data-refs="PO_GD_Usage WHERE po.po_type='cost' + OtherPayment_GD_Allocation"
+        ><span class="lbl">  ↳ Cost (→ other vendors)</span><span class="val" style="color:var(--ink-muted)">pass-through</span></div>
+
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.1em;color:var(--ink-soft);margin:18px 0 6px;text-transform:uppercase">LỢI NHUẬN — TC chỉ kiếm trên LNCS</div>
+
+        <div class="row has-formula"
+          data-formula-label="LNCS fee — TC's only revenue source"
+          data-formula="F(row) = prev.D × daily_rate × days&#10;LNCS Total = Σ F (toàn kỳ)"
+          data-calc="Phí sử dụng vốn — TC thu trên outstanding × rate × days."
+          data-note="Đây là gross income duy nhất của TC từ giao dịch. Toàn bộ profit phải lái từ con số này."
+          data-refs="OutstandingLedger.F → ProfitSettlement.lncs_fee"
+        ><span class="lbl">LNCS fee (TC gross income)</span><span class="val amber">Σ F over GD lifetime</span></div>
+
+        <div class="row has-formula"
+          data-formula-label="Broker fee — paid by TC"
+          data-formula="hoa hồng broker / CTV / QC"
+          data-calc="TC trả cho broker đã giới thiệu deal hoặc cộng tác viên / QC."
+          data-note="Expense — trừ trực tiếp từ LNCS."
+          data-refs="ProfitSettlement.broker_fee"
+        ><span class="lbl">− Broker fee</span><span class="val red">expense</span></div>
+
+        <div class="row has-formula"
+          data-formula-label="VAT fee — paid by TC"
+          data-formula="phí dịch vụ xử lý VAT"
+          data-calc="TC trả cho dịch vụ xử lý hồ sơ VAT đầu vào/đầu ra."
+          data-note="Expense — trừ trực tiếp từ LNCS."
+          data-refs="ProfitSettlement.vat_fee"
+        ><span class="lbl">− VAT fee</span><span class="val red">expense</span></div>
+
+        <div class="row total has-formula"
+          data-formula-label="Bonus Pool (Net Profit)"
+          data-formula="= LNCS fee − Broker fee − VAT fee"
+          data-calc="LNCS gross thu được trừ các expense operation."
+          data-note="Đây là số chia bonus giữa AM/NCC và TC. KHÔNG có Revenue/Cogs/Cost trong công thức này."
+          data-refs="ProfitSettlement.bonus_pool"
+        ><span class="lbl">= Bonus Pool</span><span class="val">LNCS − fees</span></div>
+
+        <div class="row has-formula"
+          data-formula-label="Phân chia Bonus Pool"
+          data-formula="Active:&#10;  AM = x% × Bonus Pool          (x = 50%)&#10;  TC = (1 − x%) × Bonus Pool&#10;RTE/Passive:&#10;  NCC = 100% × Bonus Pool      (toàn bộ về NCC)&#10;  TC = 0% × Bonus Pool"
+          data-calc="Tuỳ channel, người nhận và % khác nhau."
+          data-note="Active: AM (account manager TC) lấy 50%, TC giữ 50%. RTE: NCC (vendor) lấy 100% như commission."
+          data-refs="GuarantorAgreement.{channel, bonus_share_pct}"
+        ><span class="lbl">÷ Bonus Pool</span><span class="val">x% AM/NCC + (1−x%) TC</span></div>
+
+        <div class="row total has-formula"
+          data-formula-label="TechCoop tổng nhận"
+          data-formula="Active: TC = (1 − x%) × Bonus Pool&#10;RTE:    TC = 0"
+          data-calc="TC chỉ nhận phần share của Bonus Pool — không có thêm gì khác."
+          data-note="Đơn giản hơn model trước: chỉ một số duy nhất lái về cho TC, là phần share của bonus."
+          data-refs="ProfitSettlement.techcoop_total"
+        ><span class="lbl">= TechCoop total</span><span class="val green">(1−x%) × Pool</span></div>
+      </div>
+    </div>
+
+    <!-- ==== ERD LAYER 1: Parties & Agreements ==== -->
+    <div class="erd-layer l1">
+      <div class="erd-layer-label">Layer 1 · Parties &amp; Agreements — ai tham gia và điều kiện</div>
+      <div class="erd-grid cols-2">
+
+        <div class="entity-card guarantor">
+          <div class="e-name">GuarantorAgreement <span class="e-icon">KEY</span></div>
+          <div class="e-desc">Hợp đồng định nghĩa: hạn mức tín dụng, lãi suất LNCS, channel (Active / RTE) và phần trăm chia bonus pool. <strong>LNCS được TC THU</strong> (không phải Guarantor Partner).</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">guarantor_party_id</span><span class="ft">→ Party</span></div>
+            <div class="f ref"><span class="fn">company_id</span><span class="ft">→ Company</span></div>
+            <div class="f key has-formula"
+              data-formula-label="credit_limit"
+              data-formula="Hạn mức tín dụng theo hợp đồng (tối đa Guarantor sẵn sàng bảo lãnh)"
+              data-calc="Kiểm tra: peak(L) ≤ credit_limit → ok; ngược lại → block chi mới"
+              data-note="Khả dụng cuối kỳ = credit_limit − max(L, 0). Xem Section 02 ở mỗi ví dụ."
+              data-refs="GuarantorAgreement.credit_limit"
+            ><span class="fn">credit_limit</span><span class="ft">money</span></div>
+            <div class="f key has-formula"
+              data-formula-label="interest_rate"
+              data-formula="Lãi suất tính LNCS"
+              data-calc="daily_rate = interest_rate ÷ days_basis"
+              data-note="LNCS calculated this way is captured by TC as fee revenue (not paid to Guarantor)."
+              data-refs="GuarantorAgreement.interest_rate"
+            ><span class="fn">interest_rate</span><span class="ft">% / period</span></div>
+            <div class="f key has-formula"
+              data-formula-label="days_basis"
+              data-formula="Số ngày quy đổi cho interest_rate"
+              data-calc="Ví dụ 30d → daily = 2.5% ÷ 30 = 0.0833%/d"
+              data-refs="GuarantorAgreement.days_basis"
+            ><span class="fn">days_basis</span><span class="ft">int (30)</span></div>
+            <div class="f key has-formula"
+              data-formula-label="channel — Active vs RTE"
+              data-formula="enum: 'active' | 'rte'"
+              data-calc="Active = TC chủ động deal, AM TC nhận bonus.&#10;RTE/Passive = NCC mang deal, NCC nhận commission."
+              data-note="Quyết định ai nhận bonus và cấu trúc share."
+              data-refs="GuarantorAgreement.channel"
+            ><span class="fn">channel</span><span class="ft">active | rte</span></div>
+            <div class="f key has-formula"
+              data-formula-label="bonus_share_pct"
+              data-formula="Active: AM_share = bonus_share_pct × Bonus Pool&#10;RTE:    NCC_share = 100% × Bonus Pool"
+              data-calc="Active hiện tại = 50% (AM), TC giữ 50%.&#10;RTE = 100% (NCC), TC chỉ giữ LNCS + VAT."
+              data-note="Là phần x% người ngoài nhận. (1 − x%) là phần TC giữ trong Active."
+              data-refs="GuarantorAgreement.bonus_share_pct"
+            ><span class="fn">bonus_share_pct</span><span class="ft">% (AM/NCC share)</span></div>
+            <div class="f"><span class="fn">start_date · end_date</span><span class="ft">range</span></div>
+          </div>
+          <div class="e-rel">Mỗi <code>SO</code> có thể gán đúng 1 <code>GuarantorAgreement</code> — quyết định hạn mức, lãi suất, channel, và % chia bonus.</div>
+        </div>
+
+        <div class="entity-card">
+          <div class="e-name">Party</div>
+          <div class="e-desc">Đối tác — có thể là Supplier, Customer, Guarantor Partner, hoặc Internal Company. Một Party có thể đóng nhiều vai.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f"><span class="fn">name · tax_code</span><span class="ft">string</span></div>
+            <div class="f key"><span class="fn">roles[]</span><span class="ft">supplier | customer | guarantor | company</span></div>
+            <div class="f"><span class="fn">bank_accounts[]</span><span class="ft">relation</span></div>
+            <div class="f"><span class="fn">currency_pref</span><span class="ft">string</span></div>
+          </div>
+          <div class="e-rel">1 Party (ví dụ Trang trại HXT) có thể vừa là <code>supplier</code>, vừa là <code>guarantor</code> trong các hợp đồng khác.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==== ERD LAYER 2: Business Documents ==== -->
+    <div class="erd-layer l2">
+      <div class="erd-layer-label">Layer 2 · Business Documents — hàng hoá và chứng từ</div>
+      <div class="erd-grid cols-4">
+
+        <div class="entity-card sales">
+          <div class="e-name">SO <span class="e-icon">sale order</span></div>
+          <div class="e-desc">Hợp đồng bán với Customer. Gốc của toàn bộ dòng tiền và tính toán outstanding.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">customer_id</span><span class="ft">→ Party</span></div>
+            <div class="f ref"><span class="fn">company_id</span><span class="ft">→ Party</span></div>
+            <div class="f ref key"><span class="fn">guarantor_agreement_id</span><span class="ft">→ Agreement</span></div>
+            <div class="f"><span class="fn">total_value · currency</span><span class="ft">money</span></div>
+            <div class="f"><span class="fn">status</span><span class="ft">draft|so|closed|cancel</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card sales">
+          <div class="e-name">GD <span class="e-icon">delivery</span></div>
+          <div class="e-desc">Lần giao hàng thực tế. Nơi Used được khai báo và profit được quyết toán per-GD.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">so_id</span><span class="ft">→ SO</span></div>
+            <div class="f"><span class="fn">stuffing_date · etd</span><span class="ft">date</span></div>
+            <div class="f"><span class="fn">final_delivery</span><span class="ft">bool</span></div>
+            <div class="f"><span class="fn">status</span><span class="ft">draft|booking|stuffing|transit|delivered|closed</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card sales">
+          <div class="e-name">INV <span class="e-icon">invoice out</span></div>
+          <div class="e-desc">Hoá đơn GTGT đầu ra. 1 GD → 1 INV. Confirm INV = ghi nhận Revenue.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">gd_id</span><span class="ft">→ GD</span></div>
+            <div class="f"><span class="fn">invoice_value · vat</span><span class="ft">money</span></div>
+            <div class="f"><span class="fn">invoice_date · due_date</span><span class="ft">date</span></div>
+            <div class="f"><span class="fn">status</span><span class="ft">draft|confirm|paid</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card purchase">
+          <div class="e-name">PO <span class="e-icon">purchase order</span></div>
+          <div class="e-desc">Hợp đồng mua với Vendor. Product lines và unit prices làm cơ sở tính Cost. <code>po_type</code> phân biệt cogs (nông sản) vs cost (chi phí phụ).</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">vendor_id</span><span class="ft">→ Party</span></div>
+            <div class="f ref"><span class="fn">company_id</span><span class="ft">→ Party</span></div>
+            <div class="f key has-formula"
+              data-formula-label="po_type — cogs vs cost"
+              data-formula="enum: 'cogs' | 'cost'"
+              data-calc="cogs = nông sản chính (chuối, thanh long, …)&#10;cost = chi phí phụ (bao bì, vận chuyển, kiểm định, CO/Phyto, …)"
+              data-note="Quyết định bucket cộng vào Cogs hay Cost trong công thức profit."
+              data-refs="PO.po_type"
+            ><span class="fn">po_type</span><span class="ft">cogs | cost</span></div>
+            <div class="f"><span class="fn">total_value · currency</span><span class="ft">money</span></div>
+            <div class="f"><span class="fn">status</span><span class="ft">draft|quote|po|cancel</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card purchase">
+          <div class="e-name">GR <span class="e-icon">goods receipt</span></div>
+          <div class="e-desc">Lần nhận hàng từ vendor. BBGH ký 2 bên.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">po_id</span><span class="ft">→ PO</span></div>
+            <div class="f"><span class="fn">receipt_date</span><span class="ft">date</span></div>
+            <div class="f"><span class="fn">status</span><span class="ft">draft|delivered|cancel</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card purchase">
+          <div class="e-name">Bill <span class="e-icon">VAT/AP only</span></div>
+          <div class="e-desc">HĐ GTGT đầu vào từ vendor. <strong>KHÔNG</strong> ảnh hưởng cost recognition — chỉ phục vụ tracking VAT đầu vào và Accounts Payable.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">gr_id · po_id</span><span class="ft">→ GR/PO</span></div>
+            <div class="f"><span class="fn">bill_value · vat</span><span class="ft">money</span></div>
+            <div class="f"><span class="fn">bill_date · due_date</span><span class="ft">date</span></div>
+            <div class="f"><span class="fn">status</span><span class="ft">draft|confirm|paid</span></div>
+          </div>
+          <div class="e-rel">Cost recognition diễn ra tại <code>Used declaration</code> (PO_GD_Usage), <em>không</em> phụ thuộc Bill date. PO tạo ra đã có Unit price + VAT — biết đủ chi phí ngay khi GR confirmed.</div>
+        </div>
+
+        <div class="entity-card bridge">
+          <div class="e-name">PO_GD_Usage <span class="e-icon">N:N bridge</span></div>
+          <div class="e-desc">Khai báo <em>Used</em> tại mỗi GD — junction table giữa PO và GD. Đây là key cho cost allocation và cũng là cơ chế nối 1 PO phục vụ nhiều GD (và ngược lại).</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">po_id · gd_id · product_id</span><span class="ft">→ PO, GD, Product</span></div>
+            <div class="f has-formula"
+              data-formula-label="planned_qty"
+              data-formula="Số lượng dự kiến từ PO (tạo tại thời điểm PO)"
+              data-calc="Dùng cho forecasting & approval workflow."
+              data-note="Có thể khác used_qty sau cùng — ví dụ PO-001 planned 100, done 60, cancel 40."
+              data-refs="PO_GD_Usage.planned_qty"
+            ><span class="fn">planned_qty</span><span class="ft">qty (at PO creation)</span></div>
+            <div class="f key has-formula"
+              data-formula-label="used_qty — khai báo Used"
+              data-formula="Số lượng thực tế từ PO này được dùng cho GD này"
+              data-calc="Khai báo thủ công tại tab Costs &amp; Profit của GD, tại thời điểm giao hàng."
+              data-note="Ràng buộc: Σ used_qty của 1 PO ≤ PO total qty. Một PO có thể Used ở nhiều GD khác nhau (N:N)."
+              data-refs="PO_GD_Usage.used_qty"
+            ><span class="fn">used_qty</span><span class="ft">qty (declared at GD)</span></div>
+            <div class="f key has-formula"
+              data-formula-label="cost_value — giá vốn (excl. VAT)"
+              data-formula="= used_qty × unit_price"
+              data-calc="Nơi cost được tính per-GD cho từng PO line. KHÔNG bao gồm VAT."
+              data-note="Tổng cost_value của tất cả Usage rows thuộc 1 GD = Cost net của GD đó. Bucket vào Cogs hay Cost tuỳ po.po_type."
+              data-refs="PO_GD_Usage.cost_value → ProfitSettlement.{cogs|cost}"
+            ><span class="fn">cost_value</span><span class="ft">= used × unit_price</span></div>
+            <div class="f has-formula"
+              data-formula-label="vat_value — VAT đầu vào (tách riêng)"
+              data-formula="= used_qty × unit_price × vat_rate"
+              data-calc="Số VAT đầu vào tương ứng với Used."
+              data-note="Tracking riêng cho VAT compliance — KHÔNG cộng vào cost_value để tính profit."
+              data-refs="PO_GD_Usage.vat_value"
+            ><span class="fn">vat_value</span><span class="ft">= used × unit_price × vat_rate</span></div>
+          </div>
+          <div class="e-rel">Tổng <code>cost_value</code> của 1 GD = Cost của GD đó (không VAT). Bucket Cogs vs Cost dựa trên <code>po.po_type</code>.</div>
+        </div>
+
+        <div class="entity-card bridge">
+          <div class="e-name">OtherPayment_GD_Allocation <span class="e-icon">N:N bridge</span></div>
+          <div class="e-desc">Junction giữa <code>PaymentEvent</code> (type=other_payment) và <code>GD</code>. Cho phép 1 phiếu chi phân bổ vào nhiều GD — ví dụ PO Thùng thanh toán 1 lần 100M nhưng chia cho nhiều SO/GD đã sử dụng.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">payment_event_id</span><span class="ft">→ PaymentEvent</span></div>
+            <div class="f ref"><span class="fn">gd_id</span><span class="ft">→ GD</span></div>
+            <div class="f key has-formula"
+              data-formula-label="allocated_amount — phần phân bổ vào GD này"
+              data-formula="Số tiền của phiếu chi phân bổ cho GD này"
+              data-calc="Σ allocated_amount của 1 PaymentEvent = amount của event đó (constraint)."
+              data-note="Có thể phân bổ theo qty used, weight, hoặc tỉ lệ cố định — tuỳ business rule."
+              data-refs="OtherPayment_GD_Allocation.allocated_amount"
+            ><span class="fn">allocated_amount</span><span class="ft">money</span></div>
+            <div class="f"><span class="fn">allocation_basis</span><span class="ft">qty | weight | manual</span></div>
+          </div>
+          <div class="e-rel">Là cơ chế cho phép <strong>1 Phiếu chi : N GD</strong>. Trước đây schema mặc định 1:1 — đây là correction theo BA review.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==== ERD LAYER 3: Financial Derivations ==== -->
+    <div class="erd-layer l3">
+      <div class="erd-layer-label">Layer 3 · Financial Derivations — sự kiện tiền &amp; phép tính kế toán</div>
+      <div class="erd-grid cols-3">
+
+        <div class="entity-card event">
+          <div class="e-name">PaymentEvent <span class="e-icon">unified ledger</span></div>
+          <div class="e-desc">Mọi dòng tiền quy về 1 bảng. <code style="font-family:'JetBrains Mono',monospace; background:rgba(0,0,0,0.05); padding:1px 4px; border-radius:2px; font-size:10px">type</code> + <code style="font-family:'JetBrains Mono',monospace; background:rgba(0,0,0,0.05); padding:1px 4px; border-radius:2px; font-size:10px">settlement_mode</code> quyết định bản chất Chi / Thu / nội bộ.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f key"><span class="fn">type</span><span class="ft">enum — xem bên dưới</span></div>
+            <div class="f key has-formula"
+              data-formula-label="settlement_mode"
+              data-formula="enum: cash | allocation | mix"
+              data-calc="cash → tiền thực di chuyển (ảnh hưởng outstanding)&#10;allocation → cấn trừ nội bộ sang PO/SO khác (không di tiền)&#10;mix → một phần cash + một phần allocation"
+              data-note="Đặc biệt quan trọng cho vendor_refund (3 biến thể) và customer_refund."
+              data-refs="PaymentEvent.settlement_mode"
+            ><span class="fn">settlement_mode</span><span class="ft">cash | alloc | mix</span></div>
+            <div class="f ref"><span class="fn">so_id</span><span class="ft">→ SO (bắt buộc để tính outstanding)</span></div>
+            <div class="f ref"><span class="fn">po_id · bill_id · inv_id · gd_id</span><span class="ft">→ context (tuỳ type)</span></div>
+            <div class="f ref has-formula"
+              data-formula-label="alloc_target_po_id · alloc_target_so_id"
+              data-formula="references to the PO/SO receiving the allocation"
+              data-calc="Khi settlement_mode = allocation hoặc mix, điền target PO (Vendor Refund alloc) hoặc target SO (Customer Refund realloc)."
+              data-note="Null khi settlement_mode = cash. Cho phép truy vết cấn trừ giữa các hợp đồng."
+              data-refs="PaymentEvent.alloc_target_{po|so}_id"
+            ><span class="fn">alloc_target_po_id · alloc_target_so_id</span><span class="ft">→ PO/SO (alloc)</span></div>
+            <div class="f key"><span class="fn">amount · currency · date</span><span class="ft">money</span></div>
+            <div class="f has-formula"
+              data-formula-label="cash_amount · alloc_amount"
+              data-formula="Phần tiền thực và phần cấn trừ khi settlement_mode = mix"
+              data-calc="cash_amount + alloc_amount = amount"
+              data-note="Chỉ cash_amount ảnh hưởng outstanding ledger; alloc_amount là bookkeeping nội bộ."
+              data-refs="PaymentEvent.{cash|alloc}_amount"
+            ><span class="fn">cash_amount · alloc_amount</span><span class="ft">split for mix</span></div>
+            <div class="f"><span class="fn">status</span><span class="ft">draft|approved|paid|cancel</span></div>
+            <div class="f"><span class="fn">is_sponsor_expense</span><span class="ft">bool</span></div>
+          </div>
+          <div class="e-rel">
+            <strong>Chi</strong> (OUT, outstanding↑): <code>vendor_advance</code>, <code>vendor_payment</code>, <code>other_payment</code> <em>(N:N với GD qua OtherPayment_GD_Allocation)</em>, <code>customer_refund</code><br>
+            <strong>Thu</strong> (IN, outstanding↓): <code>customer_advance</code>, <code>customer_payment</code>, <code>vendor_refund</code> <em>(cash/alloc/mix)</em>, <code>bank_fee_offset</code>, <code>other_income</code> <em>(Guarantor replace fee)</em><br>
+            <strong>Nội bộ</strong> (không di tiền): <code>vendor_repayment</code>, <code>customer_repayment</code>, <code>po_realloc</code> <em>(PO→SO khác)</em>
+          </div>
+        </div>
+
+        <div class="entity-card derived">
+          <div class="e-name">OutstandingLedger <span class="e-icon">derived</span></div>
+          <div class="e-desc">Xây tự động từ PaymentEvents của 1 SO theo thời gian. Mỗi row tương ứng 1 event.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK (so_id, event_id)</span></div>
+            <div class="f ref"><span class="fn">event_id · so_id · date</span><span class="ft">→ Event</span></div>
+            <div class="f has-formula"
+              data-formula-label="days — kỳ tính lãi"
+              data-formula="= day(this) − day(prev)"
+              data-calc="Simple day difference between transaction dates."
+              data-note="Dòng đầu tiên = 0 (chưa có balance để tính lãi)."
+              data-refs="OutstandingLedger.days"
+            ><span class="fn">days</span><span class="ft">= day(this) − day(prev)</span></div>
+            <div class="f key has-formula"
+              data-formula-label="F — LNCS accrued kỳ này"
+              data-formula="= prev.D × daily_rate × days&#10;(khi prev.D > 0)"
+              data-calc="daily_rate = interest_rate ÷ days_basis"
+              data-note="Nếu prev.D ≤ 0 → F = 0 (không tính lãi trên dư thừa)."
+              data-refs="OutstandingLedger.F"
+            ><span class="fn">F (interest accrued)</span><span class="ft">= D(prev) × daily × days</span></div>
+            <div class="f key has-formula"
+              data-formula-label="D — balance chịu lãi"
+              data-formula="Chi:  D = prev.D + C&#10;Thu:  D = I (reset về gốc)&#10;VAT:  D = prev.I"
+              data-calc="Balance mới chịu lãi cho kỳ kế tiếp."
+              data-note="Sau mỗi Thu, D được đồng bộ về I — lãi chỉ tính trên gốc thực còn lại."
+              data-refs="OutstandingLedger.D"
+            ><span class="fn">D (balance)</span><span class="ft">money</span></div>
+            <div class="f has-formula"
+              data-formula-label="G · H — lãi đã thu / còn nợ"
+              data-formula="Thu:  G = min(C, max(prev.H + F, 0))&#10;      H = (prev.H + F) − G&#10;Chi/VAT:  G = 0, H = prev.H + F"
+              data-calc="Khi có Thu → ưu tiên trả lãi trước (G), phần còn lại (H) tiếp tục nợ."
+              data-refs="OutstandingLedger.G, OutstandingLedger.H"
+            ><span class="fn">G · H</span><span class="ft">int paid · int owed</span></div>
+            <div class="f has-formula"
+              data-formula-label="I · J · K — gốc & VAT"
+              data-formula="Chi:  I = prev.I + C&#10;Thu:  I = prev.I − (C − G − J)&#10;      J = min(C−G, prev.K),  K = prev.K − J&#10;VAT:  K = prev.K + fee"
+              data-calc="Thứ tự phân bổ Thu: lãi (G) → VAT (J) → gốc (delta I)."
+              data-refs="OutstandingLedger.{I, J, K}"
+            ><span class="fn">I · J · K</span><span class="ft">principal · vat paid · vat owed</span></div>
+            <div class="f key has-formula"
+              data-formula-label="L — Outstanding SO"
+              data-formula="= I + H + K"
+              data-calc="Tổng nghĩa vụ nợ tức thời = dư nợ gốc + lãi chưa thu + VAT chưa thu."
+              data-note="L < 0 = đang dư (khách đã trả nhiều hơn cần). Dùng max(L, 0) khi cộng với SO khác."
+              data-refs="OutstandingLedger.L"
+            ><span class="fn">L = I + H + K</span><span class="ft">Outstanding SO</span></div>
+          </div>
+          <div class="e-rel">Cho phép <code>SELECT outstanding WHERE so_id AND date = '...'</code> — trả balance tức thời mọi thời điểm.</div>
+        </div>
+
+        <div class="entity-card settlement">
+          <div class="e-name">ProfitSettlement <span class="e-icon">quyết toán</span></div>
+          <div class="e-desc"><strong>Mô hình intermediary:</strong> TC chỉ kiếm trên LNCS. Revenue/Cogs/Cost là pass-through (informational). Bonus Pool = LNCS − fees.</div>
+          <div class="e-fields">
+            <div class="f pk"><span class="fn">id</span><span class="ft">PK</span></div>
+            <div class="f ref"><span class="fn">gd_id · so_id</span><span class="ft">→ GD/SO</span></div>
+
+            <div class="f has-formula"
+              data-formula-label="revenue (informational)"
+              data-formula="= Σ INV.invoice_value (excl. VAT)"
+              data-calc="Số tiền customer trả TC — pass-through không phải profit."
+              data-note="Trong ideal case ≈ cogs + cost + lncs_fee. Khoảng dư là customer credit, KHÔNG phải profit."
+              data-refs="INV.invoice_value (net) — informational"
+            ><span class="fn">revenue</span><span class="ft">pass-through</span></div>
+
+            <div class="f has-formula"
+              data-formula-label="cogs — pass-through"
+              data-formula="= Σ PO_GD_Usage.cost_value WHERE po.po_type='cogs'"
+              data-calc="Pass-through đến vendor. KHÔNG ảnh hưởng profit."
+              data-refs="PO_GD_Usage WHERE po_type='cogs'"
+            ><span class="fn">cogs</span><span class="ft">pass-through</span></div>
+
+            <div class="f has-formula"
+              data-formula-label="cost — pass-through"
+              data-formula="= Σ PO_GD_Usage WHERE po.po_type='cost' + Σ OtherPayment_GD_Allocation"
+              data-calc="Pass-through đến vendor khác (vận chuyển, bao bì)."
+              data-refs="PO_GD_Usage WHERE po_type='cost' + OtherPayment_GD_Allocation"
+            ><span class="fn">cost</span><span class="ft">pass-through</span></div>
+
+            <div class="f has-formula"
+              data-formula-label="customer_credit_balance — carry-forward"
+              data-formula="= revenue − (cogs + cost + lncs_fee)"
+              data-calc="> 0: customer overpaid → credit cho SO sau&#10;= 0: customer trả vừa&#10;< 0: customer trả thiếu → outstanding"
+              data-note="Phần lệch giữa revenue và pass-through+LNCS là carry-forward, KHÔNG phải profit."
+              data-refs="derived (informational)"
+            ><span class="fn">customer_credit_balance</span><span class="ft">carry-forward</span></div>
+
+            <div class="f key has-formula"
+              data-formula-label="lncs_fee — TC's only revenue source"
+              data-formula="= Σ OutstandingLedger.F (toàn kỳ của SO)"
+              data-calc="Phí sử dụng vốn — TC THU."
+              data-note="ĐÂY là gross income duy nhất của TC. Mọi profit đều lái từ con số này."
+              data-refs="Σ OutstandingLedger.F"
+            ><span class="fn">lncs_fee</span><span class="ft">Σ F → TC gross</span></div>
+
+            <div class="f has-formula"
+              data-formula-label="broker_fee — TC's expense"
+              data-formula="hoa hồng broker / CTV / QC"
+              data-calc="TC trả cho broker giới thiệu deal hoặc CTV/QC."
+              data-note="Expense — trừ trực tiếp từ LNCS để ra Bonus Pool."
+              data-refs="ProfitSettlement.broker_fee"
+            ><span class="fn">broker_fee</span><span class="ft">expense</span></div>
+
+            <div class="f has-formula"
+              data-formula-label="vat_fee — TC's expense"
+              data-formula="phí dịch vụ xử lý VAT"
+              data-calc="TC trả cho dịch vụ xử lý VAT đầu vào/đầu ra."
+              data-note="Expense — trừ trực tiếp từ LNCS."
+              data-refs="ProfitSettlement.vat_fee"
+            ><span class="fn">vat_fee</span><span class="ft">expense</span></div>
+
+            <div class="f key has-formula"
+              data-formula-label="bonus_pool — Net Profit"
+              data-formula="= lncs_fee − broker_fee − vat_fee"
+              data-calc="LNCS gross trừ các expense operation."
+              data-note="ĐÂY là số chia bonus. KHÔNG có Revenue/Cogs/Cost trong công thức."
+              data-refs="ProfitSettlement.bonus_pool"
+            ><span class="fn">bonus_pool</span><span class="ft">= lncs − fees</span></div>
+
+            <div class="f key has-formula"
+              data-formula-label="am_amount — bonus AM (Active) hoặc NCC (RTE)"
+              data-formula="Active: am_amount = bonus_share_pct × bonus_pool&#10;RTE:    am_amount = 100% × bonus_pool"
+              data-calc="Tuỳ channel. Active hiện tại = 50% × pool; RTE = 100% × pool."
+              data-note="Active: AM là employee TC. RTE: NCC là vendor mang deal về."
+              data-refs="ProfitSettlement.am_amount"
+            ><span class="fn">am_amount</span><span class="ft">x% × pool</span></div>
+
+            <div class="f key has-formula"
+              data-formula-label="techcoop_total — TC tổng nhận"
+              data-formula="Active: = (1 − bonus_share_pct) × bonus_pool&#10;RTE:    = 0"
+              data-calc="TC chỉ nhận phần share của Bonus Pool — không có revenue stream khác."
+              data-note="Active: TC = 50% × pool. RTE: TC = 0 (NCC nhận hết)."
+              data-refs="ProfitSettlement.techcoop_total"
+            ><span class="fn">techcoop_total</span><span class="ft">= (1−x%) × pool</span></div>
+
+            <div class="f"><span class="fn">settled_at</span><span class="ft">timestamp</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- event flow -->
+    <div class="event-flow">
+      <div class="section-head" style="margin-top:0">
+        <h2><span class="num">FLOW</span>Event → Ledger → Settlement</h2>
+        <div class="sub">Chuỗi suy diễn từ event raw đến profit share cuối cùng.</div>
+      </div>
+
+      <svg class="event-flow-svg" viewBox="0 0 1200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1B1B1B"/>
+          </marker>
+        </defs>
+
+        <!-- stage 1: raw events -->
+        <rect x="30" y="50" width="220" height="120" rx="10" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1.5"/>
+        <text x="140" y="75" text-anchor="middle" class="svg-text" font-size="10" font-weight="700" fill="#A86B0A" letter-spacing="1.5">STAGE 1 · RAW EVENTS</text>
+        <text x="140" y="97" text-anchor="middle" class="svg-mono" font-size="11" fill="#1B1B1B">PaymentEvent</text>
+        <text x="140" y="117" text-anchor="middle" class="svg-text" font-size="10" fill="#5C564D">per SO, sorted by date</text>
+        <line x1="60" y1="128" x2="220" y2="128" stroke="#A86B0A" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+        <text x="140" y="143" text-anchor="middle" class="svg-mono" font-size="9" fill="#5C564D">vendor_advance  −30M</text>
+        <text x="140" y="155" text-anchor="middle" class="svg-mono" font-size="9" fill="#5C564D">customer_payment  +70M</text>
+
+        <path d="M 250 110 L 290 110" stroke="#1B1B1B" stroke-width="1.5" fill="none" marker-end="url(#a-ink)"/>
+        <text x="270" y="100" text-anchor="middle" class="svg-serif" font-style="italic" font-size="10" fill="#5C564D">group by so_id</text>
+
+        <!-- stage 2: ledger -->
+        <rect x="300" y="50" width="260" height="120" rx="10" fill="#D6E0EE" stroke="#1E4A7A" stroke-width="1.5"/>
+        <text x="430" y="75" text-anchor="middle" class="svg-text" font-size="10" font-weight="700" fill="#1E4A7A" letter-spacing="1.5">STAGE 2 · DERIVED LEDGER</text>
+        <text x="430" y="97" text-anchor="middle" class="svg-mono" font-size="11" fill="#1B1B1B">OutstandingLedger</text>
+        <text x="430" y="117" text-anchor="middle" class="svg-text" font-size="10" fill="#5C564D">per event: D, F, H, I, L…</text>
+        <line x1="330" y1="128" x2="530" y2="128" stroke="#1E4A7A" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+        <text x="430" y="143" text-anchor="middle" class="svg-mono" font-size="9" fill="#5C564D">F = D(prev) × daily_rate × days</text>
+        <text x="430" y="155" text-anchor="middle" class="svg-mono" font-size="9" fill="#5C564D">L = I + H + K</text>
+
+        <path d="M 560 110 L 610 110" stroke="#1B1B1B" stroke-width="1.5" fill="none" marker-end="url(#a-ink)"/>
+        <text x="585" y="100" text-anchor="middle" class="svg-serif" font-style="italic" font-size="10" fill="#5C564D">aggregate Σ F</text>
+
+        <!-- stage 3: LNCS = TC's gross income; minus fees = bonus pool -->
+        <rect x="620" y="50" width="240" height="120" rx="10" fill="#F2E4C4" stroke="#A86B0A" stroke-width="1.5"/>
+        <text x="740" y="75" text-anchor="middle" class="svg-text" font-size="10" font-weight="700" fill="#A86B0A" letter-spacing="1.5">STAGE 3 · BONUS POOL</text>
+        <text x="740" y="97" text-anchor="middle" class="svg-mono" font-size="11" fill="#1B1B1B">Σ F − fees</text>
+        <text x="740" y="117" text-anchor="middle" class="svg-text" font-size="10" fill="#5C564D">LNCS − Broker − VAT</text>
+        <line x1="650" y1="128" x2="830" y2="128" stroke="#A86B0A" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+        <text x="740" y="143" text-anchor="middle" class="svg-mono" font-size="9" fill="#5C564D">TC's only revenue</text>
+        <text x="740" y="155" text-anchor="middle" class="svg-text" font-size="9" fill="#5C564D" font-style="italic">(intermediary model)</text>
+
+        <path d="M 860 110 L 910 110" stroke="#1B1B1B" stroke-width="1.5" fill="none" marker-end="url(#a-ink)"/>
+        <text x="885" y="100" text-anchor="middle" class="svg-serif" font-style="italic" font-size="10" fill="#5C564D">split by channel</text>
+
+        <!-- stage 4: settlement -->
+        <rect x="920" y="50" width="240" height="120" rx="10" fill="#D9E4DD" stroke="#2D5E3C" stroke-width="1.5"/>
+        <text x="1040" y="75" text-anchor="middle" class="svg-text" font-size="10" font-weight="700" fill="#2D5E3C" letter-spacing="1.5">STAGE 4 · BONUS SHARE</text>
+        <text x="1040" y="97" text-anchor="middle" class="svg-mono" font-size="11" fill="#1B1B1B">Pool ÷ channel</text>
+        <text x="1040" y="117" text-anchor="middle" class="svg-text" font-size="10" fill="#5C564D">AM/NCC vs TC</text>
+        <line x1="950" y1="128" x2="1130" y2="128" stroke="#2D5E3C" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+        <text x="1040" y="143" text-anchor="middle" class="svg-mono" font-size="9" fill="#2D5E3C">Active: AM 50% · TC 50%</text>
+        <text x="1040" y="155" text-anchor="middle" class="svg-mono" font-size="9" fill="#1E4A7A">RTE: NCC 100% · TC 0</text>
+
+        <!-- bottom note -->
+        <text x="600" y="200" text-anchor="middle" class="svg-serif" font-style="italic" font-size="12" fill="#5C564D">
+          Mọi use case (outstanding, credit check, profit quyết toán, report P&amp;R…) đều truy vấn từ 4 bảng này.
+        </text>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- Placeholder for example views - content generated by JS -->
+  <div class="view" id="view-ex1"></div>
+  <div class="view" id="view-ex2"></div>
+  <div class="view" id="view-ex3"></div>
+
+  <footer>
+    Schema unified từ HDSD Sale.FarmGate v1.0 · Outstanding / LNCS &amp; profit share logic · nền tảng cho mọi business use case
+  </footer>
+</div>
+
+<!-- Formula tooltip element -->
+<div class="formula-tooltip" id="formulaTooltip" role="tooltip"></div>
+
+<!-- Save/Load modal -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="modalTitle">Save scenario</h3>
+      <button class="close" id="modalClose" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Content swapped by JS -->
+    </div>
+    <div class="modal-foot" id="modalFoot">
+      <!-- Buttons swapped by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+/* =============================================================
+   FOCUS TRACKING — survive re-renders during edits
+   ============================================================= */
+let lastFocusKey = null;
+/* =============================================================
+   EXAMPLE DATA — events per SO
+   =============================================================
+   Only money-movement events that affect outstanding are listed.
+   Types that matter:
+     - 'Chi' (outstanding↑): vendor_advance, vendor_payment, other_payment, customer_refund
+     - 'Thu' (outstanding↓): customer_advance, customer_payment, vendor_refund
+     - 'Phí VAT' (adds VAT fee to K)
+*/
+
+const EXAMPLES = {
+  ex1: {
+    label: 'Ví dụ 1 — Đơn giản',
+    titleMain: '1 đơn bán · 1 lần giao · happy path',
+    desc: 'Xuất 1 cont thanh long sang Nhật. Khách đặt cọc 30%, TechCoop tạm ứng vendor 50%. Customer trả nốt sau khi có INV.',
+    accent: 'ex1',
+    // scenario params
+    creditLimit: 500_000_000,
+    interestRate: 2.5,      // % / period
+    daysBasis: 30,
+    channel: 'active',
+    bonusSharePct: 50,      // AM gets 50% of bonus pool (Active)
+    // financials (excl. VAT)
+    revenue: 100_000_000,   // Σ INV (excl. VAT)
+    cogs: 60_000_000,       // PO-001 cogs only
+    cost: 0,                // no other costs
+    brokerFee: 0,
+    vatFee: 0,
+    // money events that feed the ledger
+    events: [
+      { day: 3,  date: '03/03', type: 'Thu', amount: 30_000_000, label: 'Customer Advance',  note: 'khách cọc 30%' },
+      { day: 5,  date: '05/03', type: 'Chi', amount: 30_000_000, label: 'Vendor Advance',     note: 'tạm ứng PO-001 50%' },
+      { day: 10, date: '10/03', type: 'Chi', amount: 30_000_000, label: 'Vendor Payment',     note: 'trả nốt Bill-001' },
+      { day: 17, date: '17/03', type: 'Thu', amount: 70_000_000, label: 'Customer Payment',   note: 'thanh toán INV-001' },
+    ]
+  },
+
+  ex2: {
+    label: 'Ví dụ 2 — Trung bình',
+    titleMain: '1 đơn bán · 2 lần giao · nhiều PO · N : N Used',
+    desc: 'Xuất 2 cont chuối. Cogs chung từ 1 vendor + PO bao bì + PO vận chuyển. PO-001 được Used ở cả 2 GD.',
+    accent: 'ex2',
+    creditLimit: 500_000_000,
+    interestRate: 2.5,
+    daysBasis: 30,
+    channel: 'active',
+    bonusSharePct: 50,
+    revenue: 200_000_000,
+    cogs: 120_000_000,      // PO-001 cogs (used by both GDs)
+    cost: 30_000_000,       // PO-002 (10M packaging) + PO-003 (20M shipping)
+    brokerFee: 0,
+    vatFee: 0,
+    events: [
+      { day: 3,  date: '03/03', type: 'Thu', amount: 60_000_000, label: 'Customer Advance',  note: 'cọc 30% cả SO' },
+      { day: 5,  date: '05/03', type: 'Chi', amount: 60_000_000, label: 'Vendor Advance',     note: 'PO-001 cogs 50%' },
+      { day: 12, date: '12/03', type: 'Chi', amount: 40_000_000, label: 'Vendor Payments',    note: 'Bill-001 + Bill-002' },
+      { day: 15, date: '15/03', type: 'Thu', amount: 70_000_000, label: 'Customer Payment',   note: 'INV-001' },
+      { day: 22, date: '22/03', type: 'Chi', amount: 50_000_000, label: 'Vendor Payments',    note: 'Bill-003 + Bill-004' },
+      { day: 30, date: '30/03', type: 'Thu', amount: 70_000_000, label: 'Customer Payment',   note: 'INV-002' },
+    ]
+  },
+
+  ex3: {
+    label: 'Ví dụ 3 — Phức tạp',
+    titleMain: 'Cont quay đầu · RTE + Vendor Refund · crisis',
+    desc: 'GD-001 OK. GD-002 đã thanh toán nhưng bị reject tại cảng → RTE. Vendor refund cogs, TechCoop refund Customer.',
+    accent: 'ex3',
+    creditLimit: 500_000_000,
+    interestRate: 2.5,
+    daysBasis: 30,
+    channel: 'active',
+    bonusSharePct: 50,
+    // after RTE: only GD-001 contributes — INV-002 cancelled, cost GD-002 refunded
+    revenue: 100_000_000,
+    cogs: 60_000_000,
+    cost: 0,
+    brokerFee: 0,
+    vatFee: 0,
+    events: [
+      { day: 3,  date: '03/03', type: 'Thu', amount: 60_000_000, label: 'Customer Advance',  note: 'cọc 30% cả SO' },
+      { day: 5,  date: '05/03', type: 'Chi', amount: 60_000_000, label: 'Vendor Advance',     note: 'PO-001 cogs' },
+      { day: 12, date: '12/03', type: 'Chi', amount: 30_000_000, label: 'Vendor Payment',     note: 'Bill-001 (cont 1)' },
+      { day: 18, date: '18/03', type: 'Thu', amount: 70_000_000, label: 'Customer Payment',   note: 'INV-001 (cont 1 OK)' },
+      { day: 24, date: '24/03', type: 'Chi', amount: 30_000_000, label: 'Vendor Payment',     note: 'Bill-002 (cont 2)' },
+      { day: 32, date: '01/04', type: 'Thu', amount: 70_000_000, label: 'Customer Payment',   note: 'INV-002 (paid before reject)' },
+      { day: 45, date: '14/04', type: 'Thu', amount: 60_000_000, label: 'Vendor Refund',      note: 'vendor hoàn cogs cont 2' },
+      { day: 48, date: '17/04', type: 'Chi', amount: 100_000_000, label: 'Customer Refund',   note: 'trả lại tiền cho khách' },
+    ]
+  }
+};
+
+/* =============================================================
+   WORKING STATE — mutable copies of EXAMPLES for editing
+   ============================================================= */
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+const WORKING_STATE = {};
+Object.keys(EXAMPLES).forEach(k => { WORKING_STATE[k] = deepClone(EXAMPLES[k]); });
+
+function getState(exKey) { return WORKING_STATE[exKey]; }
+
+function updateState(exKey, patch) {
+  Object.assign(WORKING_STATE[exKey], patch);
+  renderExample(exKey);
+}
+
+function updateEvent(exKey, idx, patch) {
+  const evs = WORKING_STATE[exKey].events;
+  if (idx < 0 || idx >= evs.length) return;
+  Object.assign(evs[idx], patch);
+  renderExample(exKey);
+}
+
+function deleteEvent(exKey, idx) {
+  WORKING_STATE[exKey].events.splice(idx, 1);
+  renderExample(exKey);
+}
+
+function addEvent(exKey) {
+  const evs = WORKING_STATE[exKey].events;
+  const lastDay = evs.length ? evs[evs.length - 1].day : 0;
+  evs.push({
+    day: lastDay + 7,
+    date: `D${lastDay + 7}`,
+    type: 'Chi',
+    amount: 10_000_000,
+    label: 'New event',
+    note: ''
+  });
+  renderExample(exKey);
+}
+
+function resetState(exKey) {
+  WORKING_STATE[exKey] = deepClone(EXAMPLES[exKey]);
+  renderExample(exKey);
+}
+
+// Parse short money string like "100M", "175k", "100,000,000" → number
+function parseMoneyInput(str) {
+  if (typeof str === 'number') return str;
+  if (!str) return 0;
+  const cleaned = String(str).trim().replace(/[,\s₫]/g, '');
+  const lc = cleaned.toLowerCase();
+  let mult = 1;
+  let body = cleaned;
+  if (lc.endsWith('tỷ') || lc.endsWith('ty')) { mult = 1e9; body = cleaned.slice(0, -2 - (lc.endsWith('tỷ')?0:0)); }
+  else if (lc.endsWith('m') || lc.endsWith('tr')) {
+    mult = 1e6;
+    body = cleaned.slice(0, lc.endsWith('tr') ? -2 : -1);
+  }
+  else if (lc.endsWith('k')) { mult = 1e3; body = cleaned.slice(0, -1); }
+  const n = parseFloat(body);
+  return isNaN(n) ? 0 : n * mult;
+}
+
+/* =============================================================
+   SAVE / LOAD / SHARE — let Operations export and import scenarios
+   ============================================================= */
+
+// Build a clean export payload — strip internal fields, keep what matters
+function buildExportPayload(exKey) {
+  const ex = getState(exKey);
+  return {
+    schema: 'farmgate-scenario/v1',
+    exKey: exKey,
+    exportedAt: new Date().toISOString(),
+    label: ex.label,
+    titleMain: ex.titleMain,
+    desc: ex.desc,
+    accent: ex.accent,
+    creditLimit: ex.creditLimit,
+    interestRate: ex.interestRate,
+    daysBasis: ex.daysBasis,
+    channel: ex.channel,
+    bonusSharePct: ex.bonusSharePct,
+    revenue: ex.revenue,
+    cogs: ex.cogs,
+    cost: ex.cost,
+    brokerFee: ex.brokerFee,
+    vatFee: ex.vatFee,
+    events: ex.events.map(ev => ({
+      day: ev.day,
+      date: ev.date,
+      type: ev.type,
+      amount: ev.amount,
+      label: ev.label,
+      note: ev.note || ''
+    }))
+  };
+}
+
+// Validate an imported payload — returns {ok, errors[], data}
+function validateImportPayload(raw) {
+  const errors = [];
+  if (!raw || typeof raw !== 'object') {
+    return { ok: false, errors: ['Payload must be a JSON object.'] };
+  }
+  if (raw.schema && raw.schema !== 'farmgate-scenario/v1') {
+    errors.push(`Schema version "${raw.schema}" is not supported. Expected "farmgate-scenario/v1".`);
+  }
+  // Required fields
+  const required = ['titleMain', 'desc', 'creditLimit', 'interestRate', 'daysBasis',
+                    'channel', 'bonusSharePct', 'revenue', 'cogs', 'cost', 'events'];
+  required.forEach(f => {
+    if (raw[f] === undefined || raw[f] === null) errors.push(`Missing field: ${f}`);
+  });
+  if (raw.channel && raw.channel !== 'active' && raw.channel !== 'rte') {
+    errors.push(`channel must be 'active' or 'rte', got "${raw.channel}"`);
+  }
+  if (raw.events && !Array.isArray(raw.events)) {
+    errors.push('events must be an array');
+  } else if (raw.events) {
+    raw.events.forEach((ev, i) => {
+      if (typeof ev.day !== 'number') errors.push(`events[${i}].day must be number`);
+      if (ev.type !== 'Chi' && ev.type !== 'Thu') errors.push(`events[${i}].type must be 'Chi' or 'Thu'`);
+      if (typeof ev.amount !== 'number') errors.push(`events[${i}].amount must be number`);
+    });
+  }
+  if (errors.length) return { ok: false, errors };
+  // Defaults for optional fields
+  return {
+    ok: true,
+    errors: [],
+    data: {
+      label: raw.label || 'Custom scenario',
+      titleMain: raw.titleMain,
+      desc: raw.desc,
+      accent: raw.accent || 'ex1',
+      creditLimit: +raw.creditLimit,
+      interestRate: +raw.interestRate,
+      daysBasis: +raw.daysBasis,
+      channel: raw.channel,
+      bonusSharePct: +raw.bonusSharePct,
+      revenue: +raw.revenue,
+      cogs: +raw.cogs,
+      cost: +raw.cost,
+      brokerFee: +(raw.brokerFee || 0),
+      vatFee: +(raw.vatFee || 0),
+      events: raw.events.map(ev => ({
+        day: +ev.day,
+        date: ev.date || `D${ev.day}`,
+        type: ev.type,
+        amount: +ev.amount,
+        label: ev.label || '',
+        note: ev.note || ''
+      }))
+    }
+  };
+}
+
+// Apply imported data to a working state slot
+function applyImportedScenario(exKey, data) {
+  WORKING_STATE[exKey] = data;
+  renderExample(exKey);
+}
+
+// Build a shareable URL with the scenario data encoded in fragment
+// Use # (hash) instead of query so it doesn't get sent to any server
+function buildShareUrl(exKey) {
+  const payload = buildExportPayload(exKey);
+  const json = JSON.stringify(payload);
+  // Use base64url-ish encoding (URL-safe)
+  const b64 = btoa(unescape(encodeURIComponent(json)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const base = window.location.href.split('#')[0].split('?')[0];
+  return `${base}#scenario=${exKey}:${b64}`;
+}
+
+// Decode a share URL (called on page load)
+function decodeShareUrl() {
+  const hash = window.location.hash;
+  const match = hash.match(/^#scenario=([a-z0-9]+):(.+)$/i);
+  if (!match) return null;
+  const exKey = match[1];
+  if (!WORKING_STATE[exKey]) return null;
+  try {
+    let b64 = match[2].replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    const json = decodeURIComponent(escape(atob(b64)));
+    const raw = JSON.parse(json);
+    return { exKey, raw };
+  } catch (e) {
+    console.error('Failed to decode share URL:', e);
+    return null;
+  }
+}
+
+/* =============================================================
+   MODAL — Save / Load UI
+   ============================================================= */
+function openModal(title) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBackdrop').classList.add('visible');
+}
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('visible');
+}
+
+function openExportModal(exKey) {
+  const payload = buildExportPayload(exKey);
+  const json = JSON.stringify(payload, null, 2);
+  const url = buildShareUrl(exKey);
+  const ex = getState(exKey);
+
+  document.getElementById('modalBody').innerHTML = `
+    <p>Scenario <strong>${exKey}</strong> · <em>${escapeHtml(ex.titleMain)}</em></p>
+    <p style="font-size:11.5px;color:var(--ink-muted);font-family:'Fraunces',serif;font-style:italic">
+      Copy JSON dưới đây để lưu, gửi cho team Operations, hoặc dán lại vào tab khác để Load.
+    </p>
+    <textarea id="exportText" readonly>${escapeHtml(json)}</textarea>
+    <p style="margin-top:14px;font-size:11.5px;color:var(--ink-muted);font-family:'Fraunces',serif;font-style:italic">
+      Hoặc share qua URL — copy link này:
+    </p>
+    <div class="url-row">
+      <input id="exportUrl" type="text" readonly value="${escapeHtml(url)}">
+      <button class="btn-primary" onclick="copyToClipboard('exportUrl', this)">Copy URL</button>
+    </div>
+    <div class="err" id="modalErr"></div>
+  `;
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn-secondary" onclick="closeModal()">Close</button>
+    <button class="btn-primary" id="copyJsonBtn" onclick="copyToClipboard('exportText', this)">Copy JSON</button>
+  `;
+  openModal('Save / Share scenario');
+}
+
+function openImportModal(exKey) {
+  document.getElementById('modalBody').innerHTML = `
+    <p>Paste JSON scenario hoặc URL share đã nhận:</p>
+    <textarea id="importText" placeholder='{"schema": "farmgate-scenario/v1", "titleMain": "...", ...}'></textarea>
+    <div class="err" id="modalErr"></div>
+    <p style="margin-top:10px;font-size:11px;color:var(--ink-soft);font-family:'Fraunces',serif;font-style:italic">
+      Sẽ overwrite scenario hiện tại của tab <strong>${exKey}</strong>. Có thể dùng <code style="font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,0.05);padding:1px 4px;border-radius:2px;font-size:10.5px">↺ Reset</code> để khôi phục defaults sau.
+    </p>
+  `;
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn-primary" onclick="importFromModal('${exKey}')">Import</button>
+  `;
+  openModal('Load scenario');
+  setTimeout(() => document.getElementById('importText').focus(), 50);
+}
+
+function importFromModal(exKey) {
+  const ta = document.getElementById('importText');
+  const errEl = document.getElementById('modalErr');
+  const txt = ta.value.trim();
+  if (!txt) {
+    errEl.textContent = 'Vui lòng paste JSON hoặc URL.';
+    errEl.classList.add('visible');
+    return;
+  }
+
+  let raw;
+  // Detect if it's a URL with #scenario= fragment
+  const urlMatch = txt.match(/#scenario=([a-z0-9]+):([A-Za-z0-9_\-]+)/);
+  if (urlMatch) {
+    try {
+      let b64 = urlMatch[2].replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      const json = decodeURIComponent(escape(atob(b64)));
+      raw = JSON.parse(json);
+    } catch (e) {
+      errEl.textContent = 'Không decode được URL: ' + e.message;
+      errEl.classList.add('visible');
+      return;
+    }
+  } else {
+    try {
+      raw = JSON.parse(txt);
+    } catch (e) {
+      errEl.textContent = 'JSON không hợp lệ: ' + e.message;
+      errEl.classList.add('visible');
+      return;
+    }
+  }
+
+  const result = validateImportPayload(raw);
+  if (!result.ok) {
+    errEl.textContent = 'Validation lỗi:\n' + result.errors.join('\n');
+    errEl.classList.add('visible');
+    return;
+  }
+
+  applyImportedScenario(exKey, result.data);
+  closeModal();
+}
+
+function copyToClipboard(elId, btnEl) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.select();
+  try {
+    document.execCommand('copy');
+    if (btnEl) {
+      const orig = btnEl.textContent;
+      btnEl.textContent = '✓ Copied';
+      btnEl.classList.add('confirmed');
+      setTimeout(() => {
+        btnEl.textContent = orig;
+        btnEl.classList.remove('confirmed');
+      }, 1500);
+    }
+  } catch (e) {
+    console.error('Copy failed:', e);
+  }
+  // Try modern clipboard API as well (more reliable on https)
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(el.value || el.textContent).catch(() => {});
+  }
+}
+
+function escapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* =============================================================
+   OUTSTANDING CALCULATION — matches the calculator exactly
+   ============================================================= */
+function daysBetween(d1, d2) { return d2 - d1; }  // day numbers
+
+function calcLedger(events, params) {
+  const { interestRate, daysBasis } = params;
+  const daily = interestRate / 100 / daysBasis;
+  const rows = [];
+  let prev = { D: 0, I: 0, H: 0, K: 0, day: null };
+
+  events.forEach((ev, idx) => {
+    let days = 0;
+    if (idx > 0) days = ev.day - prev.day;  // simple day difference (original formula)
+
+    // only accrue interest when prev.D > 0 (positive outstanding)
+    // this matches real-world semantics: no interest on surplus/credit
+    const F = prev.D > 0 ? prev.D * daily * days : 0;
+
+    let D = 0, G = 0, H = 0, I = 0, J = 0, K = 0;
+    const C = ev.amount;
+    const fee = ev.fee || 0;
+
+    if (ev.type === 'Chi') {
+      D = prev.D + C;
+      I = prev.I + C;
+      H = prev.H + F;
+      G = 0; J = 0;
+      K = prev.K;
+    } else if (ev.type === 'Thu') {
+      const owed = prev.H + F;
+      G = Math.min(C, Math.max(owed, 0));
+      H = owed - G;
+      const afterInt = C - G;
+      J = Math.min(afterInt, prev.K);
+      K = prev.K - J;
+      const afterVAT = afterInt - J;
+      I = prev.I - afterVAT;
+      D = I;
+    } else if (ev.type === 'Phí VAT') {
+      D = prev.I;
+      I = prev.I;
+      H = prev.H + F;
+      K = prev.K + fee;
+      G = 0; J = 0;
+    }
+
+    const L = I + H + K;
+    // Snapshot prev so each row knows its own preceding state
+    const prevSnap = { ...prev };
+    rows.push({ ...ev, idx, days, F, D, G, H, I, J, K, L, prev: prevSnap, daily });
+    prev = { D, I, H, K, day: ev.day };
+  });
+
+  // totals
+  const totalF = rows.reduce((s, r) => s + r.F, 0);
+  const totalG = rows.reduce((s, r) => s + r.G, 0);
+  const finalL = rows.length ? rows[rows.length - 1].L : 0;
+  const peakOutstanding = rows.reduce((m, r) => Math.max(m, Math.max(r.L, 0)), 0);
+
+  return { rows, totalF, totalG, finalL, peakOutstanding, daily };
+}
+
+/* =============================================================
+   FORMATTERS
+   ============================================================= */
+function fmt(n, decimals = 0) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  const abs = Math.abs(n);
+  const rounded = Number(abs.toFixed(decimals));
+  const parts = rounded.toLocaleString('en-US', {
+    minimumFractionDigits: decimals, maximumFractionDigits: decimals
+  });
+  return (n < 0 ? '(' : '') + parts + (n < 0 ? ')' : '');
+}
+function fmtShort(n) {
+  if (!n && n !== 0) return '—';
+  const abs = Math.abs(n), neg = n < 0 ? '-' : '';
+  if (abs >= 1e9) return neg + (abs/1e9).toFixed(2).replace(/\.?0+$/, '') + ' tỷ';
+  if (abs >= 1e6) return neg + (abs/1e6).toFixed(1).replace(/\.?0+$/, '') + ' tr';
+  if (abs >= 1e3) return neg + (abs/1e3).toFixed(1).replace(/\.?0+$/, '') + 'k';
+  return neg + abs.toFixed(0);
+}
+
+// Numeric formatter for formula calc text — shows plain commas, no parens for negatives
+function fm(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  if (Math.abs(n) < 0.005) return '0';
+  if (Math.abs(n - Math.round(n)) < 0.005) {
+    return Math.round(n).toLocaleString('en-US');
+  }
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function signed(n) { return n < 0 ? `(${fm(-n)})` : fm(n); }
+
+// Encode a formula object for use as HTML data-* attributes (tooltip source)
+function encAttr(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '&#10;');
+}
+function fx(f) {
+  if (!f) return '';
+  return `data-formula-label="${encAttr(f.label || '')}" ` +
+         `data-formula="${encAttr(f.formula || '')}" ` +
+         `data-calc="${encAttr(f.calc || '')}" ` +
+         `data-note="${encAttr(f.note || '')}" ` +
+         `data-refs="${encAttr(f.refs || '')}"`;
+}
+
+/* =============================================================
+   PER-CELL FORMULA BUILDERS — explain every calculated value
+   ============================================================= */
+function buildCellFormulas(r, params) {
+  const { interestRate, daysBasis, daily } = params;
+  const isFirst = r.idx === 0;
+  const t = r.type;
+  const C = r.amount;
+  const dailyPct = (daily * 100).toFixed(5) + '%';
+  const F = {};
+
+  /* ---- C (Amount) ---- */
+  F.C = {
+    label: `C — Số tiền giao dịch (${t})`,
+    formula: t === 'Chi' ? '= tiền chi ra (outstanding↑)'
+           : t === 'Thu' ? '= tiền thu vào (outstanding↓)'
+           : '= amount (Phí VAT)',
+    calc: `= ${fm(C)} ₫`,
+    note: r.note || '',
+    refs: 'PaymentEvent.amount'
+  };
+
+  /* ---- E (Days) ---- */
+  if (isFirst) {
+    F.E = {
+      label: 'E — Số ngày tính lãi',
+      formula: '= 0  (dòng đầu tiên)',
+      calc: 'Chưa có dư nợ trước đó để tính lãi.',
+      note: 'First row — D chưa có start_date.',
+      refs: 'OutstandingLedger.days'
+    };
+  } else {
+    const rawGap = r.day - r.prev.day;
+    F.E = {
+      label: 'E — Số ngày tính lãi',
+      formula: '= day(this) − day(prev)',
+      calc: `= ${r.day} − ${r.prev.day}  =  ${r.days} ngày`,
+      note: `Kỳ tính lãi từ ngày D${r.prev.day} đến D${r.day}.`,
+      refs: 'OutstandingLedger.days'
+    };
+  }
+
+  /* ---- F (LNCS accrued this period) ---- */
+  if (isFirst) {
+    F.F = {
+      label: 'F — LNCS tính kỳ này',
+      formula: '= 0',
+      calc: 'Dòng đầu: prev.D = 0, không có lãi.',
+      refs: 'OutstandingLedger.F'
+    };
+  } else if (r.prev.D <= 0) {
+    F.F = {
+      label: 'F — LNCS tính kỳ này',
+      formula: '= 0  (vì prev.D ≤ 0)',
+      calc: `prev.D = ${signed(r.prev.D)}\nKhông phát sinh lãi khi outstanding âm hoặc 0.`,
+      note: 'Khi có dư thừa (prev.D < 0), TechCoop không bị tính lãi trên khoản âm đó.',
+      refs: 'OutstandingLedger.F'
+    };
+  } else {
+    F.F = {
+      label: 'F — LNCS tính kỳ này',
+      formula: '= prev.D × daily_rate × days',
+      calc: `= ${fm(r.prev.D)} × ${dailyPct} × ${r.days}\n= ${fm(r.F)}`,
+      note: `Daily rate = ${interestRate}% ÷ ${daysBasis} = ${dailyPct} mỗi ngày.`,
+      refs: 'OutstandingLedger.F'
+    };
+  }
+
+  /* ---- G (LNCS collected this Thu event) ---- */
+  if (t === 'Thu') {
+    const owed = r.prev.H + r.F;
+    const owedClamped = Math.max(owed, 0);
+    F.G = {
+      label: 'G — LNCS đã thu',
+      formula: '= min(C, max(prev.H + F, 0))',
+      calc: `= min(${fm(C)}, max(${fm(r.prev.H)} + ${fm(r.F)}, 0))\n` +
+            `= min(${fm(C)}, ${fm(owedClamped)})\n= ${fm(r.G)}`,
+      note: 'Thu → ưu tiên trả lãi trước, tối đa bằng tổng lãi còn nợ.',
+      refs: 'OutstandingLedger.G'
+    };
+  } else {
+    F.G = {
+      label: 'G — LNCS đã thu',
+      formula: '= 0',
+      calc: t === 'Chi' ? 'Chi không thu lãi.' : 'Phí VAT không thu lãi.',
+      refs: 'OutstandingLedger.G'
+    };
+  }
+
+  /* ---- H (LNCS outstanding / owed) ---- */
+  if (isFirst) {
+    F.H = { label: 'H — LNCS chưa thu', formula: '= 0', calc: 'Dòng đầu: chưa có lãi.', refs: 'OutstandingLedger.H' };
+  } else if (t === 'Chi') {
+    F.H = {
+      label: 'H — LNCS chưa thu',
+      formula: '= prev.H + F',
+      calc: `= ${fm(r.prev.H)} + ${fm(r.F)}  =  ${fm(r.H)}`,
+      note: 'Chi → lãi kỳ này cộng vào nợ lãi.',
+      refs: 'OutstandingLedger.H'
+    };
+  } else if (t === 'Thu') {
+    F.H = {
+      label: 'H — LNCS chưa thu',
+      formula: '= (prev.H + F) − G',
+      calc: `= (${fm(r.prev.H)} + ${fm(r.F)}) − ${fm(r.G)}  =  ${fm(r.H)}`,
+      note: 'Thu → lãi còn lại sau khi thu G.',
+      refs: 'OutstandingLedger.H'
+    };
+  } else if (t === 'Phí VAT') {
+    F.H = {
+      label: 'H — LNCS chưa thu',
+      formula: '= prev.H + F',
+      calc: `= ${fm(r.prev.H)} + ${fm(r.F)}  =  ${fm(r.H)}`,
+      refs: 'OutstandingLedger.H'
+    };
+  }
+
+  /* ---- I (Principal outstanding) ---- */
+  if (isFirst) {
+    if (t === 'Chi') {
+      F.I = { label: 'I — Dư nợ gốc', formula: '= C', calc: `= ${fm(C)}`, refs: 'OutstandingLedger.I' };
+    } else if (t === 'Thu') {
+      F.I = {
+        label: 'I — Dư nợ gốc',
+        formula: '= −C (dư thừa)',
+        calc: `Chưa có Chi nào, Thu ${fm(C)} trở thành ${signed(-C)} (dư thừa).`,
+        note: 'Customer Advance đến trước Vendor Advance — kho tiền dương.',
+        refs: 'OutstandingLedger.I'
+      };
+    } else {
+      F.I = { label: 'I — Dư nợ gốc', formula: '= 0', calc: 'Dòng đầu & không có Chi/Thu.', refs: 'OutstandingLedger.I' };
+    }
+  } else if (t === 'Chi') {
+    F.I = {
+      label: 'I — Dư nợ gốc',
+      formula: '= prev.I + C',
+      calc: `= ${signed(r.prev.I)} + ${fm(C)}  =  ${signed(r.I)}`,
+      note: 'Chi → tăng dư nợ gốc.',
+      refs: 'OutstandingLedger.I'
+    };
+  } else if (t === 'Thu') {
+    const principalPay = C - r.G - r.J;
+    F.I = {
+      label: 'I — Dư nợ gốc',
+      formula: '= prev.I − (C − G − J)',
+      calc: `principal_pay = C − G − J = ${fm(C)} − ${fm(r.G)} − ${fm(r.J)} = ${fm(principalPay)}\n` +
+            `I = ${signed(r.prev.I)} − ${fm(principalPay)}  =  ${signed(r.I)}`,
+      note: 'Thu → sau khi trả lãi (G) và VAT (J), phần còn lại dùng để trả gốc.',
+      refs: 'OutstandingLedger.I'
+    };
+  } else if (t === 'Phí VAT') {
+    F.I = {
+      label: 'I — Dư nợ gốc',
+      formula: '= prev.I',
+      calc: `= ${signed(r.prev.I)}`,
+      note: 'Phí VAT không ảnh hưởng dư nợ gốc.',
+      refs: 'OutstandingLedger.I'
+    };
+  }
+
+  /* ---- D (interest-bearing balance) ---- */
+  if (t === 'Chi') {
+    F.D = {
+      label: 'D — Dư nợ tính lãi',
+      formula: '= prev.D + C',
+      calc: `= ${signed(r.prev.D)} + ${fm(C)}  =  ${signed(r.D)}`,
+      note: 'Chi cộng dồn vào balance chịu lãi cho kỳ kế tiếp.',
+      refs: 'OutstandingLedger.D'
+    };
+  } else if (t === 'Thu') {
+    F.D = {
+      label: 'D — Dư nợ tính lãi',
+      formula: '= I  (reset về gốc sau khi thu)',
+      calc: `= ${signed(r.I)}`,
+      note: 'Sau mỗi lần Thu, D được đồng bộ với I — lãi chỉ tính trên gốc còn lại.',
+      refs: 'OutstandingLedger.D'
+    };
+  } else if (t === 'Phí VAT') {
+    F.D = {
+      label: 'D — Dư nợ tính lãi',
+      formula: '= prev.I',
+      calc: `= ${signed(r.prev.I)}`,
+      note: 'Phí VAT không đổi balance chịu lãi.',
+      refs: 'OutstandingLedger.D'
+    };
+  }
+
+  /* ---- L (Outstanding SO) ---- */
+  F.L = {
+    label: 'L — Outstanding SO',
+    formula: '= I + H + K',
+    calc: `= ${signed(r.I)} + ${fm(r.H)} + ${fm(r.K)}\n= ${signed(r.L)}`,
+    note: 'Tổng nghĩa vụ nợ = dư nợ gốc + lãi chưa thu + VAT chưa thu. Âm = đang dư.',
+    refs: 'OutstandingLedger.L'
+  };
+
+  return F;
+}
+
+/* =============================================================
+   FORMULAS FOR PROFIT SETTLEMENT BOXES
+   ============================================================= */
+function buildSettlementFormulas(ex, agg) {
+  const { totalF, totalG, passthroughTarget, passthroughBalance, bonusPool,
+          amAmount, techcoopTotal, techcoopBonusShare, daily, peakOutstanding, finalL } = agg;
+  const isActive = ex.channel === 'active';
+  return {
+    revenue: {
+      label: 'Revenue (customer paid)',
+      formula: 'Σ INV.invoice_value (excl. VAT)',
+      calc: `= ${fm(ex.revenue)} ₫`,
+      note: 'Pass-through cash flow — KHÔNG phải profit của TC. Trong mô hình intermediary, customer trả cho TC = (Cogs + Cost) đi qua + LNCS giữ lại.',
+      refs: 'INV.invoice_value (net) → informational'
+    },
+    cogs: {
+      label: 'Cogs — pass-through',
+      formula: "= Σ PO_GD_Usage.cost_value WHERE po.po_type = 'cogs'",
+      calc: `= ${fm(ex.cogs)} ₫`,
+      note: 'Pass-through đến vendor. KHÔNG ảnh hưởng profit — TC chỉ là trung gian thu hộ.',
+      refs: "PO_GD_Usage WHERE po.po_type='cogs' → informational"
+    },
+    cost: {
+      label: 'Cost — pass-through',
+      formula: "= Σ PO_GD_Usage WHERE po_type='cost' + Σ OtherPayment_GD_Allocation",
+      calc: `= ${fm(ex.cost)} ₫`,
+      note: 'Pass-through đến vendor khác (vận chuyển, bao bì). TC trả thay customer.',
+      refs: "PO_GD_Usage WHERE po_type='cost' + OtherPayment_GD_Allocation → informational"
+    },
+    passthroughTarget: {
+      label: 'Số tiền customer cần trả (ideal)',
+      formula: '= Cogs + Cost + LNCS',
+      calc: `= ${fm(ex.cogs)} + ${fm(ex.cost)} + ${fm(totalF)}\n= ${fm(passthroughTarget)}`,
+      note: 'Trong ideal case, customer trả vừa số này — pass-through đi vendor + LNCS cho TC.',
+      refs: 'derived'
+    },
+    passthroughBalance: {
+      label: 'Chênh lệch revenue ↔ ideal',
+      formula: '= Revenue − (Cogs + Cost + LNCS)',
+      calc: `= ${fm(ex.revenue)} − ${fm(passthroughTarget)}\n= ${fm(passthroughBalance)}`,
+      note: passthroughBalance > 0
+        ? 'Customer trả nhiều hơn — phần dư là customer credit, carry-forward sang SO sau (KHÔNG phải profit).'
+        : passthroughBalance < 0
+        ? 'Customer trả thiếu — outstanding của SO này còn dương, chờ customer thanh toán tiếp.'
+        : 'Customer trả đúng — không có credit/debit carry-forward.',
+      refs: 'derived (informational)'
+    },
+    brokerFee: {
+      label: 'Broker fee — TC trả',
+      formula: 'hoa hồng broker / CTV / QC',
+      calc: `= ${fm(ex.brokerFee)} ₫`,
+      note: 'Expense — TC trả cho broker giới thiệu deal hoặc CTV/QC. Trừ trực tiếp từ LNCS để ra Bonus Pool.',
+      refs: 'ProfitSettlement.broker_fee'
+    },
+    lncsTotal: {
+      label: 'LNCS fee — TC gross income',
+      formula: '= Σ F (trong toàn bộ kỳ của SO)',
+      calc: `Σ F = ${fm(totalF)}\nΣ G (đã thu) = ${fm(totalG)}`,
+      note: 'Phí sử dụng vốn — đây là nguồn thu DUY NHẤT của TC từ giao dịch. Bonus Pool được lái từ con số này.',
+      refs: 'OutstandingLedger.F → ProfitSettlement.lncs_fee'
+    },
+    lncsCollected: {
+      label: 'Σ G — LNCS đã thu từ khách',
+      formula: '= Σ G',
+      calc: `= ${fm(totalG)} ₫`,
+      note: 'Trong các ví dụ, LNCS không thu trực tiếp từ khách qua thanh toán nên G ≈ 0.',
+      refs: 'OutstandingLedger.G'
+    },
+    vatFee: {
+      label: 'VAT fee — TC trả',
+      formula: 'phí dịch vụ xử lý VAT',
+      calc: `= ${fm(ex.vatFee)} ₫`,
+      note: 'Expense — TC trả cho dịch vụ xử lý hồ sơ VAT đầu vào / đầu ra. Trừ trực tiếp từ LNCS.',
+      refs: 'ProfitSettlement.vat_fee'
+    },
+    bonusPool: {
+      label: 'Bonus Pool (Net Profit)',
+      formula: '= LNCS fee − Broker fee − VAT fee',
+      calc: `= ${fm(totalF)} − ${fm(ex.brokerFee)} − ${fm(ex.vatFee)}\n= ${fm(bonusPool)}`,
+      note: 'LNCS gross trừ các expense operation. ĐÂY là số chia bonus — KHÔNG có Revenue / Cogs / Cost trong công thức.',
+      refs: 'ProfitSettlement.bonus_pool'
+    },
+    amAmount: {
+      label: isActive ? 'AM bonus (Active)' : 'NCC commission (RTE)',
+      formula: isActive
+        ? '= bonus_share_pct × Bonus Pool'
+        : '= 100% × Bonus Pool',
+      calc: isActive
+        ? `= ${ex.bonusSharePct}% × ${fm(bonusPool)}\n= ${fm(amAmount)}`
+        : `= 100% × ${fm(bonusPool)}\n= ${fm(amAmount)}`,
+      note: isActive
+        ? 'AM (account manager) là employee TC, nhận bonus theo % cấu hình.'
+        : 'RTE: NCC mang deal về, nhận toàn bộ bonus pool như commission.',
+      refs: 'ProfitSettlement.am_amount'
+    },
+    techcoopBonusShare: {
+      label: 'TC share của Bonus Pool',
+      formula: isActive
+        ? '= (1 − bonus_share_pct) × Bonus Pool'
+        : '= 0 (RTE: NCC nhận hết)',
+      calc: isActive
+        ? `= ${100 - ex.bonusSharePct}% × ${fm(bonusPool)}\n= ${fm(techcoopBonusShare)}`
+        : `= 0 ₫ (RTE channel)`,
+      note: 'Phần TC giữ. Active: 50%. RTE: 0% (NCC mang deal nên nhận hết).',
+      refs: 'ProfitSettlement.techcoop_total'
+    },
+    techcoopTotal: {
+      label: 'TechCoop tổng nhận',
+      formula: isActive
+        ? '= (1 − x%) × Bonus Pool'
+        : '= 0 (RTE)',
+      calc: `= ${fm(techcoopTotal)} ₫`,
+      note: 'Trong mô hình intermediary corrected: TC chỉ nhận phần share của Bonus Pool — không có revenue stream khác.',
+      refs: 'ProfitSettlement.techcoop_total'
+    },
+    dailyRate: {
+      label: 'Daily Rate',
+      formula: '= interest_rate ÷ days_basis',
+      calc: `= ${ex.interestRate}% ÷ ${ex.daysBasis}\n= ${(daily * 100).toFixed(5)}% / ngày`,
+      note: 'Dùng để tính F cho mỗi kỳ: F = prev.D × daily × days.',
+      refs: 'GuarantorAgreement.interest_rate, days_basis'
+    },
+    peak: {
+      label: 'Peak Outstanding',
+      formula: '= max(L) trong toàn kỳ',
+      calc: `= ${fm(peakOutstanding)} ₫`,
+      note: 'Mốc cao nhất của dư nợ — dùng để kiểm tra vs credit_limit.',
+      refs: 'max(OutstandingLedger.L)'
+    },
+    creditLimit: {
+      label: 'Credit Limit',
+      formula: 'hạn mức tín dụng theo hợp đồng',
+      calc: `= ${fm(ex.creditLimit)} ₫`,
+      note: 'Tham số của GuarantorAgreement. Khi peak vượt giá trị này → block chi mới.',
+      refs: 'GuarantorAgreement.credit_limit'
+    },
+    available: {
+      label: 'Khả dụng cuối kỳ',
+      formula: '= credit_limit − max(L_final, 0)',
+      calc: `= ${fm(ex.creditLimit)} − ${fm(Math.max(agg.finalL, 0))}\n= ${fm(ex.creditLimit - Math.max(agg.finalL, 0))}`,
+      note: 'Phần hạn mức còn có thể sử dụng. L âm được clamp về 0.',
+      refs: 'credit_limit − max(L, 0)'
+    }
+  };
+}
+
+/* =============================================================
+   RENDER EXAMPLE VIEW
+   ============================================================= */
+function renderExample(exKey) {
+  const ex = getState(exKey);
+  const container = document.getElementById('view-' + exKey);
+
+  // Remember focus before re-render so we can restore it afterwards
+  const focusKeyToRestore = lastFocusKey;
+
+  const { rows, totalF, totalG, finalL, peakOutstanding, daily } = calcLedger(ex.events, {
+    interestRate: ex.interestRate, daysBasis: ex.daysBasis
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // PROFIT MODEL (corrected): TechCoop is a financial intermediary.
+  //   • Revenue, Cogs, Cost are pass-through cash flows — NOT profit components.
+  //   • LNCS fee is TC's only revenue source from the transaction.
+  //   • Bonus Pool = LNCS − Broker fee − VAT fee (operational expenses).
+  //   • Customer overpayment (Revenue > Cogs+Cost+LNCS) → carry-forward credit, NOT profit.
+  // ─────────────────────────────────────────────────────────────
+  const passthroughTarget = ex.cogs + ex.cost + totalF;       // what customer should pay in ideal case
+  const passthroughBalance = ex.revenue - passthroughTarget;  // ≈ 0 if customer paid exactly; >0 = overpaid (credit), <0 = underpaid
+  const bonusPool = totalF - ex.brokerFee - ex.vatFee;        // LNCS − fees = profit to split
+
+  // Bonus split based on channel
+  const isActive = ex.channel === 'active';
+  const amAmount = isActive
+    ? bonusPool * ex.bonusSharePct / 100
+    : bonusPool;  // RTE: NCC takes 100%
+  const techcoopBonusShare = bonusPool - amAmount;
+  const techcoopTotal = techcoopBonusShare;  // TC only gets their share of Bonus Pool
+
+  const availEnd = ex.creditLimit - Math.max(finalL, 0);
+
+  // Build formula metadata for every calculated value
+  const sf = buildSettlementFormulas(ex, {
+    totalF, totalG, passthroughTarget, passthroughBalance, bonusPool,
+    amAmount, techcoopTotal, techcoopBonusShare,
+    peakOutstanding, finalL, daily
+  });
+
+  container.innerHTML = `
+    <!-- validate banner -->
+    <div class="validate-banner">
+      <div class="icon">ƒ</div>
+      <div class="text">
+        <strong>Validation tool:</strong> click vào bất kỳ giá trị (Revenue, Cogs, Cost, Channel, hay từng event ở Section 01) để chỉnh sửa. Dùng <code>Save</code> để xuất JSON / link và <code>Load</code> để import lại — chia sẻ với team Operations để xác nhận.
+      </div>
+      <div class="scenario-toolbar">
+        <button onclick="openExportModal('${exKey}')" title="Lưu / chia sẻ scenario này">↗ Save</button>
+        <button onclick="openImportModal('${exKey}')" title="Load scenario từ JSON / link">↙ Load</button>
+        <button class="danger" onclick="resetState('${exKey}')" title="Reset về giá trị mặc định">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- scenario recap -->
+    <div class="scenario-recap ${ex.accent}">
+      <div class="sr-col">
+        <h3>Kịch bản</h3>
+        <div class="title-line" contenteditable="true" data-edit="titleMain" spellcheck="false">${ex.titleMain}</div>
+        <div class="desc" contenteditable="true" data-edit="desc" spellcheck="false">${ex.desc}</div>
+      </div>
+      <div class="sr-col">
+        <h3>Cash flow (pass-through)</h3>
+        <div class="sr-param">
+          <div class="row"><span class="lbl">Revenue (customer paid)</span><span class="val green editable has-formula" ${fx(sf.revenue)} contenteditable="true" data-edit="revenue" data-money="1">${fmt(ex.revenue)}</span></div>
+          <div class="row"><span class="lbl">  ↳ Cogs (→ vendor)</span><span class="val editable has-formula" ${fx(sf.cogs)} contenteditable="true" data-edit="cogs" data-money="1">${fmt(ex.cogs)}</span></div>
+          <div class="row"><span class="lbl">  ↳ Cost (→ other vendors)</span><span class="val editable has-formula" ${fx(sf.cost)} contenteditable="true" data-edit="cost" data-money="1">${fmt(ex.cost)}</span></div>
+          <div class="row" style="border-top:1px solid var(--rule);margin-top:4px;padding-top:8px"><span class="lbl" style="font-style:italic">Carry-fwd ${passthroughBalance >= 0 ? '(credit)' : '(underpaid)'}</span><span class="val derived has-formula" ${fx(sf.passthroughBalance)} style="color:${Math.abs(passthroughBalance) < 1 ? 'var(--accent-deep)' : 'var(--warn)'}">${passthroughBalance > 0 ? '+' : ''}${fmt(passthroughBalance)}</span></div>
+        </div>
+      </div>
+      <div class="sr-col">
+        <h3>Profit components (TC)</h3>
+        <div class="sr-param">
+          <div class="row"><span class="lbl">LNCS fee (gross)</span><span class="val derived has-formula" ${fx(sf.lncsTotal)} style="color:var(--warn)">${fmt(totalF)}</span></div>
+          <div class="row"><span class="lbl">− Broker fee</span><span class="val editable has-formula" ${fx(sf.brokerFee)} contenteditable="true" data-edit="brokerFee" data-money="1">${fmt(ex.brokerFee)}</span></div>
+          <div class="row"><span class="lbl">− VAT fee</span><span class="val editable has-formula" ${fx(sf.vatFee)} contenteditable="true" data-edit="vatFee" data-money="1">${fmt(ex.vatFee)}</span></div>
+          <div class="row" style="border-top:1px solid var(--rule);margin-top:4px;padding-top:8px"><span class="lbl"><strong>= Bonus Pool</strong></span><span class="val green derived has-formula" ${fx(sf.bonusPool)} style="font-weight:600">${fmt(bonusPool)}</span></div>
+        </div>
+      </div>
+      <div class="sr-col">
+        <h3>Tham số hợp đồng</h3>
+        <div class="sr-param">
+          <div class="row"><span class="lbl">Credit limit</span><span class="val editable has-formula" ${fx(sf.creditLimit)} contenteditable="true" data-edit="creditLimit" data-money="1">${fmt(ex.creditLimit)}</span></div>
+          <div class="row"><span class="lbl">Lãi suất LNCS</span><span><span class="val editable" contenteditable="true" data-edit="interestRate" data-num="1">${ex.interestRate}</span><span style="color:var(--ink-soft);font-size:11px"> % / </span><span class="val editable" contenteditable="true" data-edit="daysBasis" data-num="1">${ex.daysBasis}</span><span style="color:var(--ink-soft);font-size:11px">d</span></span></div>
+          <div class="row"><span class="lbl">Daily rate</span><span class="val derived has-formula" ${fx(sf.dailyRate)}>${(daily * 100).toFixed(5)}%</span></div>
+          <div class="row" style="align-items:center"><span class="lbl">Channel</span>
+            <span class="channel-toggle" data-channel="${exKey}">
+              <button class="${isActive ? 'active' : ''}" data-set-channel="active">ACTIVE</button>
+              <button class="${!isActive ? 'active' : ''}" data-set-channel="rte">RTE</button>
+            </span>
+          </div>
+          <div class="row"><span class="lbl">Bonus share (${isActive ? 'AM' : 'NCC'})</span><span><span class="val editable" contenteditable="true" data-edit="bonusSharePct" data-num="1">${ex.bonusSharePct}</span><span style="color:var(--ink-soft);font-size:11px">%</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- legend -->
+    <div class="legend">
+      <span><span class="sw" style="background:#F0DCDC; border-color:#8B1A1A"></span> <strong>Chi</strong> — outstanding tăng</span>
+      <span><span class="sw" style="background:#D9E4DD; border-color:#2D5E3C"></span> <strong>Thu</strong> — outstanding giảm</span>
+      <span><span class="sw" style="background:#F2E4C4; border-color:#A86B0A"></span> <strong>LNCS</strong> — lãi tích luỹ</span>
+      <span style="margin-left:auto"><span class="formula-hint">Hover on values · Click to edit</span></span>
+    </div>
+
+    <!-- ledger table -->
+    <div class="section-head">
+      <h2><span class="num">01</span>Outstanding ledger <span class="formula-hint">edit days, type, amount, label</span></h2>
+      <div class="sub">Từng event được diễn giải qua ${rows.length} cột: D/E/F (lãi) · G/H · I · J/K (VAT) · L (outstanding).</div>
+    </div>
+
+    <div class="ledger-wrap">
+      <table class="ledger">
+        <thead>
+          <tr>
+            <th class="lft" style="width:70px">Day</th>
+            <th class="lft" style="width:180px">Event</th>
+            <th class="lft" style="width:90px">Type</th>
+            <th style="width:100px"><span class="col-letter">C</span>Amount</th>
+            <th style="width:50px"><span class="col-letter">E</span>Days</th>
+            <th style="width:90px"><span class="col-letter">F</span>LNCS tính</th>
+            <th style="width:90px"><span class="col-letter">G</span>LNCS thu</th>
+            <th style="width:90px"><span class="col-letter">H</span>LNCS nợ</th>
+            <th style="width:110px"><span class="col-letter">I</span>Dư nợ gốc</th>
+            <th style="width:110px"><span class="col-letter">D</span>Balance lãi</th>
+            <th style="width:110px"><span class="col-letter">L</span>Outstanding</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((r, idx) => {
+            const typeLc = r.type === 'Chi' ? 'chi' : r.type === 'Thu' ? 'thu' : 'vat';
+            const amtCls = r.type === 'Chi' ? 'amt-out' : r.type === 'Thu' ? 'amt-in' : 'amt-zero';
+            const fCls = r.F > 0.5 ? 'hi' : 'amt-zero';
+            const iCls = r.I < -0.5 ? 'pos' : r.I > 0.5 ? '' : 'amt-zero';
+            const lCls = r.L > 0.5 ? 'neg' : 'pos';
+            const cf = buildCellFormulas(r, { interestRate: ex.interestRate, daysBasis: ex.daysBasis, daily });
+            return `
+              <tr class="event-row" data-idx="${idx}">
+                <td class="lft day">D<input class="evt-input day-input" type="number" value="${r.day}" data-evt-edit="day" data-idx="${idx}" min="0" max="999"></td>
+                <td class="lft"><input class="evt-input label-input" type="text" value="${r.label || ''}" data-evt-edit="label" data-idx="${idx}" placeholder="Label">
+                  <input class="evt-note-input" type="text" value="${(r.note || '').replace(/"/g, '&quot;')}" data-evt-edit="note" data-idx="${idx}" placeholder="(note)"></td>
+                <td class="lft"><select class="evt-type ${typeLc}" data-evt-edit="type" data-idx="${idx}">
+                  <option value="Chi" ${r.type === 'Chi' ? 'selected' : ''}>Chi</option>
+                  <option value="Thu" ${r.type === 'Thu' ? 'selected' : ''}>Thu</option>
+                </select>
+                <span class="row-actions"><button title="Xoá event này" data-evt-delete="${idx}">×</button></span></td>
+                <td class="${amtCls} has-formula" ${fx(cf.C)}><input class="evt-input" type="text" value="${fmt(r.amount)}" data-evt-edit="amount" data-idx="${idx}" data-money="1" style="text-align:right;color:inherit"></td>
+                <td class="has-formula" ${fx(cf.E)}>${r.days || '—'}</td>
+                <td class="${fCls} has-formula" ${fx(cf.F)}>${r.F > 0.5 ? fmt(r.F) : '—'}</td>
+                <td class="${r.G > 0.5 ? 'hi' : 'amt-zero'} has-formula" ${fx(cf.G)}>${r.G > 0.5 ? fmt(r.G) : '—'}</td>
+                <td class="${r.H > 0.5 ? 'neg' : 'amt-zero'} has-formula" ${fx(cf.H)}>${Math.abs(r.H) > 0.5 ? fmt(r.H) : '—'}</td>
+                <td class="${iCls} has-formula" ${fx(cf.I)}>${fmt(r.I)}</td>
+                <td class="${r.D > 0.5 ? 'neg' : r.D < -0.5 ? 'pos' : 'amt-zero'} has-formula" ${fx(cf.D)}>${fmt(r.D)}</td>
+                <td class="${lCls} has-formula" ${fx(cf.L)} style="font-weight:600">${fmt(r.L)}</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="lft" colspan="5">Totals</td>
+            <td class="hi has-formula" ${fx(sf.lncsTotal)}>${fmt(totalF)}</td>
+            <td class="hi has-formula" ${fx(sf.lncsCollected)}>${fmt(totalG)}</td>
+            <td>${rows.length ? fmt(rows[rows.length-1].H) : '—'}</td>
+            <td>${rows.length ? fmt(rows[rows.length-1].I) : '—'}</td>
+            <td>—</td>
+            <td class="${finalL > 0.5 ? 'neg' : 'pos'}">${fmt(finalL)}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <div class="ledger-controls">
+        <button class="add-event" onclick="addEvent('${exKey}')">+ Add event</button>
+        <span class="hint">Click vào day, label, type, hoặc amount để chỉnh sửa. Giá trị tiền chấp nhận <code style="font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,0.05);padding:1px 4px;border-radius:2px;font-size:10.5px">100M</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,0.05);padding:1px 4px;border-radius:2px;font-size:10.5px">175k</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,0.05);padding:1px 4px;border-radius:2px;font-size:10.5px">100,000,000</code>.</span>
+      </div>
+    </div>
+
+    <!-- chart -->
+    <div class="section-head">
+      <h2><span class="num">02</span>Đồ thị outstanding theo thời gian</h2>
+      <div class="sub">Peak outstanding: <strong style="color:var(--danger)" class="has-formula" ${fx(sf.peak)}>${fmtShort(peakOutstanding)}</strong> · Credit limit: <span class="has-formula" ${fx(sf.creditLimit)}>${fmtShort(ex.creditLimit)}</span> · Khả dụng cuối kỳ: <strong style="color:var(--accent-deep)" class="has-formula" ${fx(sf.available)}>${fmtShort(availEnd)}</strong></div>
+    </div>
+
+    <div class="chart-wrap">
+      ${renderChart(rows, ex, peakOutstanding)}
+    </div>
+
+    <!-- profit & share -->
+    <div class="section-head">
+      <h2><span class="num">03</span>Quyết toán &amp; chia bonus <span class="formula-hint">hover on values</span></h2>
+      <div class="sub">TC là intermediary — Revenue/Cogs/Cost là pass-through, KHÔNG phải profit. <strong>Bonus Pool = LNCS − Broker − VAT</strong>. Pool chia theo channel: ${isActive ? 'Active 50/50' : 'RTE: NCC 100%'}.</div>
+    </div>
+
+    <div class="profit-panel">
+      <div class="profit-flow">
+        <div class="profit-box gross" style="opacity:0.85">
+          <div class="lbl">Cash flow (pass-through)</div>
+          <div class="calc">
+            <div class="line"><span>Revenue (customer paid)</span><span class="has-formula" ${fx(sf.revenue)}>${fmt(ex.revenue)}</span></div>
+            <div class="line"><span>− Cogs → vendor</span><span class="has-formula" ${fx(sf.cogs)}>${fmt(ex.cogs)}</span></div>
+            <div class="line"><span>− Cost → other vendors</span><span class="has-formula" ${fx(sf.cost)}>${fmt(ex.cost)}</span></div>
+            <div class="line"><span>− LNCS (TC giữ)</span><span class="has-formula" ${fx(sf.lncsTotal)}>${fmt(totalF)}</span></div>
+          </div>
+          <div class="total has-formula hero-cell" ${fx(sf.passthroughBalance)} style="color:${Math.abs(passthroughBalance) < 1 ? 'var(--accent-deep)' : 'var(--warn)'}">${passthroughBalance > 0 ? '+' : ''}${fmt(passthroughBalance)} <span class="unit">₫ ${Math.abs(passthroughBalance) < 1 ? '✓' : passthroughBalance > 0 ? 'credit' : 'underpaid'}</span></div>
+        </div>
+        <div class="profit-box lncs">
+          <div class="lbl">Bonus Pool · từ LNCS</div>
+          <div class="calc">
+            <div class="line"><span>LNCS fee (gross)</span><span class="has-formula" ${fx(sf.lncsTotal)}>${fmt(totalF)}</span></div>
+            <div class="line"><span>− Broker fee</span><span class="has-formula" ${fx(sf.brokerFee)}>${fmt(ex.brokerFee)}</span></div>
+            <div class="line"><span>− VAT fee</span><span class="has-formula" ${fx(sf.vatFee)}>${fmt(ex.vatFee)}</span></div>
+          </div>
+          <div class="total has-formula hero-cell" ${fx(sf.bonusPool)}>${fmt(bonusPool)} <span class="unit">₫</span></div>
+        </div>
+        <div class="profit-box share">
+          <div class="lbl">Phân chia Bonus Pool</div>
+          <div class="calc">
+            <div class="line"><span>${isActive ? 'AM' : 'NCC'} (${isActive ? ex.bonusSharePct : 100}%)</span><span class="has-formula" ${fx(sf.amAmount)}>${fmt(amAmount)}</span></div>
+            <div class="line"><span>TC (${isActive ? (100 - ex.bonusSharePct) : 0}%)</span><span class="has-formula" ${fx(sf.techcoopBonusShare)}>${fmt(techcoopBonusShare)}</span></div>
+          </div>
+          <div class="total has-formula hero-cell" ${fx(sf.bonusPool)}>${fmt(bonusPool)} <span class="unit">₫</span></div>
+        </div>
+      </div>
+
+      <div class="share-split">
+        <div class="split-head">Tổng phân chia · Channel: ${ex.channel.toUpperCase()}</div>
+        <div class="share-bar">
+          ${(() => {
+            const denom = techcoopTotal + amAmount;
+            const tcPct = denom > 0 ? techcoopTotal / denom * 100 : (techcoopTotal > 0 ? 100 : 0);
+            const amPct = denom > 0 ? amAmount / denom * 100 : (amAmount > 0 ? 100 : 0);
+            if (denom <= 0) {
+              return `<div class="seg" style="width:100%;background:var(--rule-strong);color:var(--ink-muted)">Bonus Pool ≤ 0 — không có gì chia</div>`;
+            }
+            return `
+              <div class="seg techcoop" style="width:${tcPct}%">TechCoop · ${fmt(techcoopTotal)} ₫</div>
+              <div class="seg guarantor" style="width:${amPct}%">${isActive ? 'AM' : 'NCC'} · ${fmt(amAmount)} ₫</div>
+            `;
+          })()}
+        </div>
+        <div class="share-details">
+          <div class="share-party techcoop">
+            <h4><span class="dot"></span>TechCoop (operator)</h4>
+            <div class="detail">
+              <div class="row"><span>${isActive ? (100 - ex.bonusSharePct) : 0}% × Bonus Pool</span><span class="has-formula" ${fx(sf.techcoopBonusShare)}>${fmt(techcoopBonusShare)}</span></div>
+              <div class="row total"><span>TOTAL</span><span class="has-formula" ${fx(sf.techcoopTotal)}>${fmt(techcoopTotal)} ₫</span></div>
+            </div>
+          </div>
+          <div class="share-party guarantor">
+            <h4><span class="dot"></span>${isActive ? 'AM (Account Manager)' : 'NCC (Vendor commission)'}</h4>
+            <div class="detail">
+              <div class="row"><span>${isActive ? ex.bonusSharePct : 100}% × Bonus Pool</span><span class="has-formula" ${fx(sf.amAmount)}>${fmt(amAmount)}</span></div>
+              <div class="row total"><span>TOTAL</span><span class="has-formula" ${fx(sf.amAmount)}>${fmt(amAmount)} ₫</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Restore focus to the previously-edited element (if it still exists in the new DOM)
+  if (focusKeyToRestore && typeof restoreFocus === 'function') {
+    restoreFocus(focusKeyToRestore);
+  }
+}
+
+/* =============================================================
+   RENDER OUTSTANDING CHART (step-style over days)
+   ============================================================= */
+function renderChart(rows, ex, peakOutstanding) {
+  const width = 1160, height = 320;
+  const padL = 70, padR = 40, padT = 30, padB = 50;
+  const plotW = width - padL - padR;
+  const plotH = height - padT - padB;
+
+  if (!rows || rows.length === 0) {
+    return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <text x="${width/2}" y="${height/2}" text-anchor="middle" class="svg-serif" font-style="italic" font-size="14" fill="#8C8374">Không có event nào — thêm event ở Section 01</text>
+    </svg>`;
+  }
+
+  const maxDay = Math.max(...rows.map(r => r.day)) + 2;
+  const minDay = Math.max(0, Math.min(...rows.map(r => r.day)) - 1);
+  const dayRange = Math.max(maxDay - minDay, 1);
+
+  const yMax = Math.max(peakOutstanding * 1.15, ex.creditLimit * 0.25, 20_000_000);
+  const yMin = Math.min(0, ...rows.map(r => r.L)) * 1.1;
+
+  const xOf = (day) => padL + (day - minDay) / dayRange * plotW;
+  const yOf = (val) => padT + plotH - (val - yMin) / (yMax - yMin) * plotH;
+
+  // build step path: outstanding = max(L, 0) — credit used
+  let pathD = '';
+  let prevX = xOf(minDay), prevY = yOf(0);
+  pathD += `M ${prevX} ${prevY}`;
+  rows.forEach(r => {
+    const x = xOf(r.day);
+    pathD += ` L ${x} ${prevY}`;  // horizontal to day
+    const y = yOf(Math.max(r.L, 0));
+    pathD += ` L ${x} ${y}`;      // vertical to new level
+    prevY = y;
+    prevX = x;
+  });
+  const lastX = xOf(maxDay);
+  pathD += ` L ${lastX} ${prevY}`;
+
+  // area under the curve
+  const areaD = pathD + ` L ${lastX} ${yOf(0)} L ${xOf(minDay)} ${yOf(0)} Z`;
+
+  // y-axis ticks
+  const yTicks = [];
+  const tickCount = 4;
+  for (let i = 0; i <= tickCount; i++) {
+    const v = yMin + (yMax - yMin) * i / tickCount;
+    yTicks.push(v);
+  }
+
+  // event dots + labels
+  let dots = '';
+  rows.forEach(r => {
+    const x = xOf(r.day);
+    const y = yOf(Math.max(r.L, 0));
+    const color = r.type === 'Chi' ? '#8B1A1A' : r.type === 'Thu' ? '#2D5E3C' : '#A86B0A';
+    const bg = r.type === 'Chi' ? '#FBF0F0' : r.type === 'Thu' ? '#E8F0EB' : '#F2E4C4';
+    dots += `<circle cx="${x}" cy="${y}" r="5" fill="${bg}" stroke="${color}" stroke-width="1.5"/>`;
+    // label
+    const sign = r.type === 'Chi' ? '−' : r.type === 'Thu' ? '+' : '';
+    const labelY = y > padT + 40 ? y - 14 : y + 22;
+    dots += `<text x="${x}" y="${labelY}" text-anchor="middle" class="svg-mono" font-size="10" font-weight="600" fill="${color}">${sign}${fmtShort(r.amount)}</text>`;
+    // day label at bottom
+    dots += `<text x="${x}" y="${padT + plotH + 20}" text-anchor="middle" class="svg-mono" font-size="10" fill="#8C8374">D${r.day}</text>`;
+  });
+
+  // credit limit line (scaled)
+  const creditLine = ex.creditLimit <= yMax
+    ? `<line x1="${padL}" y1="${yOf(ex.creditLimit)}" x2="${padL + plotW}" y2="${yOf(ex.creditLimit)}"
+         stroke="#8B1A1A" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+       <text x="${padL + plotW - 6}" y="${yOf(ex.creditLimit) - 4}" text-anchor="end"
+         class="svg-serif" font-style="italic" font-size="10" fill="#8B1A1A" opacity="0.75">credit limit ${fmtShort(ex.creditLimit)}</text>`
+    : '';
+
+  // LNCS annotation band - shows F value at event
+  let lncsMarkers = '';
+  rows.forEach(r => {
+    if (r.F > 0.5) {
+      const x = xOf(r.day);
+      lncsMarkers += `<line x1="${x}" y1="${yOf(0) + 6}" x2="${x}" y2="${padT + plotH + 4}" stroke="#A86B0A" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.5"/>`;
+    }
+  });
+
+  return `
+    <svg class="chart-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <!-- grid -->
+      ${yTicks.map(v => `
+        <line x1="${padL}" y1="${yOf(v)}" x2="${padL + plotW}" y2="${yOf(v)}" stroke="#D8CFBE" stroke-width="0.5" stroke-dasharray="2,4" opacity="0.6"/>
+        <text x="${padL - 8}" y="${yOf(v) + 3}" text-anchor="end" class="svg-mono" font-size="10" fill="#8C8374">${fmtShort(v)}</text>
+      `).join('')}
+
+      <!-- axes -->
+      <line x1="${padL}" y1="${yOf(0)}" x2="${padL + plotW}" y2="${yOf(0)}" stroke="#1B1B1B" stroke-width="1"/>
+      <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#1B1B1B" stroke-width="1"/>
+
+      <!-- credit limit -->
+      ${creditLine}
+
+      <!-- area under outstanding -->
+      <path d="${areaD}" fill="#F0DCDC" opacity="0.3"/>
+
+      <!-- outstanding line -->
+      <path d="${pathD}" fill="none" stroke="#8B1A1A" stroke-width="2"/>
+
+      <!-- lncs markers -->
+      ${lncsMarkers}
+
+      <!-- dots + labels -->
+      ${dots}
+
+      <!-- y-axis label -->
+      <text x="20" y="${padT + plotH / 2}" text-anchor="middle" class="svg-text" font-size="10" font-weight="700" letter-spacing="1.5" fill="#8C8374" transform="rotate(-90, 20, ${padT + plotH / 2})">OUTSTANDING (₫)</text>
+
+      <!-- x-axis label -->
+      <text x="${padL + plotW / 2}" y="${height - 8}" text-anchor="middle" class="svg-text" font-size="10" font-weight="700" letter-spacing="1.5" fill="#8C8374">TIME (days)</text>
+    </svg>
+  `;
+}
+
+/* =============================================================
+   INIT
+   ============================================================= */
+Object.keys(EXAMPLES).forEach(renderExample);
+
+// Decode share URL on init (after first render so DOM is ready)
+(function applySharedScenario() {
+  const decoded = decodeShareUrl();
+  if (!decoded) return;
+  const result = validateImportPayload(decoded.raw);
+  if (result.ok) {
+    applyImportedScenario(decoded.exKey, result.data);
+    // Switch to the relevant tab directly (don't rely on click handler being bound yet)
+    const view = decoded.exKey;
+    document.querySelectorAll('#tabs button').forEach(b =>
+      b.classList.toggle('active', b.dataset.view === view));
+    document.querySelectorAll('.view').forEach(v =>
+      v.classList.toggle('active', v.id === 'view-' + view));
+  } else {
+    console.warn('Shared scenario invalid:', result.errors);
+  }
+})();
+
+// Modal close
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalBackdrop').addEventListener('click', (e) => {
+  if (e.target.id === 'modalBackdrop') closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('modalBackdrop').classList.contains('visible')) {
+    closeModal();
+  }
+});
+
+// tab switching
+document.getElementById('tabs').addEventListener('click', (e) => {
+  let btn = e.target;
+  while (btn && btn.tagName !== 'BUTTON') btn = btn.parentElement;
+  if (!btn) return;
+  const view = btn.dataset.view;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('active', b === btn));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
+});
+
+/* =============================================================
+   EDIT HANDLERS — let Operations modify any value & re-compute
+   ============================================================= */
+function exKeyFromEl(el) {
+  const view = el.closest('.view');
+  if (!view) return null;
+  const id = view.id; // e.g. "view-ex1"
+  return id.startsWith('view-') ? id.slice(5) : null;
+}
+
+// Commit an editable scenario field
+function commitFieldEdit(el) {
+  const exKey = exKeyFromEl(el);
+  if (!exKey) return;
+  const field = el.dataset.edit;
+  if (!field) return;
+
+  const raw = el.textContent.trim();
+  let value;
+  if (el.dataset.money) {
+    value = parseMoneyInput(raw);
+  } else if (el.dataset.num) {
+    value = parseFloat(raw);
+    if (isNaN(value)) value = 0;
+  } else {
+    value = raw;
+  }
+
+  // Skip if value didn't actually change — avoids spurious re-renders
+  // that would destroy in-flight focus on other editors
+  const current = WORKING_STATE[exKey][field];
+  if (current === value) return;
+
+  const patch = {};
+  patch[field] = value;
+  updateState(exKey, patch);
+}
+
+// Commit an editable event input
+function commitEventEdit(el) {
+  const exKey = exKeyFromEl(el);
+  if (!exKey) return;
+  const idx = parseInt(el.dataset.idx, 10);
+  const field = el.dataset.evtEdit;
+  if (isNaN(idx) || !field) return;
+
+  let raw = el.value;
+  let value;
+  if (el.dataset.money) {
+    value = parseMoneyInput(raw);
+  } else if (field === 'day') {
+    value = parseInt(raw, 10);
+    if (isNaN(value)) value = 0;
+  } else {
+    value = raw;
+  }
+
+  // Skip if value didn't actually change
+  const events = WORKING_STATE[exKey].events;
+  if (!events[idx]) return;
+  if (events[idx][field] === value) return;
+
+  const patch = {};
+  patch[field] = value;
+  // Auto-update date string when day changes (best-effort)
+  if (field === 'day') {
+    patch.date = `D${value}`;
+  }
+  updateEvent(exKey, idx, patch);
+}
+
+// Blur on Enter for editable spans (so re-render happens)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.matches('[contenteditable="true"]')) {
+    e.preventDefault();
+    e.target.blur();
+  }
+});
+
+// Blur handler for contenteditable spans
+document.addEventListener('blur', (e) => {
+  if (e.target.matches && e.target.matches('[data-edit]')) {
+    commitFieldEdit(e.target);
+  }
+}, true);
+
+// Change handler for select elements (event type)
+document.addEventListener('change', (e) => {
+  if (e.target.matches && e.target.matches('select[data-evt-edit]')) {
+    commitEventEdit(e.target);
+  } else if (e.target.matches && e.target.matches('input[data-evt-edit]')) {
+    // Any input with data-evt-edit (evt-input or evt-note-input) commits on change
+    commitEventEdit(e.target);
+  }
+});
+
+// Click handler for channel toggle and delete buttons
+document.addEventListener('click', (e) => {
+  // Channel toggle
+  const chBtn = e.target.closest('[data-set-channel]');
+  if (chBtn) {
+    const wrapper = chBtn.closest('[data-channel]');
+    const exKey = wrapper && wrapper.dataset.channel;
+    if (exKey) {
+      updateState(exKey, { channel: chBtn.dataset.setChannel });
+    }
+    return;
+  }
+  // Delete event button
+  const delBtn = e.target.closest('[data-evt-delete]');
+  if (delBtn) {
+    const exKey = exKeyFromEl(delBtn);
+    const idx = parseInt(delBtn.dataset.evtDelete, 10);
+    if (exKey && !isNaN(idx)) deleteEvent(exKey, idx);
+    return;
+  }
+});
+
+// Re-render handles re-binding via the renderExample call inside update*
+// But we want focus to stay on the just-edited input where possible.
+// (Implemented via post-render focus restoration below.)
+
+function rememberFocus(el) {
+  // Build a stable key from element attributes for refocus after re-render
+  if (!el) return null;
+  if (el.dataset.edit) return `edit:${el.dataset.edit}:${exKeyFromEl(el)}`;
+  if (el.dataset.evtEdit) return `evt:${el.dataset.evtEdit}:${el.dataset.idx}:${exKeyFromEl(el)}`;
+  return null;
+}
+function restoreFocus(key) {
+  if (!key) return;
+  const [kind, ...rest] = key.split(':');
+  if (kind === 'edit') {
+    const [field, exKey] = rest;
+    const sel = `#view-${exKey} [data-edit="${field}"]`;
+    const el = document.querySelector(sel);
+    if (el) el.focus();
+  } else if (kind === 'evt') {
+    const [field, idx, exKey] = rest;
+    const sel = `#view-${exKey} [data-evt-edit="${field}"][data-idx="${idx}"]`;
+    const el = document.querySelector(sel);
+    if (el) {
+      el.focus();
+      if (el.select) el.select();
+    }
+  }
+}
+
+document.addEventListener('focusin', (e) => {
+  if (e.target.matches && (e.target.matches('[data-edit]') || e.target.matches('[data-evt-edit]'))) {
+    lastFocusKey = rememberFocus(e.target);
+  }
+});
+
+/* =============================================================
+   FORMULA TOOLTIP — show on hover of any element with .has-formula
+   ============================================================= */
+(function setupTooltip() {
+  const tip = document.getElementById('formulaTooltip');
+  let currentEl = null;
+
+  function decodeAttr(str) {
+    // Reverse of encAttr (handles &#10; back to newline, etc.)
+    return String(str || '')
+      .replace(/&#10;/g, '\n')
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&');
+  }
+
+  function showTip(el) {
+    const label = decodeAttr(el.getAttribute('data-formula-label'));
+    const formula = decodeAttr(el.getAttribute('data-formula'));
+    const calc = decodeAttr(el.getAttribute('data-calc'));
+    const note = decodeAttr(el.getAttribute('data-note'));
+    const refs = decodeAttr(el.getAttribute('data-refs'));
+
+    // Escape user content before putting into HTML
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const calcHtml = calc
+      ? calc.split('\n').map(line => `<div>${esc(line)}</div>`).join('')
+      : '';
+
+    tip.innerHTML =
+      (label ? `<div class="ft-label">${esc(label)}</div>` : '') +
+      (formula ? `<div class="ft-formula">${esc(formula)}</div>` : '') +
+      (calcHtml ? `<div class="ft-calc">${calcHtml}</div>` : '') +
+      (note ? `<div class="ft-note">${esc(note)}</div>` : '') +
+      (refs ? `<div class="ft-refs">schema: <code>${esc(refs)}</code></div>` : '');
+
+    tip.classList.add('visible');
+    positionTip(el);
+  }
+
+  function positionTip(el) {
+    const rect = el.getBoundingClientRect();
+    const tipRect = tip.getBoundingClientRect();
+    const pad = 10;
+
+    const spaceAbove = rect.top;
+    const spaceBelow = window.innerHeight - rect.bottom;
+
+    // Prefer the side with more space, but only flip if the preferred side actually fits.
+    // Default preference: ABOVE the element when the element is inside a table —
+    // ledger tables have many editable rows below, and placing below would
+    // cover them and make THU/CHI selects unreadable.
+    const inTable = !!el.closest('table');
+    const preferAbove = inTable
+      ? (spaceAbove >= tipRect.height + 16 || spaceAbove >= spaceBelow)
+      : (spaceBelow < tipRect.height + 16 && spaceAbove >= spaceBelow);
+
+    let top;
+    if (preferAbove) {
+      top = rect.top - tipRect.height - 8;
+      // If above doesn't fit, fall back to below
+      if (top < pad) {
+        top = rect.bottom + 8;
+      }
+    } else {
+      top = rect.bottom + 8;
+      // If below doesn't fit, fall back to above
+      if (top + tipRect.height > window.innerHeight - pad) {
+        top = rect.top - tipRect.height - 8;
+      }
+    }
+
+    let left = rect.left + rect.width / 2 - tipRect.width / 2;
+    // Clamp horizontally
+    if (left < pad) left = pad;
+    if (left + tipRect.width > window.innerWidth - pad) {
+      left = window.innerWidth - pad - tipRect.width;
+    }
+
+    tip.style.top = top + 'px';
+    tip.style.left = left + 'px';
+  }
+
+  function hideTip() {
+    tip.classList.remove('visible');
+    currentEl = null;
+  }
+
+  document.addEventListener('mouseover', (e) => {
+    const el = e.target.closest('.has-formula');
+    if (el && el !== currentEl) {
+      currentEl = el;
+      showTip(el);
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    const el = e.target.closest('.has-formula');
+    if (el && !el.contains(e.relatedTarget)) {
+      if (currentEl === el) hideTip();
+    }
+  });
+  // Also hide when scrolling inside a table (prevents stale tooltip)
+  window.addEventListener('scroll', () => {
+    if (currentEl) positionTip(currentEl);
+  }, true);
+  window.addEventListener('resize', () => {
+    if (currentEl) positionTip(currentEl);
+  });
+  // Hide when switching tabs
+  document.getElementById('tabs').addEventListener('click', hideTip);
+})();
+</script>
+</body>
+</html>
