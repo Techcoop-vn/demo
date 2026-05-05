@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bảng tính lãi & quyết toán — Example 2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f4f0;color:#1b1b1b;padding:20px}
+h1{font-size:17px;font-weight:600;margin-bottom:3px}
+.subtitle{font-size:12px;color:#5c564d;margin-bottom:14px}
+
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tab-btn{padding:7px 20px;font-size:13px;border:0.5px solid #d3d1c7;border-radius:6px;background:#fff;cursor:pointer;color:#5c564d}
+.tab-btn.active{background:#1e4a7a;color:#fff;border-color:#1e4a7a}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+.cfg{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:10px 14px;margin-bottom:12px}
+.cfg label{font-size:13px;color:#5c564d}
+.cfg input[type=number]{width:66px;padding:4px 8px;font-size:13px;border:1px solid #b4b2a9;border-radius:6px;background:#fffde8;color:#1b1b1b;font-weight:600;outline:none}
+.cfg input:focus{border-color:#185fa5}
+.cfg .note{font-size:11.5px;color:#888780}
+
+.table-wrap{background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;overflow:auto;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:1100px}
+thead th{background:#1e4a7a;color:#fff;padding:8px 9px;font-weight:500;font-size:11px;white-space:nowrap}
+thead tr.g2 th{background:#2a5f8f;font-size:10px;font-weight:400;padding:3px 9px;color:rgba(255,255,255,.75)}
+th.r,td.r{text-align:right;font-variant-numeric:tabular-nums}
+th.c,td.c{text-align:center}
+tbody tr{border-bottom:0.5px solid #ede6d8;cursor:pointer}
+tbody tr:hover{filter:brightness(.96)}
+tbody tr.out-row{background:#fff5f5}
+tbody tr.in-row{background:#f3fbf6}
+tbody tr.doc-row{background:#fafaf7}
+tbody tr.cltg-row{background:#eeedfe}
+tbody tr.sel{outline:2.5px solid #185fa5;outline-offset:-2px}
+td{padding:6px 9px;vertical-align:middle}
+td.muted{color:#888780;font-size:11px}
+td.zero{color:#c8c4bc}
+.r.grn{color:#0f6e56;font-weight:500}
+.r.red{color:#a32d2d}
+.r.blue{color:#185fa5;font-weight:500}
+.r.amber{color:#854f0b;font-weight:500}
+.r.purple{color:#534ab7;font-weight:500}
+.r.interest{color:#185fa5;font-weight:600}
+.r.ar-ok{color:#0f6e56}
+.r.ar-due{color:#a32d2d;font-weight:500}
+.r.ar-adv{color:#888780;font-style:italic}
+
+.badge{display:inline-block;padding:1px 6px;border-radius:999px;font-size:10.5px;font-weight:600;white-space:nowrap}
+.b-out{background:#fcebeb;color:#791f1f}
+.b-in{background:#e1f5ee;color:#085041}
+.b-doc{background:#ede6d8;color:#444441}
+.b-inv{background:#e6f1fb;color:#042c53}
+.b-bill{background:#faeeda;color:#412402}
+.b-gr{background:#f0eaf8;color:#3d1a78}
+.b-fx{background:#eeedfe;color:#3c3489}
+
+tfoot tr{background:#f1efe8}
+tfoot td{padding:8px 9px;font-weight:600;font-size:12px;border-top:1.5px solid #b4b2a9}
+
+.settle{background:#fff;border:0.5px solid #d3d1c7;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.settle-hd{background:#1e4a7a;color:#fff;padding:10px 15px;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:space-between}
+.day-pill{background:rgba(255,255,255,.2);padding:2px 10px;border-radius:999px;font-size:12px}
+.settle-body{padding:15px}
+.lncs-hero{display:flex;gap:16px;align-items:stretch;margin-bottom:14px;padding:13px 15px;border-radius:8px;border:1px solid #5dcaa5;background:#f3fbf6}
+.lncs-hero.loss{border-color:#f09595;background:#fff5f5}
+.lncs-main .lbl{font-size:10.5px;color:#5c564d;margin-bottom:2px}
+.lncs-main .val{font-size:24px;font-weight:700;color:#0f6e56;white-space:nowrap}
+.lncs-hero.loss .lncs-main .val{color:#a32d2d}
+.lncs-main .unit{font-size:11px;color:#888780;margin-top:1px}
+.lncs-formula{font-size:12px;color:#5c564d;line-height:2;flex:1;border-left:0.5px solid #d3d1c7;padding-left:14px}
+.bk-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:700px){.bk-grid{grid-template-columns:repeat(2,1fr)}}
+.bk{border:0.5px solid #d3d1c7;border-radius:7px;padding:10px 12px}
+.bk .lbl{font-size:10px;color:#888780;margin-bottom:3px;line-height:1.3}
+.bk .val{font-size:15px;font-weight:600}
+.bk .sub{font-size:10px;color:#b4b2a9;margin-top:2px}
+.bk.grn{border-color:#5dcaa5;background:#f3fbf6}
+.bk.red{border-color:#f09595;background:#fff5f5}
+.bk.amber{border-color:#ef9f27;background:#fef8ee}
+.bk.blue{border-color:#85b7eb;background:#e6f1fb}
+.bk.gray{border-color:#b4b2a9;background:#fafaf7}
+.bk.purple{border-color:#afa9ec;background:#eeedfe}
+
+.ar-bar-wrap{margin-bottom:14px;padding:12px 14px;background:#fafaf7;border:0.5px solid #d3d1c7;border-radius:7px}
+.ar-bar-lbl{font-size:11px;color:#5c564d;margin-bottom:7px;font-weight:500}
+.ar-bar-track{height:12px;background:#ede6d8;border-radius:999px;overflow:hidden;margin-bottom:4px}
+.ar-bar-fill{height:100%;border-radius:999px;background:#1d9e75}
+.ar-bar-notes{display:flex;justify-content:space-between;font-size:10.5px;color:#888780}
+
+.sec-lbl{font-size:11px;font-weight:600;color:#5c564d;margin:12px 0 7px;text-transform:uppercase;letter-spacing:.5px}
+.bill-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.bill-tbl th{background:#f5f4f0;padding:5px 8px;font-weight:500;font-size:10.5px;color:#5c564d;border-bottom:0.5px solid #d3d1c7}
+.bill-tbl th.r,.bill-tbl td.r{text-align:right}
+.bill-tbl td{padding:5px 8px;border-bottom:0.5px solid #ede6d8}
+.pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:600}
+.pill-paid{background:#e1f5ee;color:#085041}
+.pill-pend{background:#fcebeb;color:#791f1f}
+
+.hint{font-size:12px;color:#888780;margin-bottom:12px;text-align:center;padding:9px;background:#fafaf7;border-radius:6px;border:0.5px dashed #d3d1c7}
+.fn{padding:9px 13px;background:#e6f1fb;border-left:3px solid #185fa5;border-radius:0 6px 6px 0;font-size:11.5px;color:#042c53;line-height:1.7;margin-top:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:#888780}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<nav style="display:flex;gap:8px;align-items:center;padding:8px 12px;margin-bottom:18px;background:#ede6d8;border:1px solid #d3d1c7;border-radius:8px;font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;font-family:'Segoe UI',Arial,sans-serif;">
+  <span style="color:#888780;margin-right:6px;">Pages →</span>
+  <a href="index.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">Flow Visualization</a>
+  <a href="flow_examples.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">Examples</a>
+  <a href="flow_schema_and_calculation.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">Schema &amp; Calculation</a>
+  <a href="cashflow_quyettoan.html" style="padding:4px 10px;border-radius:999px;background:#1b1b1b;color:#f5f4f0;text-decoration:none;">CashFlow Quyết Toán</a>
+</nav>
+<h1>Bảng tính lãi & quyết toán — Example 2</h1>
+<p class="subtitle">SO-001 · GD-001 + GD-002 · D1 → D30 · Click dòng bất kỳ để quyết toán</p>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="vnd">Sheet 1 — VND</button>
+  <button class="tab-btn" data-tab="fx">Sheet 2 — Ngoại tệ (USD)</button>
+</div>
+
+<!-- ══════════════════════════════════════════════ SHEET 1 ══ -->
+<div class="tab-pane active" id="tab-vnd">
+
+<div class="cfg">
+  <label>Lãi suất</label>
+  <input type="number" id="rate1" value="2.5" min="0" max="100" step="0.1">
+  <span class="note">% / 30 ngày → mỗi ngày: <b id="dr1">0.0833%</b></span>
+</div>
+
+<div class="hint" id="hint1">👆 Click vào bất kỳ dòng nào để xem quyết toán</div>
+<div class="settle" id="settle1" style="display:none">
+  <div class="settle-hd"><span>Quyết toán tại</span><span class="day-pill" id="s-day1">—</span></div>
+  <div class="settle-body">
+    <div class="lncs-hero" id="lncs-hero1">
+      <div class="lncs-main">
+        <div class="lbl">Lợi nhuận tạm tính trước</div>
+        <div class="val" id="lncs-val1">—</div>
+        <div class="unit">đồng</div>
+        <div style="font-size:10px;color:#888780;margin-top:6px;line-height:1.6">
+          = Đã thu<br>− Chi phí (Bill CF + GR)<br>− Phí LNCS
+        </div>
+      </div>
+      <div class="lncs-formula" id="lncs-formula1">—</div>
+    </div>
+    <div class="bk-grid">
+      <div class="bk grn"><div class="lbl">INV đã xuất</div><div class="val" style="color:#0f6e56" id="bk1-inv">—</div><div class="sub" id="bk1-inv-sub">—</div></div>
+      <div class="bk gray"><div class="lbl">Đã thu từ Buyer</div><div class="val" id="bk1-thu">—</div><div class="sub" id="bk1-thu-sub">—</div></div>
+      <div class="bk red"><div class="lbl">GR Cost (chưa bill)</div><div class="val" style="color:#3d1a78" id="bk1-gr">—</div><div class="sub" id="bk1-gr-sub">—</div></div>
+      <div class="bk red"><div class="lbl">Bill CF</div><div class="val" style="color:#a32d2d" id="bk1-bcf">—</div><div class="sub" id="bk1-bcf-sub">—</div></div>
+      <div class="bk amber"><div class="lbl">Tổng đã thanh toán</div><div class="val" style="color:#854f0b" id="bk1-paid">—</div><div class="sub" id="bk1-paid-sub">—</div></div>
+      <div class="bk blue"><div class="lbl">Phí LNCS</div><div class="val" style="color:#185fa5" id="bk1-int">—</div><div class="sub">lãi tài chính tích lũy</div></div>
+    </div>
+    <div class="ar-bar-wrap" id="ar-wrap1">
+      <div class="ar-bar-lbl" id="ar-lbl1">—</div>
+      <div class="ar-bar-track"><div class="ar-bar-fill" id="ar-fill1" style="width:0%"></div></div>
+      <div class="ar-bar-notes"><span>Đã thu: <b id="ar-thu1">—</b></span><span>INV xuất: <b id="ar-inv1">—</b></span><span id="ar-status1">—</span></div>
+    </div>
+    <div class="sec-lbl">Chi tiết bills</div>
+    <table class="bill-tbl">
+      <thead><tr><th>Bill</th><th class="r">Giá trị</th><th>Trạng thái</th><th class="r">Đã trả</th></tr></thead>
+      <tbody id="bill-tbody1"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th class="c" rowspan="2">Ngày</th>
+      <th rowspan="2">Sự kiện</th>
+      <th class="r" colspan="2" style="border-left:1px solid rgba(255,255,255,.2)">Dòng tiền mặt</th>
+      <th class="r" colspan="3" style="border-left:1px solid rgba(255,255,255,.2)">Doanh thu Buyer</th>
+      <th class="r" colspan="3" style="border-left:1px solid rgba(255,255,255,.2)">Chi phí</th>
+      <th class="r" colspan="3" style="border-left:1px solid rgba(255,255,255,.2)">Dư nợ & Lãi</th>
+    </tr>
+    <tr class="g2">
+      <th class="r">IN</th><th class="r">OUT</th>
+      <th class="r">INV xuất</th><th class="r">Đã thu</th><th class="r">AR còn lại</th>
+      <th class="r">GR Cost</th><th class="r">Bill CF</th><th class="r">Đã trả</th>
+      <th class="r">Dư nợ tính lãi</th><th class="r">Lãi kỳ</th><th class="r">Lãi CĐ</th>
+    </tr>
+  </thead>
+  <tbody id="tbody1"></tbody>
+  <tfoot>
+    <tr>
+      <td colspan="11" style="text-align:right;color:#5c564d;font-weight:400">Tổng lãi D1→D30</td>
+      <td class="r interest" id="tot-int1">—</td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:#fcebeb;border:1px solid #f09595"></span>OUT tiền mặt</span>
+  <span><span class="dot" style="background:#e1f5ee;border:1px solid #5dcaa5"></span>IN tiền mặt</span>
+  <span><span class="dot" style="background:#f7f3fd;border:1px solid #c4aeed"></span>GR — nhận hàng, biết cost, chưa có bill</span>
+  <span><span class="dot" style="background:#fafaf7;border:1px solid #d3d1c7"></span>Chứng từ khác</span>
+</div>
+<div class="fn">
+  <b>Lợi nhuận tạm tính</b> = INV đã xuất − Bill confirmed − Phí LNCS<br>
+  <b>Dư nợ tính lãi</b> = Tổng OUT − Tổng IN (đầu kỳ). Dư nợ > 0 → công ty đang dùng vốn.
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ SHEET 2 ══ -->
+<div class="tab-pane" id="tab-fx">
+
+<div class="cfg">
+  <label>Lãi suất</label>
+  <input type="number" id="rate2" value="2.5" min="0" max="100" step="0.1">
+  <span class="note">% / 30 ngày → mỗi ngày: <b id="dr2">0.0833%</b></span>
+</div>
+
+<div class="hint" id="hint2">👆 Click vào bất kỳ dòng nào để xem quyết toán</div>
+<div class="settle" id="settle2" style="display:none">
+  <div class="settle-hd"><span>Quyết toán tại</span><span class="day-pill" id="s-day2">—</span></div>
+  <div class="settle-body">
+    <div class="lncs-hero" id="lncs-hero2">
+      <div class="lncs-main">
+        <div class="lbl">Lợi nhuận tạm tính trước</div>
+        <div class="val" id="lncs-val2">—</div>
+        <div class="unit">đồng</div>
+        <div style="font-size:10px;color:#888780;margin-top:6px;line-height:1.6">
+          = VND thực nhận (incl. CLTG)<br>− Chi phí (Bill CF + GR)<br>− Phí LNCS
+        </div>
+      </div>
+      <div class="lncs-formula" id="lncs-formula2">—</div>
+    </div>
+    <div class="bk-grid">
+      <div class="bk grn"><div class="lbl">INV đã xuất (VND)</div><div class="val" style="color:#0f6e56" id="bk2-inv">—</div><div class="sub" id="bk2-inv-sub">—</div></div>
+      <div class="bk gray"><div class="lbl">VND thực nhận</div><div class="val" id="bk2-thu">—</div><div class="sub" id="bk2-thu-sub">—</div></div>
+      <div class="bk purple"><div class="lbl">CLTG tích lũy</div><div class="val" id="bk2-cltg">—</div><div class="sub" id="bk2-cltg-sub">—</div></div>
+      <div class="bk red"><div class="lbl">Bill CF</div><div class="val" style="color:#a32d2d" id="bk2-bcf">—</div><div class="sub" id="bk2-bcf-sub">—</div></div>
+      <div class="bk amber"><div class="lbl">Tổng đã thanh toán</div><div class="val" style="color:#854f0b" id="bk2-paid">—</div><div class="sub" id="bk2-paid-sub">—</div></div>
+      <div class="bk blue"><div class="lbl">Phí LNCS</div><div class="val" style="color:#185fa5" id="bk2-int">—</div><div class="sub">lãi tài chính tích lũy</div></div>
+    </div>
+    <div class="ar-bar-wrap" id="ar-wrap2">
+      <div class="ar-bar-lbl" id="ar-lbl2">—</div>
+      <div class="ar-bar-track"><div class="ar-bar-fill" id="ar-fill2" style="width:0%"></div></div>
+      <div class="ar-bar-notes"><span>Đã thu: <b id="ar-thu2">—</b></span><span>INV xuất: <b id="ar-inv2">—</b></span><span id="ar-status2">—</span></div>
+    </div>
+    <div class="sec-lbl">Chi tiết bills</div>
+    <table class="bill-tbl">
+      <thead><tr><th>Bill</th><th class="r">Giá trị</th><th>Trạng thái</th><th class="r">Đã trả</th></tr></thead>
+      <tbody id="bill-tbody2"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th class="c" rowspan="2">Ngày</th>
+      <th rowspan="2">Sự kiện &amp; Tỉ giá</th>
+      <th class="r" colspan="2" style="border-left:1px solid rgba(255,255,255,.2)">Dòng tiền (VND thực)</th>
+      <th class="r" colspan="4" style="border-left:1px solid rgba(255,255,255,.2)">Doanh thu Buyer</th>
+      <th class="r" colspan="3" style="border-left:1px solid rgba(255,255,255,.2)">Chi phí</th>
+      <th class="r" colspan="3" style="border-left:1px solid rgba(255,255,255,.2)">Dư nợ & Lãi</th>
+    </tr>
+    <tr class="g2">
+      <th class="r">IN</th><th class="r">OUT</th>
+      <th class="r">INV (USD)</th><th class="r">INV (VND)</th><th class="r">Đã thu (VND)</th><th class="r">AR còn lại</th>
+      <th class="r">GR Cost</th><th class="r">Bill CF</th><th class="r">Đã trả</th>
+      <th class="r">Dư nợ tính lãi</th><th class="r">Lãi kỳ</th><th class="r">Lãi CĐ</th>
+    </tr>
+  </thead>
+  <tbody id="tbody2"></tbody>
+  <tfoot>
+    <tr>
+      <td colspan="13" style="text-align:right;color:#5c564d;font-weight:400">Tổng lãi D1→D30</td>
+      <td class="r interest" id="tot-int2">—</td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:#eeedfe;border:1px solid #afa9ec"></span>FX — dòng CLTG tỉ giá</span>
+  <span><span class="dot" style="background:#fcebeb;border:1px solid #f09595"></span>OUT tiền mặt</span>
+  <span><span class="dot" style="background:#e1f5ee;border:1px solid #5dcaa5"></span>IN tiền mặt</span>
+  <span><span class="dot" style="background:#fafaf7;border:1px solid #d3d1c7"></span>Chứng từ / GR</span>
+</div>
+<div class="fn">
+  <b>CLTG</b> = VND thực nhận − (USD × Tỉ giá INV). Dương = lãi tỉ giá, Âm = lỗ tỉ giá.<br>
+  <b>Lợi nhuận tạm tính</b> = VND thực nhận − Bill CF − Phí LNCS (đã bao gồm CLTG).
+</div>
+</div>
+
+<script>
+const BILLS=[
+  {name:'Bill-001 (cogs đợt 1)', value:60e6, cf_row:4, pd_row:5},
+  {name:'Bill-002 (bao bì)',     value:10e6, cf_row:4, pd_row:5},
+  {name:'Bill-003 (cogs đợt 2)', value:60e6, cf_row:10, pd_row:11},
+  {name:'Bill-004 (vận chuyển)', value:20e6, cf_row:10, pd_row:11},
+];
+
+const GR_ITEMS=[
+  {name:'GR-001 cogs đợt 1 (60M)',      value:60e6, gr_row:3, replaced_row:4},
+  {name:'GR-002 bao bì (10M)',           value:10e6, gr_row:3, replaced_row:4},
+  {name:'GR-003 cogs đợt 2 (60M)',      value:60e6, gr_row:9, replaced_row:10},
+  {name:'GR-004 vận chuyển đợt 2 (20M)',value:20e6, gr_row:9, replaced_row:10},
+];
+
+// Sheet 1 — VND
+// thu = tiền thực nhận từ Buyer (VND)
+// inv_vnd = INV theo tỉ giá INV (VND)
+const ROWS1=[
+  {day:1,  type:'doc', label:'OP WON — SO-001 (200M) + PO-001/002/003',                        inc:0,    out:0,    inv:0,      thu:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+  {day:3,  type:'in',  label:'Customer Advance — cọc 30% × 200M',                               inc:60e6, out:0,    inv:0,      thu:60e6, bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+  {day:5,  type:'out', label:'Vendor Advance — tạm ứng 50% × PO-001',                           inc:0,    out:60e6, inv:0,      thu:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:60e6},
+  {day:10, type:'gr',  label:'GR-001 cogs 60M + GR-002 bao bì 10M — nhận hàng đợt 1',          inc:0,    out:0,    inv:0,      thu:0,    bill_cf:0,    bill_pd:0, gr:70e6, vout:0},
+  {day:12, type:'doc', label:'Bill-001 (60M) + Bill-002 (10M) confirmed',                        inc:0,    out:0,    inv:0,      thu:0,    bill_cf:70e6, bill_pd:0, gr:0,    vout:0},
+  {day:12, type:'out', label:'Vendor Payment — Bill-001 còn lại 30M + Bill-002 10M + adv 30M',   inc:0,    out:40e6, inv:0,      thu:0,    bill_cf:0,    bill_pd:70e6,gr:0,  vout:40e6},
+  {day:14, type:'doc', label:'GD-001 giao cont 1',                                               inc:0,    out:0,    inv:0,      thu:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+  {day:14, type:'inv', label:'INV-001 confirmed — doanh thu cont 1 (100M)',                      inc:0,    out:0,    inv:100e6,  thu:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+  {day:15, type:'in',  label:'Customer Payment — INV-001 còn lại 70M',                          inc:70e6, out:0,    inv:0,      thu:70e6, bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+  {day:20, type:'gr',  label:'GR-003 cogs 60M + GR-004 vận chuyển 20M — nhận hàng đợt 2',      inc:0,    out:0,    inv:0,      thu:0,    bill_cf:0,    bill_pd:0, gr:80e6, vout:0},
+  {day:22, type:'doc', label:'Bill-003 (60M) + Bill-004 (20M) confirmed',                        inc:0,    out:0,    inv:0,      thu:0,    bill_cf:80e6, bill_pd:0, gr:0,    vout:0},
+  {day:22, type:'out', label:'Vendor Payment — Bill-003 còn lại 30M + Bill-004 20M + adv 30M',   inc:0,    out:50e6, inv:0,      thu:0,    bill_cf:0,    bill_pd:80e6,gr:0,  vout:50e6},
+  {day:25, type:'doc', label:'GD-002 giao cont 2',                                               inc:0,    out:0,    inv:0,      thu:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+  {day:25, type:'inv', label:'INV-002 confirmed — doanh thu cont 2 (100M)',                      inc:0,    out:0,    inv:100e6,  thu:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+  {day:30, type:'in',  label:'Customer Payment — INV-002 còn lại 70M',                          inc:70e6, out:0,    inv:0,      thu:70e6, bill_cf:0,    bill_pd:0, gr:0,    vout:0},
+];
+
+// Sheet 2 — Ngoại tệ
+// INV-001: 4,000 USD @ 25,100 = 100,400,000 VND (≈100M)
+// INV-002: 4,000 USD @ 25,200 = 100,800,000 VND (≈100M)
+// D3  advance: 2,400 USD @ 25,000 = 60,000,000 VND
+// D15 payment: 2,800 USD @ 25,000 = 70,000,000 VND
+// D30 payment: 2,800 USD @ 25,500 = 71,400,000 VND
+// CLTG tính tại mỗi lần thu = VND thực nhận - (USD × tỉ giá INV tương ứng)
+// D3  split: 1,200 USD cho INV-001 @ 25,100 → ref_vnd = 30,120,000; thực = 30,000,000 → CLTG = -120,000
+//            1,200 USD cho INV-002 @ 25,200 → ref_vnd = 30,240,000; thực = 30,000,000 → CLTG = -240,000
+// D15: 2,800 USD cho INV-001 @ 25,100 → ref_vnd = 70,280,000; thực = 70,000,000 → CLTG = -280,000
+// D30: 2,800 USD cho INV-002 @ 25,200 → ref_vnd = 70,560,000; thực = 71,400,000 → CLTG = +840,000
+// Mỗi lần thu có 1 dòng FX ngay bên dưới để hiện CLTG
+
+const ROWS2=[
+  {day:1,  type:'doc', label:'OP WON — SO-001 (8,000 USD) + PO-001/002/003',                  inc:0,       out:0,    inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:3,  type:'in',  label:'Customer Advance — 2,400 USD @ 25,000 (~60M)',                   inc:60e6,    out:0,    inv_usd:0,    inv_vnd:0,         thu:60e6,    thu_usd:2400, bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:5,  type:'out', label:'Vendor Advance — tạm ứng 50% × PO-001',                         inc:0,       out:60e6, inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:60e6, cltg:0},
+  {day:10, type:'gr',  label:'GR-001 cogs 60M + GR-002 bao bì 10M — nhận hàng đợt 1',        inc:0,       out:0,    inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:70e6, vout:0,    cltg:0},
+  {day:12, type:'doc', label:'Bill-001 (60M) + Bill-002 (10M) confirmed',                      inc:0,       out:0,    inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:70e6, bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:12, type:'out', label:'Vendor Payment — Bill-001 còn lại 30M + Bill-002 10M + adv 30M', inc:0,       out:40e6, inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:70e6,gr:0,  vout:40e6, cltg:0},
+  {day:14, type:'doc', label:'GD-001 giao cont 1',                                             inc:0,       out:0,    inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:14, type:'inv', label:'INV-001 confirmed — 4,000 USD @ 25,100',                        inc:0,       out:0,    inv_usd:4000, inv_vnd:100400000, thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:15, type:'in',  label:'Customer Payment — 2,800 USD @ 25,000 (INV-001 còn lại)',       inc:70e6,    out:0,    inv_usd:0,    inv_vnd:0,         thu:70e6,    thu_usd:2800, bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:-280000},
+  {day:20, type:'gr',  label:'GR-003 cogs 60M + GR-004 vận chuyển 20M — nhận hàng đợt 2',    inc:0,       out:0,    inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:80e6, vout:0,    cltg:0},
+  {day:22, type:'doc', label:'Bill-003 (60M) + Bill-004 (20M) confirmed',                      inc:0,       out:0,    inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:80e6, bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:22, type:'out', label:'Vendor Payment — Bill-003 còn lại 30M + Bill-004 20M + adv 30M', inc:0,       out:50e6, inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:80e6,gr:0,  vout:50e6, cltg:0},
+  {day:25, type:'doc', label:'GD-002 giao cont 2',                                             inc:0,       out:0,    inv_usd:0,    inv_vnd:0,         thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:25, type:'inv', label:'INV-002 confirmed — 4,000 USD @ 25,200',                        inc:0,       out:0,    inv_usd:4000, inv_vnd:100800000, thu:0,       thu_usd:0,    bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:0},
+  {day:30, type:'in',  label:'Customer Payment — 2,800 USD @ 25,500 (INV-002 còn lại)',       inc:71400000,out:0,    inv_usd:0,    inv_vnd:0,         thu:71400000,thu_usd:2800, bill_cf:0,    bill_pd:0, gr:0,    vout:0,    cltg:840000},
+];
+
+let C1=[], C2=[], sel1=null, sel2=null;
+const fmt=n=>n===0?'—':Math.abs(Math.round(n)).toLocaleString('vi-VN');
+const fmtS=n=>n===0?'—':(n>0?'+':'-')+Math.abs(Math.round(n)).toLocaleString('vi-VN');
+
+function recompute1(rate){
+  const daily=rate/30;
+  let du_no=0,ci=0,cum_inv=0,cum_thu=0,cum_bcf=0,cum_bpd=0,cum_gr=0,cum_vout=0;
+  C1=[];
+  ROWS1.forEach((r,i)=>{
+    const prev=i===0?r.day:ROWS1[i-1].day;
+    const days=r.day-prev;
+    const dn0=du_no;
+    du_no=du_no+r.out-r.inc;
+    cum_inv+=r.inv; cum_thu+=r.thu;
+    cum_bcf+=r.bill_cf; cum_bpd+=r.bill_pd;
+    cum_vout+=r.vout||0;
+    cum_gr+=r.gr||0;
+    if(r.bill_cf>0) GR_ITEMS.filter(g=>g.replaced_row===i).forEach(g=>{cum_gr-=g.value;});
+    const interest=(dn0>0&&days>0)?dn0*daily*days:0;
+    ci+=interest;
+    const ar=cum_inv-cum_thu;
+    const ap=cum_bcf-cum_vout;
+    const cost_for_lncs=cum_bcf+cum_gr;
+    const lncs=cum_thu-cost_for_lncs-ci;
+    const bills=BILLS.map(b=>({...b,cf_vis:b.cf_row<=i,pd_vis:b.pd_row<=i}));
+    const grs=GR_ITEMS.map(g=>({...g,vis:g.gr_row<=i&&g.replaced_row>i}));
+    C1.push({...r,days,dn0,dn1:du_no,interest,ci,cum_inv,cum_thu,cum_bcf,cum_bpd,cum_gr,cum_vout,ap,ar,lncs,cost_for_lncs,daily,bills,grs});
+  });
+}
+
+function recompute2(rate){
+  const daily=rate/30;
+  let du_no=0,ci=0,cum_inv_usd=0,cum_inv_vnd=0,cum_thu=0,cum_thu_usd=0,cum_bcf=0,cum_bpd=0,cum_gr=0,cum_vout=0,cum_cltg=0;
+  C2=[];
+  ROWS2.forEach((r,i)=>{
+    const prevDay=i===0?r.day:ROWS2[i-1].day;
+    const days=r.day-prevDay;
+    const dn0=du_no;
+    du_no=du_no+r.out-r.inc;
+    cum_inv_usd+=r.inv_usd||0;
+    cum_inv_vnd+=r.inv_vnd||0;
+    cum_thu+=r.thu;
+    cum_thu_usd+=r.thu_usd||0;
+    cum_bcf+=r.bill_cf; cum_bpd+=r.bill_pd;
+    cum_vout+=r.vout||0;
+    cum_gr+=r.gr||0;
+    if(r.bill_cf>0) GR_ITEMS.filter(g=>g.replaced_row===i).forEach(g=>{cum_gr-=g.value;});
+    // CLTG chỉ tích lũy khi đã có INV (cum_inv_vnd > 0)
+    if(cum_inv_vnd>0) cum_cltg+=r.cltg||0;
+    const interest=(dn0>0&&days>0)?dn0*daily*days:0;
+    ci+=interest;
+    const ar=cum_inv_vnd-cum_thu;
+    const ar_usd=cum_inv_usd-cum_thu_usd;
+    const cost_for_lncs=cum_bcf+cum_gr;
+    const lncs=cum_thu-cost_for_lncs-ci;
+    const bills=BILLS.map(b=>({...b,cf_vis:b.cf_row<=i,pd_vis:b.pd_row<=i}));
+    const grs=GR_ITEMS.map(g=>({...g,vis:g.gr_row<=i&&g.replaced_row>i}));
+    C2.push({...r,days,dn0,dn1:du_no,interest,ci,cum_inv_usd,cum_inv_vnd,cum_thu,cum_thu_usd,cum_bcf,cum_bpd,cum_gr,cum_vout,cum_cltg,ar,ar_usd,lncs,cost_for_lncs,daily,bills,grs});
+  });
+}
+
+function renderTable1(){
+  const rate=parseFloat(document.getElementById('rate1').value)/100;
+  document.getElementById('dr1').textContent=(rate/30*100).toFixed(4)+'%';
+  recompute1(rate);
+  const tbody=document.getElementById('tbody1');
+  tbody.innerHTML='';
+  C1.forEach((c,i)=>{
+    const rc=c.type==='in'?'in-row':c.type==='out'?'out-row':'doc-row';
+    const bc=c.type==='in'?'b-in':c.type==='out'?'b-out':c.type==='inv'?'b-inv':c.type==='gr'?'b-gr':c.bill_cf>0?'b-bill':'b-doc';
+    const bl=c.type==='in'?'IN':c.type==='out'?'OUT':c.type==='inv'?'INV':c.type==='gr'?'GR':c.bill_cf>0?'BILL':'DOC';
+    const s=sel1===i?' sel':'';
+    let arCell;
+    if(c.cum_inv===0){arCell=`<td class="r zero">—</td>`;}
+    else if(c.ar>0){arCell=`<td class="r ar-due">+${fmt(c.ar)}</td>`;}
+    else if(c.ar<0){arCell=`<td class="r ar-adv">(${fmt(-c.ar)} dư)</td>`;}
+    else{arCell=`<td class="r ar-ok">0</td>`;}
+    const tr=document.createElement('tr');
+    tr.className=rc+s;
+    tr.innerHTML=`
+      <td class="c muted" style="white-space:nowrap">D${c.day}</td>
+      <td><span class="badge ${bc}">${bl}</span> <span style="font-size:11.5px;color:#5c564d">${c.label}</span></td>
+      ${c.inc>0?`<td class="r grn">+${fmt(c.inc)}</td>`:`<td class="r zero">—</td>`}
+      ${c.out>0?`<td class="r red">−${fmt(c.out)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_inv>0?`<td class="r blue">${fmt(c.cum_inv)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_thu>0?`<td class="r grn">${fmt(c.cum_thu)}</td>`:`<td class="r zero">—</td>`}
+      ${arCell}
+      ${c.cum_gr>0?`<td class="r" style="color:#3d1a78">${fmt(c.cum_gr)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_bcf>0?`<td class="r amber">${fmt(c.cum_bcf)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_vout>0?`<td class="r muted">${fmt(c.cum_vout)}</td>`:`<td class="r zero">—</td>`}
+      ${c.dn0>0?`<td class="r blue">${fmt(c.dn0)}</td>`:`<td class="r zero">—</td>`}
+      ${c.interest>0?`<td class="r interest">${fmt(c.interest)}</td>`:`<td class="r zero">0</td>`}
+      ${c.ci>0?`<td class="r muted">${fmt(c.ci)}</td>`:`<td class="r zero">—</td>`}`;
+    tr.addEventListener('click',()=>selectRow1(i));
+    tbody.appendChild(tr);
+  });
+  const last=C1[C1.length-1];
+  document.getElementById('tot-int1').textContent=fmt(last.ci)+' đ';
+  if(sel1!==null) renderSettle1(sel1);
+}
+
+function renderTable2(){
+  const rate=parseFloat(document.getElementById('rate2').value)/100;
+  document.getElementById('dr2').textContent=(rate/30*100).toFixed(4)+'%';
+  recompute2(rate);
+  const tbody=document.getElementById('tbody2');
+  tbody.innerHTML='';
+  C2.forEach((c,i)=>{
+    const rc=c.type==='in'?'in-row':c.type==='out'?'out-row':'doc-row';
+    const bc=c.type==='in'?'b-in':c.type==='out'?'b-out':c.type==='inv'?'b-inv':c.type==='gr'?'b-gr':c.bill_cf>0?'b-bill':'b-doc';
+    const bl=c.type==='in'?'IN':c.type==='out'?'OUT':c.type==='inv'?'INV':c.type==='gr'?'GR':c.bill_cf>0?'BILL':'DOC';
+    const s=sel2===i?' sel':'';
+    let arCell;
+    if(c.cum_inv_usd===0){arCell=`<td class="r zero">—</td>`;}
+    else if(c.ar_usd>0){arCell=`<td class="r ar-due">${c.ar_usd.toLocaleString('vi-VN')} USD</td>`;}
+    else if(c.ar_usd<0){arCell=`<td class="r ar-adv">(${(-c.ar_usd).toLocaleString('vi-VN')} dư)</td>`;}
+    else{arCell=`<td class="r ar-ok">0</td>`;}
+    const tr=document.createElement('tr');
+    tr.className=rc+s;
+    tr.innerHTML=`
+      <td class="c muted" style="white-space:nowrap">D${c.day}</td>
+      <td><span class="badge ${bc}">${bl}</span> <span style="font-size:11.5px;color:#5c564d">${c.label}</span></td>
+      ${c.inc>0?`<td class="r grn">+${fmt(c.inc)}</td>`:`<td class="r zero">—</td>`}
+      ${c.out>0?`<td class="r red">−${fmt(c.out)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_inv_usd>0?`<td class="r blue">${c.cum_inv_usd.toLocaleString('vi-VN')} USD</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_inv_vnd>0?`<td class="r blue">${fmt(c.cum_inv_vnd)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_thu>0?`<td class="r grn">${fmt(c.cum_thu)}</td>`:`<td class="r zero">—</td>`}
+      ${arCell}
+      ${c.cum_gr>0?`<td class="r" style="color:#3d1a78">${fmt(c.cum_gr)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_bcf>0?`<td class="r amber">${fmt(c.cum_bcf)}</td>`:`<td class="r zero">—</td>`}
+      ${c.cum_vout>0?`<td class="r muted">${fmt(c.cum_vout)}</td>`:`<td class="r zero">—</td>`}
+      ${c.dn0>0?`<td class="r blue">${fmt(c.dn0)}</td>`:`<td class="r zero">—</td>`}
+      ${c.interest>0?`<td class="r interest">${fmt(c.interest)}</td>`:`<td class="r zero">0</td>`}
+      ${c.ci>0?`<td class="r muted">${fmt(c.ci)}</td>`:`<td class="r zero">—</td>`}`;
+    tr.addEventListener('click',()=>selectRow2(i));
+    tbody.appendChild(tr);
+  });
+  const last=C2[C2.length-1];
+  document.getElementById('tot-int2').textContent=fmt(last.ci)+' đ';
+  if(sel2!==null) renderSettle2(sel2);
+}
+
+function selectRow1(i){
+  sel1=sel1===i?null:i;
+  document.querySelectorAll('#tbody1 tr').forEach((tr,idx)=>tr.classList.toggle('sel',idx===sel1));
+  const sp=document.getElementById('settle1'),ht=document.getElementById('hint1');
+  if(sel1!==null){renderSettle1(sel1);sp.style.display='block';ht.style.display='none';sp.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  else{sp.style.display='none';ht.style.display='block';}
+}
+
+function selectRow2(i){
+  sel2=sel2===i?null:i;
+  document.querySelectorAll('#tbody2 tr').forEach((tr,idx)=>tr.classList.toggle('sel',idx===sel2));
+  const sp=document.getElementById('settle2'),ht=document.getElementById('hint2');
+  if(sel2!==null){renderSettle2(sel2);sp.style.display='block';ht.style.display='none';sp.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  else{sp.style.display='none';ht.style.display='block';}
+}
+
+function fillSettle(c, sfx, isSheet2){
+  document.getElementById('s-day'+sfx).textContent=`D${c.day}`;
+  const lncs=c.lncs;
+  document.getElementById('lncs-val'+sfx).textContent=(lncs>=0?'+':'')+Math.round(lncs).toLocaleString('vi-VN')+' đ';
+  document.getElementById('lncs-hero'+sfx).className='lncs-hero'+(lncs<0?' loss':'');
+  const grNote=c.cum_gr>0?`<br><span style="color:#3d1a78">GR chưa có bill: ${fmt(c.cum_gr)} đ</span>`:'';
+  const ar_check = isSheet2 ? c.ar_usd : c.ar;
+  const arNote = ar_check>0
+    ? (isSheet2?`<span style="color:#a32d2d"> ⚠ Buyer còn nợ ${ar_check.toLocaleString('vi-VN')} USD</span>`:`<span style="color:#a32d2d"> ⚠ Buyer còn nợ ${fmt(ar_check)} đ</span>`)
+    : ar_check<0
+    ? (isSheet2?`<span style="color:#0f6e56"> Buyer trả dư ${(-ar_check).toLocaleString('vi-VN')} USD</span>`:`<span style="color:#0f6e56"> Buyer trả dư ${fmt(-ar_check)} đ</span>`)
+    : (c.cum_inv_usd>0||c.cum_inv>0)?`<span style="color:#0f6e56"> Đã thanh toán đủ HĐ ✓</span>`:'';
+  const invVnd=isSheet2?c.cum_inv_vnd:c.cum_inv;
+  const thuLabel=isSheet2?'VND thực nhận':'Đã thu';
+  const cltgLine=isSheet2&&c.cum_cltg!==0?`<span style="color:${c.cum_cltg>0?'#0f6e56':'#a32d2d'}">CLTG tích lũy: ${fmtS(c.cum_cltg)} đ</span><br>`:'';
+  document.getElementById('lncs-formula'+sfx).innerHTML=
+    `<span style="color:#0f6e56">Đã thu: +${fmt(c.cum_thu)} đ</span>`+
+    ` &nbsp;|&nbsp; <span style="color:#888780">INV xuất: ${fmt(invVnd)} đ</span>${arNote}<br>`+
+    `${cltgLine}`+
+    `<span style="color:#a32d2d">Chi phí (Bill CF): ${fmt(c.cum_bcf)} đ</span>${grNote}<br>`+
+    `<span style="color:#185fa5">Phí LNCS: ${fmt(c.ci)} đ</span><br>`+
+    `<b>= ${(lncs>=0?'+':'')+Math.round(lncs).toLocaleString('vi-VN')} đ</b>`;
+
+  document.getElementById('bk'+sfx+'-inv').textContent=invVnd>0?'+'+fmt(invVnd)+' đ':'0';
+  document.getElementById('bk'+sfx+'-inv-sub').textContent=invVnd>0?(isSheet2?c.cum_inv_usd.toLocaleString()+' USD':'HĐ đã xuất'):'Chưa xuất HĐ';
+  const thuPct=invVnd>0?Math.round(c.cum_thu/invVnd*100):0;
+  document.getElementById('bk'+sfx+'-thu').textContent=c.cum_thu>0?fmt(c.cum_thu)+' đ':'0';
+  document.getElementById('bk'+sfx+'-thu').style.color=ar_check>0?'#a32d2d':c.cum_thu>0?'#0f6e56':'#888780';
+  document.getElementById('bk'+sfx+'-thu-sub').textContent=invVnd>0?`${thuPct}% HĐ đã xuất`:'—';
+
+  if(isSheet2){
+    document.getElementById('bk2-cltg').textContent=c.cum_cltg!==0?fmtS(c.cum_cltg)+' đ':'0';
+    document.getElementById('bk2-cltg').style.color=c.cum_cltg>0?'#0f6e56':c.cum_cltg<0?'#a32d2d':'#888780';
+    document.getElementById('bk2-cltg-sub').textContent=c.cum_cltg>0?'Lãi tỉ giá':c.cum_cltg<0?'Lỗ tỉ giá':'Không phát sinh';
+  } else {
+    document.getElementById('bk1-gr').textContent=c.cum_gr>0?fmt(c.cum_gr)+' đ':'0';
+    document.getElementById('bk1-gr-sub').textContent=c.cum_gr>0?`${c.grs.filter(g=>g.vis).length} GR chưa bill`:'Không có';
+  }
+
+  document.getElementById('bk'+sfx+'-bcf').textContent=c.cum_bcf>0?fmt(c.cum_bcf)+' đ':'0';
+  document.getElementById('bk'+sfx+'-bcf-sub').textContent=c.cum_bcf>0?`${c.bills.filter(b=>b.cf_vis).length} bill confirmed`:'Chưa có bill';
+  document.getElementById('bk'+sfx+'-paid').textContent=c.cum_vout>0?fmt(c.cum_vout)+' đ':'0';
+  document.getElementById('bk'+sfx+'-paid-sub').textContent=c.cum_bcf>0?(c.cum_vout>=c.cum_bcf?'≥ Bill CF':'< Bill CF'):(c.cum_vout>0?'Advance chưa bill':'Chưa TT');
+  document.getElementById('bk'+sfx+'-int').textContent=c.ci>0?fmt(c.ci)+' đ':'0';
+
+  if(invVnd>0){
+    const ar_check = isSheet2 ? c.ar_usd : c.ar;
+    const pct = isSheet2
+      ? Math.min(100, Math.round(c.cum_thu_usd / c.cum_inv_usd * 100))
+      : Math.min(100, Math.round(c.cum_thu / invVnd * 100));
+    document.getElementById('ar-fill'+sfx).style.width=pct+'%';
+    document.getElementById('ar-fill'+sfx).style.background=ar_check<=0?'#1d9e75':'#e24b4a';
+    document.getElementById('ar-lbl'+sfx).textContent=
+      ar_check>0 ? (isSheet2 ? `Buyer còn nợ ${ar_check.toLocaleString('vi-VN')} USD` : `Buyer còn nợ ${fmt(ar_check)} đ theo HĐ đã xuất`) :
+      ar_check<0 ? (isSheet2 ? `Buyer đã trả dư ${(-ar_check).toLocaleString('vi-VN')} USD` : `Buyer đã trả dư ${fmt(-ar_check)} đ`) :
+      'Buyer đã thanh toán đủ ✓';
+    document.getElementById('ar-thu'+sfx).textContent = isSheet2
+      ? c.cum_thu_usd.toLocaleString('vi-VN')+' USD'
+      : fmt(c.cum_thu)+' đ';
+    document.getElementById('ar-inv'+sfx).textContent = isSheet2
+      ? c.cum_inv_usd.toLocaleString('vi-VN')+' USD'
+      : fmt(invVnd)+' đ';
+    document.getElementById('ar-status'+sfx).textContent=pct+'% thu được';
+    document.getElementById('ar-wrap'+sfx).style.display='block';
+  } else {
+    document.getElementById('ar-wrap'+sfx).style.display='none';
+  }
+
+  const bt=document.getElementById('bill-tbody'+sfx);
+  bt.innerHTML='';
+  const vb=c.bills.filter(b=>b.cf_vis);
+  const vg=c.grs.filter(g=>g.vis);
+  if(!vb.length&&!vg.length){
+    bt.innerHTML=`<tr><td colspan="4" style="text-align:center;color:#b4b2a9;padding:10px 8px">Chưa có GR hoặc bill nào tại D${c.day}</td></tr>`;
+  } else {
+    vb.forEach(b=>{
+      const paid=b.pd_vis;
+      bt.innerHTML+=`<tr><td>${b.name}</td><td class="r">${fmt(b.value)} đ</td><td><span class="pill ${paid?'pill-paid':'pill-pend'}">${paid?'Đã trả':'Chưa trả'}</span></td><td class="r" style="color:${paid?'#0f6e56':'#c8c4bc'}">${paid?fmt(b.value)+' đ':'—'}</td></tr>`;
+    });
+    vg.forEach(g=>{
+      bt.innerHTML+=`<tr style="background:#f7f3fd"><td style="color:#3d1a78">${g.name}</td><td class="r" style="color:#3d1a78">${fmt(g.value)} đ</td><td><span class="pill" style="background:#f0eaf8;color:#3d1a78">Chưa có bill</span></td><td class="r zero">—</td></tr>`;
+    });
+  }
+}
+
+function renderSettle1(i){ fillSettle(C1[i],'1',false); }
+function renderSettle2(i){ fillSettle(C2[i],'2',true); }
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('rate1').addEventListener('input',renderTable1);
+document.getElementById('rate2').addEventListener('input',renderTable2);
+
+// ── Native title tooltips (works in all iframe/sandbox envs) ──
+function addTitleTips(tbody, computed, isSheet2){
+  var trs = tbody.querySelectorAll('tr');
+  trs.forEach(function(tr, i){
+    var c = computed[i];
+    if(!c) return;
+    var tds = tr.querySelectorAll('td');
+    var fmt2 = function(n){ return Math.abs(Math.round(n)).toLocaleString('vi-VN'); };
+    var pct  = function(r){ return (r*100).toFixed(4)+'%'; };
+    var billNames = c.bills.filter(function(b){return b.cf_vis;})
+                           .map(function(b){return '  + '+b.name+': '+fmt2(b.value)+' đ';})
+                           .join('\n');
+
+    var tips = isSheet2 ? [
+      null, null,
+      c.inc>0   ? 'Tiền mặt IN kỳ D'+c.day+'\n= '+fmt2(c.inc)+' đ' : null,
+      c.out>0   ? 'Tiền mặt OUT kỳ D'+c.day+'\n= '+fmt2(c.out)+' đ' : null,
+      c.cum_inv_usd>0 ? 'INV tích lũy (USD) đến D'+c.day+'\n= Σ INV đã confirm\n= '+c.cum_inv_usd.toLocaleString('vi-VN')+' USD' : null,
+      c.cum_inv_vnd>0 ? 'INV tích lũy (VND) đến D'+c.day+'\n= Σ (USD × tỉ giá INV)\n= '+fmt2(c.cum_inv_vnd)+' đ' : null,
+      c.cum_thu>0  ? 'VND thực nhận đến D'+c.day+'\n= Σ cash IN từ Buyer\n= '+fmt2(c.cum_thu)+' đ' : null,
+      c.cum_inv_usd===0 ? null : c.ar_usd>0
+        ? 'AR còn lại (USD) đến D'+c.day+'\n= INV USD - Đã thu USD\n= '+c.cum_inv_usd.toLocaleString()+' - '+c.cum_thu_usd.toLocaleString()+'\n= '+c.ar_usd.toLocaleString('vi-VN')+' USD'
+        : c.ar_usd<0 ? 'Buyer trả dư '+(-c.ar_usd).toLocaleString('vi-VN')+' USD đến D'+c.day
+        : 'AR = 0 tại D'+c.day+' — Buyer đã TT đủ',
+      c.cum_gr>0   ? 'GR chưa có bill đến D'+c.day+'\n= Σ GR - Σ GR đã bill\n= '+fmt2(c.cum_gr)+' đ' : null,
+      c.cum_bcf>0  ? 'Bill confirmed đến D'+c.day+'\n'+billNames+'\n= '+fmt2(c.cum_bcf)+' đ' : null,
+      c.cum_vout>0 ? 'Đã TT Vendor đến D'+c.day+'\n= Σ OUT cho vendor\n= '+fmt2(c.cum_vout)+' đ' : null,
+      c.dn0>0 ? 'Dư nợ đầu kỳ D'+c.day+'\n= Σ OUT - Σ IN trước kỳ này\n= '+fmt2(c.dn0)+' đ\nLãi kỳ = '+fmt2(c.dn0)+' x '+pct(c.daily)+' x '+c.days+' ngày' : null,
+      'Lãi kỳ D'+c.day+(c.interest>0
+        ? '\n= Dư nợ x lãi/ngày x số ngày\n= '+fmt2(c.dn0)+' x '+pct(c.daily)+' x '+c.days+' ngày\n= '+fmt2(c.interest)+' đ'
+        : '\nKhông phát sinh — Dư nợ = 0'),
+      c.ci>0 ? 'Lãi cộng dồn đến D'+c.day+'\n= Σ lãi kỳ D1 → D'+c.day+'\n= '+fmt2(c.ci)+' đ' : null,
+    ] : [
+      null, null,
+      c.inc>0   ? 'Tiền mặt IN kỳ D'+c.day+'\n= '+fmt2(c.inc)+' đ' : null,
+      c.out>0   ? 'Tiền mặt OUT kỳ D'+c.day+'\n= '+fmt2(c.out)+' đ' : null,
+      c.cum_inv>0  ? 'INV tích lũy đến D'+c.day+'\n= Σ các INV đã confirm\n= '+fmt2(c.cum_inv)+' đ' : null,
+      c.cum_thu>0  ? 'Đã thu từ Buyer đến D'+c.day+'\n= Σ cash IN từ Buyer\n= '+fmt2(c.cum_thu)+' đ' : null,
+      c.cum_inv===0 ? null : c.ar>0
+        ? 'AR còn lại đến D'+c.day+'\n= INV - Đã thu\n= '+fmt2(c.cum_inv)+' - '+fmt2(c.cum_thu)+'\n= '+fmt2(c.ar)+' đ'
+        : c.ar<0 ? 'Buyer trả dư '+fmt2(-c.ar)+' đ đến D'+c.day
+        : 'AR = 0 tại D'+c.day+' — Buyer đã TT đủ',
+      c.cum_gr>0   ? 'GR chưa có bill đến D'+c.day+'\n= Σ GR - Σ GR đã bill\n= '+fmt2(c.cum_gr)+' đ' : null,
+      c.cum_bcf>0  ? 'Bill confirmed đến D'+c.day+'\n'+billNames+'\n= '+fmt2(c.cum_bcf)+' đ' : null,
+      c.cum_vout>0 ? 'Đã TT Vendor đến D'+c.day+'\n= Σ OUT cho vendor\n= '+fmt2(c.cum_vout)+' đ' : null,
+      c.dn0>0 ? 'Dư nợ đầu kỳ D'+c.day+'\n= Σ OUT - Σ IN trước kỳ này\n= '+fmt2(c.dn0)+' đ\nLãi kỳ = '+fmt2(c.dn0)+' x '+pct(c.daily)+' x '+c.days+' ngày' : null,
+      'Lãi kỳ D'+c.day+(c.interest>0
+        ? '\n= Dư nợ x lãi/ngày x số ngày\n= '+fmt2(c.dn0)+' x '+pct(c.daily)+' x '+c.days+' ngày\n= '+fmt2(c.interest)+' đ'
+        : '\nKhông phát sinh — Dư nợ = 0'),
+      c.ci>0 ? 'Lãi cộng dồn đến D'+c.day+'\n= Σ lãi kỳ D1 → D'+c.day+'\n= '+fmt2(c.ci)+' đ' : null,
+    ];
+
+    tds.forEach(function(td, j){
+      var tip = tips[j];
+      if(tip){ td.title = tip; td.style.cursor = 'help'; }
+    });
+  });
+}
+
+var _r1 = renderTable1;
+renderTable1 = function(){
+  _r1();
+  addTitleTips(document.getElementById('tbody1'), C1, false);
+};
+var _r2 = renderTable2;
+renderTable2 = function(){
+  _r2();
+  addTitleTips(document.getElementById('tbody2'), C2, true);
+};
+
+renderTable1();
+renderTable2();
+</script>
+</body>
+</html>
