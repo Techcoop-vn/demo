@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outstanding Ledger — Ví dụ 2 · Chị Châu Hoàng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  --paper:#F4EFE6; --paper-r:#FAF5EC; --paper-s:#EDE6D8;
+  --ink:#1B1B1B; --ink-m:#5C564D; --ink-s:#8C8374;
+  --rule:#D8CFBE; --rule-s:#B8AE98;
+  --green:#2D5E3C; --green-d:#1F4529; --green-t:#D9E4DD;
+  --red:#8B1A1A; --red-t:#F0DCDC;
+  --amber:#A86B0A; --amber-t:#F2E4C4;
+  --blue:#1E4A7A; --blue-t:#D6E0EE;
+  --purple:#5A3A7A; --purple-t:#E2D9EC;
+}
+
+/* ── Reset & Base ── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.5;padding:28px 24px 80px;
+  background-image:radial-gradient(circle at 10% 5%,rgba(45,94,60,.04),transparent 35%),
+                   radial-gradient(circle at 90% 95%,rgba(168,107,10,.03),transparent 40%)}
+.page{max-width:1360px;margin:0 auto}
+
+/* ── Header ── */
+.hd{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:24px;flex-wrap:wrap}
+h1{font-family:'Fraunces',serif;font-weight:500;font-size:36px;letter-spacing:-.02em;line-height:1.05}
+h1 em{font-style:italic;color:var(--amber)}
+.hd-sub{font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:var(--ink-m);margin-top:6px}
+.formula-badge{display:inline-flex;align-items:center;gap:8px;border-radius:6px;padding:8px 14px;font-size:11.5px;font-weight:600}
+.badge-amber{background:var(--amber-t);border:1px solid var(--amber);color:var(--amber)}
+.badge-blue{background:var(--blue-t);border:1px solid var(--blue);color:var(--blue)}
+
+/* ── Rule card ── */
+.rule-card{background:var(--paper-r);border:1px solid var(--rule);border-radius:12px;padding:20px 24px;margin-bottom:22px}
+.rule-card summary{font-family:'Fraunces',serif;font-weight:500;font-size:16px;cursor:pointer;color:var(--ink);list-style:none;display:flex;align-items:center;gap:8px}
+.rule-card summary::before{content:'▸';font-size:12px;transition:transform .2s}
+.rule-card[open] summary::before{transform:rotate(90deg)}
+.rule-body{margin-top:16px;font-size:12.5px;line-height:1.8;color:var(--ink-m);font-family:'JetBrains Mono',monospace}
+.rule-body h4{font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px dashed var(--rule)}
+.rule-body h4:first-child{margin-top:0}
+.rule-body .rl{display:flex;gap:12px;padding:3px 0}
+.rule-body .tag{display:inline-block;min-width:44px;font-family:'Plus Jakarta Sans',sans-serif;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;text-align:center;flex-shrink:0;letter-spacing:.04em}
+.tag-f{background:var(--blue-t);color:var(--blue)}
+.tag-g{background:var(--green-t);color:var(--green-d)}
+.tag-h{background:var(--blue-t);color:var(--blue)}
+.tag-j{background:var(--amber-t);color:var(--amber)}
+.tag-k{background:var(--amber-t);color:var(--amber)}
+.tag-i{background:#eee;color:var(--ink)}
+.tag-d{background:#eee;color:var(--ink-m)}
+.tag-l{background:var(--green-t);color:var(--green-d)}
+.tag-e{background:#f0f0ea;color:var(--ink-s)}
+.rule-body code{background:var(--paper-s);padding:1px 5px;border-radius:3px;font-size:11.5px}
+
+/* ── Config bar ── */
+.cfg{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--paper-r);border:1px solid var(--rule);border-radius:10px;padding:12px 18px;margin-bottom:20px}
+.cfg-field{display:flex;align-items:baseline;gap:6px}
+.cfg-field label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-s)}
+.cfg-field input{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;width:72px;border:none;border-bottom:2px solid var(--rule-s);background:transparent;color:var(--ink);outline:none;padding:2px 4px;text-align:right}
+.cfg-field input:focus{border-bottom-color:var(--amber)}
+.cfg-field .unit{font-size:11px;color:var(--ink-s)}
+.cfg-sep{width:1px;height:28px;background:var(--rule);flex-shrink:0}
+.cfg-derived{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-m)}
+.cfg-derived span{color:var(--amber);font-weight:600}
+
+/* ── Section head ── */
+.sec{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 14px;flex-wrap:wrap}
+.sec h2{font-family:'Fraunces',serif;font-weight:500;font-size:20px;letter-spacing:-.01em}
+.sec h2 .num{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.15em;color:var(--green);background:var(--green-t);padding:3px 7px;border-radius:3px;vertical-align:middle;margin-right:8px;transform:translateY(-2px);font-family:'Plus Jakarta Sans',sans-serif}
+.sec .hint{font-size:12px;color:var(--ink-s);font-style:italic;font-family:'Fraunces',serif}
+
+/* ── Ledger table ── */
+.ledger-wrap{background:var(--paper-r);border:1px solid var(--rule);border-radius:12px;overflow-x:auto;margin-bottom:22px}
+table.ledger{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:11.5px;min-width:1200px}
+table.ledger thead th{background:var(--paper-s);font-family:'Plus Jakarta Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-s);padding:9px 8px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+table.ledger thead th.lft{text-align:left}
+table.ledger thead th .cl{display:inline-block;background:var(--ink);color:var(--paper);padding:1px 4px;border-radius:2px;font-size:8.5px;margin-right:3px;font-family:'JetBrains Mono',monospace}
+table.ledger thead tr.g2 th{background:#e8e1d4;font-size:8.5px;padding:4px 8px;color:var(--ink-s)}
+table.ledger tbody td{padding:7px 8px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:middle}
+table.ledger tbody td.lft{text-align:left}
+table.ledger tbody tr:hover{background:rgba(45,94,60,.025)}
+table.ledger tbody tr.row-thu{background:rgba(45,94,60,.04)}
+table.ledger tbody tr.row-chi{background:rgba(139,26,26,.025)}
+table.ledger tbody tr.row-vat{background:rgba(168,107,10,.05)}
+table.ledger tbody tr.row-doc{background:transparent}
+table.ledger tbody tr.row-doc td{color:var(--ink-s);font-size:10.5px}
+table.ledger tbody tr.sel td{background:rgba(30,74,122,.07)!important}
+table.ledger tfoot td{padding:9px 8px;background:var(--paper-s);border-top:2px solid var(--rule-s);font-weight:600;font-size:11.5px;text-align:right;font-variant-numeric:tabular-nums}
+table.ledger tfoot td.lft{text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);font-weight:700}
+
+/* col group borders */
+table.ledger th.grp-lncs,table.ledger td.grp-lncs{border-left:2px solid rgba(30,74,122,.2)}
+table.ledger th.grp-vat,table.ledger td.grp-vat{border-left:2px solid rgba(168,107,10,.2)}
+table.ledger th.grp-goc,table.ledger td.grp-goc{border-left:2px solid rgba(0,0,0,.1)}
+table.ledger th.grp-os,table.ledger td.grp-os{border-left:2px solid rgba(45,94,60,.3)}
+
+/* ── Pills & cell colors ── */
+.pill{display:inline-block;font-family:'Plus Jakarta Sans',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.p-thu{background:var(--green-t);color:var(--green-d)}
+.p-chi{background:var(--red-t);color:var(--red)}
+.p-vat{background:var(--amber-t);color:var(--amber)}
+.p-adj{background:#f0f0ea;color:var(--ink-s)}
+.p-doc{background:var(--paper-s);color:var(--ink-s)}
+.p-gr{background:var(--purple-t);color:var(--purple)}
+.p-inv{background:var(--blue-t);color:var(--blue)}
+.amt-in{color:var(--green-d);font-weight:600}
+.amt-out{color:var(--red);font-weight:600}
+.amt-zero{color:var(--ink-s)}
+.hi-lncs{color:var(--blue);font-weight:600}
+.hi-vat{color:var(--amber);font-weight:600}
+.hi-goc{color:var(--ink);font-weight:500}
+.neg{color:var(--red)}.pos{color:var(--green-d)}.dim{color:var(--ink-s)}
+
+/* ── Settle panel ── */
+.settle-wrap{background:var(--paper-r);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-bottom:22px;display:none}
+.settle-hd{background:var(--ink);color:var(--paper);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.settle-hd .title{font-family:'Fraunces',serif;font-weight:500;font-size:16px}
+.settle-hd .day-tag{background:rgba(255,255,255,.15);padding:3px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.settle-body{padding:20px 22px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi{border:1px solid var(--rule);border-radius:9px;padding:13px 15px;background:var(--paper)}
+.kpi .lbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-s);margin-bottom:5px}
+.kpi .val{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:10px;color:var(--ink-s);margin-top:3px}
+.kpi.green{border-color:#5dcaa5;background:var(--green-t)}.kpi.green .val{color:var(--green-d)}
+.kpi.red{border-color:#f09595;background:var(--red-t)}.kpi.red .val{color:var(--red)}
+.kpi.blue{border-color:#85b7eb;background:var(--blue-t)}.kpi.blue .val{color:var(--blue)}
+.kpi.amber{border-color:#d4a04a;background:var(--amber-t)}.kpi.amber .val{color:var(--amber)}
+.settle-formula{background:var(--paper-s);border:1px dashed var(--rule-s);border-radius:9px;padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;margin-bottom:16px}
+.settle-formula .lbl{font-family:'Plus Jakarta Sans',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-s);margin-bottom:8px;display:block}
+.settle-formula .row{display:flex;justify-content:space-between;padding:2px 0;border-bottom:.5px solid var(--rule)}
+.settle-formula .row:last-child{border-bottom:none}
+.settle-formula .row.total{border-top:1.5px solid var(--rule-s);padding-top:8px;margin-top:4px;font-weight:600}
+.settle-formula .key{color:var(--ink-m);font-size:11px}
+.settle-formula .val-g{color:var(--green-d)}.settle-formula .val-r{color:var(--red)}
+.settle-formula .val-b{color:var(--blue)}.settle-formula .val-a{color:var(--amber)}
+.alloc-detail{background:var(--paper-r);border:1px solid var(--rule);border-radius:9px;padding:14px 16px;margin-bottom:14px}
+.alloc-detail .hd{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-s);margin-bottom:10px;border-bottom:1px dashed var(--rule);padding-bottom:6px}
+.alloc-detail table{width:100%;border-collapse:collapse;font-size:11px;font-family:'JetBrains Mono',monospace}
+.alloc-detail th{text-align:right;color:var(--ink-s);font-size:9.5px;padding:4px 6px;border-bottom:1px solid var(--rule)}
+.alloc-detail th:first-child{text-align:left}
+.alloc-detail td{text-align:right;padding:5px 6px;border-bottom:.5px solid var(--rule);font-variant-numeric:tabular-nums}
+.alloc-detail td:first-child{text-align:left;color:var(--ink-m)}
+.alloc-detail tr:last-child td{border-bottom:none}
+.hint-bar{text-align:center;padding:16px;font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:var(--ink-s);background:var(--paper-s);border-radius:8px;border:1px dashed var(--rule)}
+
+/* ── Tooltip ── */
+.has-tip{cursor:help;border-bottom:1px dashed currentColor;text-decoration:none}
+.ftip{position:fixed;z-index:9000;background:var(--ink);color:#f0ece4;border-radius:8px;padding:12px 15px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;max-width:340px;pointer-events:none;opacity:0;transition:opacity .15s ease;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:pre-wrap}
+.ftip.vis{opacity:1}
+.ftip .ft-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.ftip .ft-formula{color:#e8c96a;margin-bottom:4px;font-weight:600}
+.ftip .ft-calc{color:#a8d5c2;margin-bottom:4px}
+.ftip .ft-note{color:rgba(255,255,255,.55);font-size:10px;border-top:1px solid rgba(255,255,255,.1);padding-top:5px;margin-top:5px}
+
+/* ── Legend ── */
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--ink-s)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav style="display:flex;gap:8px;align-items:center;padding:8px 12px;margin-bottom:18px;background:#ede6d8;border:1px solid #d3d1c7;border-radius:8px;font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif;flex-wrap:wrap;">
+  <span style="color:#888780;margin-right:6px;">Pages →</span>
+  <a href="index.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">Flow Visualization</a>
+  <a href="flow_examples.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">Examples</a>
+  <a href="flow_schema_and_calculation.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">Schema &amp; Calculation</a>
+  <a href="cashflow_quyettoan.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">CashFlow Quyết Toán</a>
+  <a href="CashFlow_FX_USD_v2_260506.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">CashFlow FX USD v2</a>
+  <a href="CashFlow_FinOps_260506.html" style="padding:4px 10px;border-radius:999px;color:#5c564d;text-decoration:none;">CashFlow FinOps</a>
+  <a href="CashFlow_FX_ChauHoang_v2_260506.html" style="padding:4px 10px;border-radius:999px;background:#1b1b1b;color:#f5f4f0;text-decoration:none;">CashFlow FX Châu Hoàng v2</a>
+</nav>
+
+<!-- ═══════ HEADER ═══════ -->
+<div class="hd">
+  <div>
+    <h1>Outstanding Ledger — <em>Ví dụ 2</em></h1>
+    <div class="hd-sub">SO-001 · GD-001 + GD-002 · D3 → D30 · FX USD</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+    <div class="formula-badge badge-amber">▸ IN ưu tiên bù: LNCS → VAT → Nợ gốc</div>
+    <div class="formula-badge badge-blue">▸ Days: dòng đầu = 0 · kỳ đầu +1 · còn lại = Δ ngày</div>
+  </div>
+</div>
+
+<!-- ═══════ RULE DOCUMENTATION ═══════ -->
+<details class="rule-card" open>
+  <summary>📐 Quy tắc tính tiền — Outstanding Ledger</summary>
+  <div class="rule-body">
+
+    <h4>① Cột E — Số ngày tính lãi</h4>
+    <div class="rl"><span class="tag tag-e">E</span> Dòng đầu tiên (index 0): <code>days = 0</code> — chưa có balance</div>
+    <div class="rl"><span class="tag tag-e">E</span> Kỳ đầu tiên (index 1): <code>days = day(this) − day(prev) + 1</code> — cộng thêm 1 ngày</div>
+    <div class="rl"><span class="tag tag-e">E</span> Các kỳ sau (index 2+): <code>days = day(this) − day(prev)</code></div>
+
+    <h4>② Cột F — LNCS (Lãi sử dụng vốn) phát sinh kỳ</h4>
+    <div class="rl"><span class="tag tag-f">F</span> <code>F = prev.D × (rate ÷ 30) × days</code> — chỉ tính khi <code>prev.D &gt; 0</code></div>
+    <div class="rl"><span class="tag tag-f">F</span> prev.D ≤ 0 (thu dư / chưa chi): F = 0 — không tính lãi</div>
+
+    <h4>③ Khi có sự kiện THU (tiền IN) — bù theo thứ tự ưu tiên</h4>
+    <div class="rl"><span class="tag tag-g">G</span> Bước 1 — Bù LNCS: <code>G = min(C, max(prev.H + F, 0))</code></div>
+    <div class="rl"><span class="tag tag-j">J</span> Bước 2 — Bù VAT: <code>J = min(C − G, prev.K)</code></div>
+    <div class="rl"><span class="tag tag-i">I</span> Bước 3 — Còn lại trừ gốc: <code>I = prev.I − (C − G − J)</code></div>
+    <div class="rl"><span class="tag tag-h">H</span> LNCS còn nợ: <code>H = (prev.H + F) − G</code></div>
+    <div class="rl"><span class="tag tag-k">K</span> VAT còn nợ: <code>K = prev.K − J</code></div>
+    <div class="rl"><span class="tag tag-d">D</span> Balance: <code>D = I</code> (sync về gốc sau khi thu)</div>
+
+    <h4>④ Khi có sự kiện CHI (tiền OUT)</h4>
+    <div class="rl"><span class="tag tag-i">I</span> Gốc tăng: <code>I = prev.I + C</code></div>
+    <div class="rl"><span class="tag tag-d">D</span> Balance tăng: <code>D = prev.D + C</code></div>
+    <div class="rl"><span class="tag tag-h">H</span> LNCS cộng dồn: <code>H = prev.H + F</code></div>
+    <div class="rl"><span class="tag tag-k">K</span> VAT không đổi: <code>K = prev.K</code></div>
+
+    <h4>⑤ Khi có sự kiện Phí VAT (auto-insert khi Bill CF confirmed)</h4>
+    <div class="rl"><span class="tag tag-k">K</span> VAT nợ tăng: <code>K = prev.K + fee</code> với <code>fee = vatRate × Bill COGS</code></div>
+    <div class="rl"><span class="tag tag-d">D</span> Sync: <code>D = prev.I</code> · <span class="tag tag-i">I</span> Không đổi: <code>I = prev.I</code></div>
+
+    <h4>⑥ Doc / GR / INV (không di chuyển tiền)</h4>
+    <div class="rl"><span class="tag tag-d">D</span> <code>D = prev.D</code> · <span class="tag tag-i">I</span> <code>I = prev.I</code> · <span class="tag tag-h">H</span> <code>H = prev.H + F</code> · <span class="tag tag-k">K</span> <code>K = prev.K</code></div>
+
+    <h4>⑦ Cột L — Outstanding SO (tổng phải thu)</h4>
+    <div class="rl"><span class="tag tag-l">L</span> <code>L = I + H + K</code> — Gốc + LNCS chưa thu + VAT chưa thu</div>
+    <div class="rl"><span class="tag tag-l">L</span> L &gt; 0: còn phải thu · L &lt; 0: đã thu dư · L = 0: cân bằng</div>
+
+  </div>
+</details>
+
+<!-- ═══════ CONFIG ═══════ -->
+<div class="cfg">
+  <div class="cfg-field">
+    <label>Lãi suất</label>
+    <input type="number" id="iRate" value="2.5" min="0" max="100" step="0.1">
+    <span class="unit">% / 30 ngày</span>
+  </div>
+  <div class="cfg-sep"></div>
+  <div class="cfg-field">
+    <label>Phí VAT</label>
+    <input type="number" id="iVat" value="1" min="0" max="100" step="0.1">
+    <span class="unit">% × Bill CF COGS</span>
+  </div>
+  <div class="cfg-sep"></div>
+  <div class="cfg-derived">Daily: <span id="dRate">—</span>/ngày · VAT D12: <span id="vat12">—</span> đ · VAT D22: <span id="vat22">—</span> đ</div>
+</div>
+
+<!-- ═══════ HINT + SETTLE ═══════ -->
+<div class="hint-bar" id="hintBar">👆 Click vào bất kỳ dòng nào để xem Quyết toán tại thời điểm đó</div>
+<div class="settle-wrap" id="settleWrap">
+  <div class="settle-hd">
+    <div class="title">Quyết toán tại</div>
+    <div class="day-tag" id="settleDay">—</div>
+  </div>
+  <div class="settle-body" id="settleBody"></div>
+</div>
+
+<!-- ═══════ TABLE ═══════ -->
+<div class="sec" style="margin-top:4px">
+  <h2><span class="num">LEDGER</span>Outstanding — từng sự kiện</h2>
+  <div class="hint">Hover ô xem công thức · Click dòng để quyết toán</div>
+</div>
+<div class="ledger-wrap">
+<table class="ledger">
+  <thead>
+    <tr>
+      <th class="lft" rowspan="2" style="min-width:48px"><span class="cl">A</span>Ngày</th>
+      <th class="lft" rowspan="2" style="min-width:44px"><span class="cl">B</span>Type</th>
+      <th class="lft" rowspan="2" style="min-width:260px"><span class="cl">C</span>Sự kiện</th>
+      <th rowspan="2"><span class="cl">C</span>Số tiền / Ref</th>
+      <th rowspan="2"><span class="cl">E</span>Số ngày</th>
+      <th class="grp-lncs" colspan="3" style="color:var(--blue)">LNCS (Lãi sử dụng vốn)</th>
+      <th class="grp-vat" colspan="2" style="color:var(--amber)">Phí VAT</th>
+      <th class="grp-goc" colspan="2" style="color:var(--ink)">Dư nợ gốc</th>
+      <th class="grp-os" rowspan="2" style="color:var(--green-d);min-width:110px"><span class="cl">L</span>Outstanding<br><small style="font-size:8.5px;font-weight:400">= I + H + K</small></th>
+    </tr>
+    <tr class="g2">
+      <th class="grp-lncs"><span class="cl">F</span>Phát sinh kỳ</th>
+      <th><span class="cl">G</span>Đã thu</th>
+      <th><span class="cl">H</span>Còn nợ (CĐ)</th>
+      <th class="grp-vat"><span class="cl">fee</span>Phát sinh</th>
+      <th><span class="cl">J/K</span>Thu / Còn nợ</th>
+      <th class="grp-goc"><span class="cl">bu_goc</span>Đã thu vào gốc</th>
+      <th><span class="cl">I</span>Dư nợ gốc (CĐ)</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+  <tfoot>
+    <tr>
+      <td class="lft" colspan="5">Tổng kỳ</td>
+      <td class="grp-lncs" id="totF">—</td>
+      <td id="totG">—</td>
+      <td id="totH">—</td>
+      <td class="grp-vat" id="totFee">—</td>
+      <td id="totJK">—</td>
+      <td class="grp-goc" id="totBuGoc">—</td>
+      <td id="totI">—</td>
+      <td class="grp-os" id="totL">—</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<div class="legend">
+  <span><span class="dot" style="background:rgba(45,94,60,.15);border:1px solid #5dcaa5"></span>THU</span>
+  <span><span class="dot" style="background:rgba(139,26,26,.1);border:1px solid #f09595"></span>CHI</span>
+  <span><span class="dot" style="background:rgba(168,107,10,.1);border:1px solid #d4a04a"></span>VAT (auto)</span>
+  <span><span class="dot" style="background:#f0f0ea;border:1px solid var(--rule)"></span>ADJ (hoàn ứng)</span>
+  <span><span class="dot" style="background:#fafaf7;border:1px solid var(--rule)"></span>Doc / GR / INV</span>
+</div>
+<div class="ftip" id="ftip"></div>
+
+<script>
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  LAYER 1 — DATA                                            ║
+/* ║  Tất cả dữ liệu đầu vào tập trung tại đây.                ║
+/* ║  Thay đổi data → chỉ sửa layer này.                        ║
+/* ╚══════════════════════════════════════════════════════════════╝ */
+
+/** Bill CF có COGS → trigger tính VAT tự động */
+const COGS_BILLS = [
+  { day: 12, cogsAmt: 60e6 },   // Bill-001 cogs
+  { day: 22, cogsAmt: 60e6 },   // Bill-003 cogs
+];
+
+/** Sự kiện theo thứ tự thời gian — đúng ROWS2 file Chị Châu Hoàng */
+const BASE_EVENTS = [
+  { day:3,  type:'Thu', amt:60e6,     label:'Customer Advance — 2,400 USD @ 25,000',            note:'Advance cọc trước giao hàng' },
+  { day:5,  type:'Chi', amt:60e6,     label:'Vendor Advance — tạm ứng 50% × PO-001',            note:'Chi tạm ứng cho vendor PO-001' },
+  { day:10, type:'doc', amt:0,        label:'GR-001 (60M) + GR-002 (10M) — nhận hàng đợt 1',   note:'Không di tiền — ghi nhận GR' },
+  { day:12, type:'doc', amt:0,        label:'Bill-001 (60M) + Bill-002 (10M) confirmed',        note:'Bill confirmed → trigger VAT', billDay:12 },
+  { day:12, type:'ADJ', amt:30e6,     label:'Hoàn ứng tạm ứng D5 → Bill-001',                  note:'30M từ Vendor Advance D5 khớp vào Bill-001', ref_from:'D5', ref_to:'Bill-001', unit:'VND' },
+  { day:12, type:'Chi', amt:40e6,     label:'Vendor Payment — Bill-001 (30M) + Bill-002 (10M)', note:'Thanh toán vendor đợt 1' },
+  { day:14, type:'doc', amt:0,        label:'GD-001 giao cont 1',                                note:'Giao hàng đợt 1' },
+  { day:14, type:'ADJ', amt:1200,     label:'Hoàn ứng advance D3 → INV-001',                    note:'1,200 USD từ Customer Advance D3 khớp vào INV-001', ref_from:'D3', ref_to:'INV-001', unit:'USD' },
+  { day:14, type:'doc', amt:0,        label:'INV-001 confirmed — 4,000 USD @ 25,100',           note:'Không di tiền — confirm invoice' },
+  { day:15, type:'Thu', amt:71120000, label:'Customer Payment — 2,800 USD @ 25,400 (INV-001)',  note:'Nhận tiền từ khách cho INV-001' },
+  { day:20, type:'doc', amt:0,        label:'GR-003 (60M) + GR-004 (20M) — nhận hàng đợt 2',   note:'Không di tiền — ghi nhận GR' },
+  { day:22, type:'doc', amt:0,        label:'Bill-003 (60M) + Bill-004 (20M) confirmed',        note:'Bill confirmed → trigger VAT', billDay:22 },
+  { day:22, type:'ADJ', amt:30e6,     label:'Hoàn ứng tạm ứng D5 → Bill-003',                  note:'30M còn lại từ Vendor Advance D5 khớp vào Bill-003', ref_from:'D5', ref_to:'Bill-003', unit:'VND' },
+  { day:22, type:'Chi', amt:50e6,     label:'Vendor Payment — Bill-003 (60M) + Bill-004 (20M)', note:'Thanh toán vendor đợt 2' },
+  { day:25, type:'doc', amt:0,        label:'GD-002 giao cont 2',                                note:'Giao hàng đợt 2' },
+  { day:25, type:'ADJ', amt:1200,     label:'Hoàn ứng advance D3 → INV-002',                    note:'1,200 USD còn lại từ Customer Advance D3 khớp vào INV-002', ref_from:'D3', ref_to:'INV-002', unit:'USD' },
+  { day:25, type:'doc', amt:0,        label:'INV-002 confirmed — 4,000 USD @ 25,200',           note:'Không di tiền — confirm invoice' },
+  { day:30, type:'Thu', amt:71400000, label:'Customer Payment — 2,800 USD @ 25,500 (INV-002)',  note:'Nhận tiền từ khách cho INV-002' },
+];
+
+/** Dữ liệu quyết toán — INV, CLTG, Bill net */
+const SETTLE_DATA = {
+  invoices: [
+    { availableDay: 14, usd: 4000, rateVnd: 25100, vnd: 100400000 },
+    { availableDay: 25, usd: 4000, rateVnd: 25200, vnd: 100800000 },
+  ],
+  usdReceipts: [
+    { day: 3,  usd: 2400 },
+    { day: 15, usd: 2800 },
+    { day: 30, usd: 2800 },
+  ],
+  /** CLTG FIFO: tích lũy đến ngày */
+  cltgByDay: [
+    { fromDay: 15, add: 480000 },   // D3→INV-001 FIFO
+    { fromDay: 30, add: 840000 },   // D30→INV-002 FIFO
+  ],
+  /** Bill CF thuần (đã bóc VAT bill) */
+  billNet: [
+    { day: 12, net: 67e6 },   // Bill-001(60M)+Bill-002(10M) − VAT bill 3M
+    { day: 22, net: 77e6 },   // Bill-003(60M)+Bill-004(20M) − VAT bill 3M
+  ],
+};
+
+
+/** Sự kiện phân bổ theo từng Giao dịch — dùng cho Quyết toán GD
+ *  Không có rule +1. Chi/VAT cùng ngày: days=0, F=0 (đúng nghĩa)
+ *  Mỗi GD gồm phần vốn được phân bổ từ advance + chi phí riêng của GD đó */
+const GD_EVENTS = {
+  'GD-001': [
+    { day:3,  type:'Thu', amt:30e6,     fee:0,      label:'Customer Advance (1,200 USD × 25,000)', ref:'D3' },
+    { day:5,  type:'Chi', amt:30e6,     fee:0,      label:'Vendor Advance phần GD-001 (30M)',       ref:'D5→ADJ D12' },
+    { day:12, type:'VAT', amt:0,        fee:600000, label:'Phí VAT Bill-001 COGS' },
+    { day:12, type:'Chi', amt:40e6,     fee:0,      label:'Vendor Payment — Bill-001 (30M) + Bill-002 (10M)' },
+    { day:15, type:'Thu', amt:71120000, fee:0,      label:'Customer Payment — 2,800 USD @ 25,400' },
+  ],
+  'GD-002': [
+    { day:3,  type:'Thu', amt:30e6,     fee:0,      label:'Customer Advance (1,200 USD × 25,000)', ref:'D3' },
+    { day:5,  type:'Chi', amt:30e6,     fee:0,      label:'Vendor Advance phần GD-002 (30M còn lại)', ref:'D5→ADJ D22' },
+    { day:22, type:'VAT', amt:0,        fee:600000, label:'Phí VAT Bill-003 COGS' },
+    { day:22, type:'Chi', amt:50e6,     fee:0,      label:'Vendor Payment — Bill-003 (60M) + Bill-004 (20M)' },
+    { day:30, type:'Thu', amt:71400000, fee:0,      label:'Customer Payment — 2,800 USD @ 25,500' },
+  ],
+};
+
+/** Map ngày quyết toán → tên GD */
+const SETTLE_DAY_GD = { 15: 'GD-001', 30: 'GD-002' };
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  LAYER 2 — ENGINE (Tính toán)                              ║
+/* ║  Chỉ chứa logic tính. Không biết UI.                       ║
+/* ║  Input: events[] + rate + vatRate → Output: rows[]          ║
+/* ╚══════════════════════════════════════════════════════════════╝ */
+
+/**
+ * Bước 2a: Expand — chèn dòng VAT tự động sau bill doc
+ */
+function expandEvents(baseEvents, vatRate) {
+  const result = [];
+  baseEvents.forEach(ev => {
+    result.push({ ...ev, isVat: false, fee: 0 });
+    // Bill doc có billDay → auto-insert VAT
+    if (ev.billDay != null) {
+      const bill = COGS_BILLS.find(b => b.day === ev.billDay);
+      if (bill) {
+        const fee = bill.cogsAmt * vatRate;
+        result.push({
+          day: ev.day, type: 'VAT', amt: 0, fee,
+          label: `Phí VAT ${(vatRate*100).toFixed(1)}% × COGS (${abs(bill.cogsAmt)} đ)`,
+          note:  `Auto: ${(vatRate*100).toFixed(1)}% × ${abs(bill.cogsAmt)} = ${abs(fee)} đ`,
+          isVat: true,
+        });
+      }
+    }
+  });
+  return result;
+}
+
+/**
+ * Bước 2b: calcLedger — tính Outstanding theo QA formula
+ *
+ * QUY TẮC CHÍNH (xem Rule card ở HTML):
+ *   E (days):  idx=0 → 0  |  idx=1 → delta+1  |  else → delta
+ *   F:         prev.I > 0 ? prev.I × daily × days : 0  (dùng Dư nợ gốc, không dùng D)
+ *   THU:       G→J→I  (bù LNCS → VAT → Gốc), bu_goc = phần trừ vào gốc
+ *   CHI:       I += C
+ *   VAT:       K += fee
+ *   ADJ/DOC:   passthrough (chỉ H += F, không ảnh hưởng I/K/L)
+ *   L:         I + H + K
+ */
+function calcLedger(events, rate) {
+  const daily = rate / 30;
+  const rows  = [];
+  let prev = { I: 0, H: 0, K: 0 };
+
+  events.forEach((ev, idx) => {
+    // ── E: số ngày ──
+    const prevDay = idx === 0 ? ev.day : events[idx - 1].day;
+    const days = idx === 0 ? 0
+               : idx === 1 ? (ev.day - prevDay + 1)
+               :             (ev.day - prevDay);
+
+    // ── F: LNCS phát sinh kỳ — dùng prev.I (dư nợ gốc) ──
+    const F = (prev.I > 0 && days > 0) ? prev.I * daily * days : 0;
+
+    const C   = ev.amt;
+    const fee = ev.fee || 0;
+    let G = 0, H = 0, I = 0, J = 0, K = 0, bu_goc = 0;
+
+    switch (ev.type) {
+      case 'Thu': {
+        // Bù theo thứ tự: LNCS(G) → VAT(J) → Gốc(I)
+        const owed = prev.H + F;
+        G = Math.min(C, Math.max(owed, 0));        // bù LNCS
+        H = owed - G;
+        const afterLncs = C - G;
+        J = Math.min(afterLncs, prev.K);            // bù VAT
+        K = prev.K - J;
+        const afterVat = afterLncs - J;
+        bu_goc = afterVat;                           // phần trừ vào gốc
+        I = prev.I - afterVat;
+        break;
+      }
+      case 'Chi':
+        I = prev.I + C;
+        H = prev.H + F;
+        K = prev.K;
+        break;
+      case 'VAT':
+        I = prev.I;
+        H = prev.H + F;
+        K = prev.K + fee;
+        break;
+      default: // doc / ADJ / GR / INV — passthrough
+        I = prev.I;
+        H = prev.H + F;
+        K = prev.K;
+    }
+
+    const L = I + H + K;
+
+    rows.push({
+      ...ev, idx, days, F, G, H, J, K, I, L, bu_goc, fee,
+      prev: { ...prev }, daily,
+    });
+    prev = { I, H, K, day: ev.day };
+  });
+
+  return rows;
+}
+
+/**
+ * Bước 2c: Tính quyết toán tại dòng i
+ */
+function calcSettle(rows, i) {
+  const r    = rows[i];
+  const upto = rows.slice(0, i + 1);
+
+  const totF   = upto.reduce((s, x) => s + x.F, 0);
+  const totG   = upto.reduce((s, x) => s + x.G, 0);
+  const totJ   = upto.reduce((s, x) => s + x.J, 0);
+  const cumVat = upto.reduce((s, x) => s + (x.fee || 0), 0);
+  const cumThu = upto.filter(x => x.type === 'Thu').reduce((s, x) => s + x.amt, 0);
+
+  // INV, CLTG, Bill net — từ SETTLE_DATA
+  const sd = SETTLE_DATA;
+  const invs = sd.invoices.filter(v => v.availableDay <= r.day);
+  const totalInvVnd = invs.reduce((s, v) => s + v.vnd, 0);
+  const totalInvUsd = invs.reduce((s, v) => s + v.usd, 0);
+  const cumThuUsd   = sd.usdReceipts.filter(u => u.day <= r.day).reduce((s, u) => s + u.usd, 0);
+  const cltg        = sd.cltgByDay.filter(c => c.fromDay <= r.day).reduce((s, c) => s + c.add, 0);
+  const cumBillNet  = sd.billNet.filter(b => b.day <= r.day).reduce((s, b) => s + b.net, 0);
+  const profit      = totalInvVnd + cltg - cumBillNet - totF - cumVat;
+
+  const thuRows = upto.filter(x => x.type === 'Thu');
+
+  return { r, totF, totG, totJ, cumVat, cumThu, cumThuUsd,
+           totalInvVnd, totalInvUsd, cltg, cumBillNet, profit, thuRows };
+}
+
+
+/**
+ * Bước 2d: calcGD — tính LNCS riêng cho từng Giao dịch
+ *
+ * Khác calcLedger:
+ *   - Không có rule +1 (days = day(this) − day(prev), kể cả idx=1)
+ *   - Input là GD_EVENTS[gdName], không phải toàn bộ expanded events
+ *   - Dùng cho Quyết toán tại ngày kết thúc GD (D15, D30)
+ */
+function calcGD(gdName, rate) {
+  const events = GD_EVENTS[gdName];
+  const daily  = rate / 30;
+  const rows   = [];
+  let prev = { I: 0, H: 0, K: 0 };
+
+  events.forEach((ev, idx) => {
+    const prevDay = idx === 0 ? ev.day : events[idx - 1].day;
+    const days    = ev.day - prevDay;                          // không +1
+
+    const F   = (prev.I > 0 && days > 0) ? prev.I * daily * days : 0;
+    const C   = ev.amt;
+    const fee = ev.fee || 0;
+    let G = 0, H = 0, I = 0, J = 0, K = 0, bu_goc = 0;
+
+    switch (ev.type) {
+      case 'Thu': {
+        const owed = prev.H + F;
+        G = Math.min(C, Math.max(owed, 0)); H = owed - G;
+        const aL = C - G;
+        J = Math.min(aL, prev.K); K = prev.K - J;
+        const aV = aL - J; bu_goc = aV; I = prev.I - aV;
+        break;
+      }
+      case 'Chi': I = prev.I + C; H = prev.H + F; K = prev.K; break;
+      case 'VAT': I = prev.I; H = prev.H + F; K = prev.K + fee; break;
+    }
+
+    const L = I + H + K;
+    rows.push({ ...ev, idx, days, F, G, H, J, K, I, L, bu_goc, fee, prev: { ...prev } });
+    prev = { I, H, K };
+  });
+
+  const totF   = rows.reduce((s, r) => s + r.F, 0);
+  const totG   = rows.reduce((s, r) => s + r.G, 0);
+  const totJ   = rows.reduce((s, r) => s + r.J, 0);
+  const cumVat = rows.reduce((s, r) => s + (r.fee || 0), 0);
+  return { gdName, rows, totF, totG, totJ, cumVat, last: rows[rows.length - 1] };
+}
+/* ╚══════════════════════════════════════════════════════════════╝ */
+
+function abs(n) {
+  if (n == null || isNaN(n)) return '—';
+  return Math.abs(Math.round(n)).toLocaleString('vi-VN');
+}
+function signed(n) {
+  if (n == null || isNaN(n)) return '—';
+  const r = Math.round(n);
+  if (r === 0) return '0';
+  return (r > 0 ? '+' : '−') + Math.abs(r).toLocaleString('vi-VN');
+}
+function signedVnd(n) {
+  const r = Math.round(n || 0);
+  if (r === 0) return '0';
+  return (r < 0 ? '−' : '') + Math.abs(r).toLocaleString('vi-VN');
+}
+
+/* Tooltip */
+const tipEl = document.getElementById('ftip');
+let tipTarget = null;
+function tipAttr(label, formula, calc, note) {
+  const e = s => String(s || '').replace(/"/g, '&quot;');
+  return `class="has-tip" data-label="${e(label)}" data-formula="${e(formula)}" data-calc="${e(calc)}" data-note="${e(note)}"`;
+}
+function showTip(el) {
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  tipEl.innerHTML = ['label','formula','calc','note']
+    .map(k => el.dataset[k] ? `<div class="ft-${k==='label'?'label':k==='formula'?'formula':k==='calc'?'calc':'note'}">${esc(el.dataset[k])}</div>` : '')
+    .join('');
+  tipEl.classList.add('vis');
+  posTip(el);
+}
+function posTip(el) {
+  const r = el.getBoundingClientRect();
+  const tw = tipEl.offsetWidth || 300, th = tipEl.offsetHeight || 80;
+  let top = r.top - th - 8; if (top < 10) top = r.bottom + 8;
+  let left = r.left + r.width/2 - tw/2;
+  left = Math.max(10, Math.min(left, innerWidth - tw - 10));
+  tipEl.style.top = top+'px'; tipEl.style.left = left+'px';
+}
+function hideTip() { tipEl.classList.remove('vis'); tipTarget = null; }
+document.addEventListener('mouseover', e => { const el = e.target.closest('.has-tip'); if (el && el !== tipTarget) { tipTarget = el; showTip(el); } });
+document.addEventListener('mouseout',  e => { const el = e.target.closest('.has-tip'); if (el && !el.contains(e.relatedTarget)) hideTip(); });
+addEventListener('scroll', () => { if (tipTarget) posTip(tipTarget); }, true);
+
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  LAYER 4 — UI (Render)                                     ║
+/* ║  Chỉ biết hiển thị. Logic tính nằm ở Layer 2.              ║
+/* ╚══════════════════════════════════════════════════════════════╝ */
+
+let ROWS = [], selIdx = null;
+
+function renderAll() {
+  const rate    = parseFloat(document.getElementById('iRate').value) / 100;
+  const vatRate = parseFloat(document.getElementById('iVat').value) / 100;
+
+  // Derived display
+  document.getElementById('dRate').textContent = (rate/30*100).toFixed(5) + '%';
+  document.getElementById('vat12').textContent = abs(60e6 * vatRate);
+  document.getElementById('vat22').textContent = abs(60e6 * vatRate);
+
+  // Calc
+  const expanded = expandEvents(BASE_EVENTS, vatRate);
+  ROWS = calcLedger(expanded, rate);
+
+  // Render table
+  renderTable();
+  if (selIdx !== null && selIdx < ROWS.length) renderSettlePanel(selIdx);
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  ROWS.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    const rc = r.type==='Thu'?'row-thu':r.type==='Chi'?'row-chi':r.type==='VAT'?'row-vat':'row-doc';
+    tr.className = rc + (selIdx === i ? ' sel' : '');
+    tr.style.cursor = 'pointer';
+
+    const pillCls = r.type==='Thu'?'p-thu':r.type==='Chi'?'p-chi':r.type==='VAT'?'p-vat':r.type==='ADJ'?'p-adj':
+                    r.label.includes('GR')?'p-gr':r.label.includes('INV')?'p-inv':'p-doc';
+    const pillLbl = r.type==='Thu'?'THU':r.type==='Chi'?'CHI':r.type==='VAT'?'VAT':r.type==='ADJ'?'ADJ':
+                    r.label.includes('GR')?'GR':r.label.includes('INV')?'INV':'DOC';
+
+    // ── Tooltips ──
+    const dp = (r.daily*100).toFixed(5)+'%';
+    const prevRow = ROWS[r.idx-1];
+
+    const tE = tipAttr('E — Số ngày',
+      r.idx===0 ? '= 0 (dòng đầu)' : r.idx===1 ? '= Δ ngày + 1 [kỳ đầu +1]' : '= Δ ngày',
+      r.idx===0 ? '= 0' : r.idx===1 ? `= D${r.day}−D${prevRow?.day||0}+1 = ${r.days}` : `= D${r.day}−D${prevRow?.day||0} = ${r.days}`,
+      r.idx===1 ? 'Kỳ đầu tiên tính lãi: +1 ngày.' : '');
+
+    const tF = r.prev.D <= 0
+      ? tipAttr('F — LNCS kỳ','= 0 (prev.D ≤ 0)', `prev.D = ${signed(r.prev.D)} đ`, 'Âm = thu dư, không tính lãi.')
+      : tipAttr('F — LNCS kỳ','= prev.D × daily × days', `= ${abs(r.prev.D)} × ${dp} × ${r.days}\n= ${abs(r.F)} đ`, '');
+
+    const tG = r.type==='Thu'
+      ? tipAttr('G — Bù LNCS','= min(C, max(prev.H+F, 0))', `= min(${abs(r.amt)}, ${abs(r.prev.H+r.F)})\n= ${abs(r.G)} đ`, 'Ưu tiên 1: trả lãi trước.')
+      : tipAttr('G','= 0','','');
+
+    const tH = tipAttr('H — LNCS còn nợ',
+      r.type==='Thu' ? '= (prev.H+F) − G' : '= prev.H + F',
+      r.type==='Thu' ? `= (${abs(r.prev.H)}+${abs(r.F)}) − ${abs(r.G)} = ${abs(r.H)}` : `= ${abs(r.prev.H)} + ${abs(r.F)} = ${abs(r.H)}`, '');
+
+    const tFee = r.type==='VAT'
+      ? tipAttr('Phí VAT','= vatRate × COGS', `= ${abs(r.fee)} đ`, 'Auto-insert sau Bill CF.')
+      : tipAttr('','','','');
+
+    const tJK = r.type==='Thu'
+      ? tipAttr('J/K — Bù VAT','J = min(C−G, prev.K)\nK = prev.K − J', `J = min(${abs(r.amt-r.G)}, ${abs(r.prev.K)}) = ${abs(r.J)}\nK = ${abs(r.prev.K)} − ${abs(r.J)} = ${abs(r.K)}`, 'Ưu tiên 2: bù VAT.')
+      : r.type==='VAT'
+      ? tipAttr('K — VAT nợ','= prev.K + fee', `= ${abs(r.prev.K)} + ${abs(r.fee)} = ${abs(r.K)}`, '')
+      : tipAttr('','',r.K > 0 ? `K = ${abs(r.K)} đ` : '','');
+
+    const tI = r.type==='Thu'
+      ? tipAttr('I — Dư nợ gốc (CĐ)','= prev.I − (C−G−J)', `= ${signed(r.prev.I)} − (${abs(r.amt)}−${abs(r.G)}−${abs(r.J)})\n= ${signed(r.prev.I)} − ${abs(r.amt-r.G-r.J)}\n= ${signed(r.I)} đ`, 'Ưu tiên 3: phần còn lại trừ gốc.')
+      : r.type==='Chi'
+      ? tipAttr('I — Dư nợ gốc (CĐ)','= prev.I + C', `= ${signed(r.prev.I)} + ${abs(r.amt)} = ${signed(r.I)} đ`, 'Chi ra làm tăng gốc.')
+      : tipAttr('I — Dư nợ gốc (CĐ)','= prev.I', `= ${signed(r.I)} đ`, 'Không di tiền — gốc giữ nguyên.');
+
+    const tBuGoc = r.type==='Thu'
+      ? tipAttr('Đã thu vào gốc kỳ này','= C − G − J', `= ${abs(r.amt)} − ${abs(r.G)} − ${abs(r.J)}\n= ${abs(r.bu_goc)} đ`, 'Phần tiền IN còn lại sau khi bù LNCS và VAT.')
+      : tipAttr('Đã thu vào gốc','= 0','Không phải dòng THU.','');
+
+    const tL = tipAttr('L — Outstanding','= I + H + K',
+      `I = ${signed(r.I)}\nH = ${abs(r.H)}\nK = ${abs(r.K)}\nL = ${signed(r.L)} đ`,
+      r.L > 0 ? 'Còn phải thu' : r.L < 0 ? 'Thu dư' : 'Cân bằng');
+
+    // ── Cells ──
+    // Cột số tiền: ADJ hiện ref amount mờ italic, Thu/Chi hiện +/-
+    const amtCell = r.type==='Thu' ? `<td class="amt-in">+${abs(r.amt)}</td>`
+                  : r.type==='Chi' ? `<td class="amt-out">−${abs(r.amt)}</td>`
+                  : r.type==='ADJ' ? `<td class="dim" style="font-style:italic;font-size:10.5px">${abs(r.amt)} ${r.unit||''}</td>`
+                  : `<td class="amt-zero">—</td>`;
+
+    const fCell   = r.F > 0 ? `<td class="hi-lncs grp-lncs" ${tF}>+${abs(r.F)}</td>` : `<td class="amt-zero grp-lncs" ${tF}>—</td>`;
+    const gCell   = r.G > 0 ? `<td class="pos" ${tG}>${abs(r.G)}</td>` : `<td class="amt-zero" ${tG}>—</td>`;
+    const hCell   = r.H > 0 ? `<td class="hi-lncs" ${tH}>${abs(r.H)}</td>` : `<td class="amt-zero" ${tH}>—</td>`;
+    const feeCell = r.type==='VAT' ? `<td class="hi-vat grp-vat" ${tFee}>+${abs(r.fee)}</td>` : `<td class="amt-zero grp-vat" ${tFee}>—</td>`;
+
+    const jkCell = r.type==='Thu' && r.J > 0
+      ? `<td class="pos" ${tJK}>thu: ${abs(r.J)}<br><span class="dim" style="font-size:10px">nợ: ${r.K>0?abs(r.K):'0'}</span></td>`
+      : r.type==='VAT' ? `<td class="hi-vat" ${tJK}>nợ: ${abs(r.K)}</td>`
+      : r.K > 0 ? `<td class="amt-zero" ${tJK}><span class="dim">nợ: ${abs(r.K)}</span></td>`
+      : `<td class="amt-zero" ${tJK}>—</td>`;
+
+    // bu_goc cell — chỉ có giá trị ở dòng THU
+    const buGocVal = Math.round(r.bu_goc || 0);
+    const buGocCell = buGocVal > 0
+      ? `<td class="hi-goc grp-goc" ${tBuGoc}>${abs(r.bu_goc)}</td>`
+      : `<td class="amt-zero grp-goc" ${tBuGoc}>—</td>`;
+
+    // I cell — dư nợ gốc cộng dồn (âm = dư, dương = nợ)
+    const iVal = Math.round(r.I);
+    const iCell = `<td class="${iVal<0?'pos':iVal>0?'hi-goc':'amt-zero'}" ${tI}>${iVal===0?'0':signedVnd(r.I)}</td>`;
+
+    const lVal = Math.round(r.L);
+    const lCell = `<td class="${lVal<0?'pos':lVal>0?'neg':'amt-zero'} grp-os" ${tL} style="font-weight:600">${lVal===0?'0':signedVnd(r.L)}</td>`;
+
+    tr.innerHTML = `
+      <td class="lft"><span class="dim">D${r.day}</span></td>
+      <td class="lft"><span class="pill ${pillCls}">${pillLbl}</span></td>
+      <td class="lft" style="max-width:300px">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px">${r.label}</span>
+        ${r.note?`<span class="dim" style="font-size:10px;display:block;margin-top:1px;font-style:italic;font-family:'Fraunces',serif">${r.note}</span>`:''}
+      </td>
+      ${amtCell}
+      <td class="dim" ${tE}>${r.days}</td>
+      ${fCell}${gCell}${hCell}${feeCell}${jkCell}${buGocCell}${iCell}${lCell}
+    `;
+    tr.addEventListener('click', () => selectRow(i));
+    tbody.appendChild(tr);
+  });
+
+  // ── Footer totals ──
+  const last   = ROWS[ROWS.length - 1];
+  const totF   = ROWS.reduce((s,r) => s + r.F, 0);
+  const totG   = ROWS.reduce((s,r) => s + r.G, 0);
+  const totFee = ROWS.reduce((s,r) => s + (r.fee||0), 0);
+  const totJ   = ROWS.reduce((s,r) => s + r.J, 0);
+  const totBuG = ROWS.reduce((s,r) => s + (r.bu_goc||0), 0);
+  document.getElementById('totF').textContent      = abs(totF)+' đ';
+  document.getElementById('totG').textContent      = totG > 0 ? abs(totG)+' đ' : '—';
+  document.getElementById('totH').textContent      = last.H > 0 ? abs(last.H)+' đ' : '0';
+  document.getElementById('totFee').textContent    = abs(totFee)+' đ';
+  document.getElementById('totJK').textContent     = totJ > 0 ? 'thu: '+abs(totJ)+' đ' : '—';
+  document.getElementById('totBuGoc').textContent  = totBuG > 0 ? abs(totBuG)+' đ' : '—';
+  document.getElementById('totI').textContent      = signedVnd(last.I)+' đ';
+  document.getElementById('totL').textContent      = signedVnd(last.L)+' đ';
+}
+
+function selectRow(i) {
+  selIdx = selIdx === i ? null : i;
+  document.querySelectorAll('#tbody tr').forEach((tr, j) => tr.classList.toggle('sel', j === selIdx));
+  const sw = document.getElementById('settleWrap'), hb = document.getElementById('hintBar');
+  if (selIdx !== null) { renderSettlePanel(selIdx); sw.style.display='block'; hb.style.display='none'; sw.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+  else { sw.style.display='none'; hb.style.display='block'; }
+}
+
+function renderSettlePanel(i) {
+  const r    = ROWS[i];
+  const rate = parseFloat(document.getElementById('iRate').value) / 100;
+  document.getElementById('settleDay').textContent = `D${r.day}`;
+
+  // ── Cách B: D15/D30 → Quyết toán GD; các ngày khác → O/S snapshot ──
+  const gdName = SETTLE_DAY_GD[r.day];
+  if (gdName) {
+    renderSettleGD(gdName, rate, r);
+  } else {
+    renderSettleOS(i);
+  }
+}
+
+/** Quyết toán theo Giao dịch — D15 (GD-001) và D30 (GD-002) */
+function renderSettleGD(gdName, rate, ledgerRow) {
+  const g  = calcGD(gdName, rate);
+  const sd = SETTLE_DATA;
+  const gdInv  = gdName === 'GD-001' ? sd.invoices.find(v => v.availableDay === 14) : sd.invoices.find(v => v.availableDay === 25);
+  const invVnd = gdInv ? gdInv.vnd : 0;
+  const invUsd = gdInv ? gdInv.usd : 0;
+  const billNet = gdName === 'GD-001' ? sd.billNet[0].net : sd.billNet[1].net;
+  const cltg    = gdName === 'GD-001' ? (sd.cltgByDay.find(c => c.fromDay === 15)?.add || 0) : (sd.cltgByDay.find(c => c.fromDay === 30)?.add || 0);
+  const profit  = invVnd + cltg - billNet - g.totF - g.cumVat;
+
+  const evDetail = g.rows.map(ev => {
+    const typeClr = ev.type==='Thu'?'amt-in':ev.type==='Chi'?'amt-out':'amt-zero';
+    const amtStr  = ev.type==='Thu'?'+'+abs(ev.amt):ev.type==='Chi'?'−'+abs(ev.amt):ev.type==='VAT'?'VAT +'+abs(ev.fee):'—';
+    return `<tr>
+      <td>D${ev.day}</td>
+      <td><span class="pill ${ev.type==='Thu'?'p-thu':ev.type==='Chi'?'p-chi':ev.type==='VAT'?'p-vat':'p-doc'}">${ev.type}</span></td>
+      <td style="text-align:left;font-size:11px;color:var(--ink-m)">${ev.label}</td>
+      <td class="${typeClr}">${amtStr}</td>
+      <td class="${ev.F>0?'hi-lncs':'amt-zero'}">${ev.F>0?'+'+abs(ev.F):'—'}</td>
+      <td class="${ev.G>0?'pos':'amt-zero'}">${ev.G>0?abs(ev.G):'—'}</td>
+      <td class="${ev.J>0?'pos':'amt-zero'}">${ev.J>0?abs(ev.J):'—'}</td>
+      <td class="${Math.round(ev.I)<0?'pos':Math.round(ev.I)>0?'hi-goc':'amt-zero'}">${signedVnd(ev.I)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('settleBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div class="formula-badge badge-blue" style="font-size:13px">📋 Quyết toán ${gdName}</div>
+      <span style="font-size:12px;color:var(--ink-s);font-style:italic;font-family:'Fraunces',serif">
+        Tính riêng theo lần giao dịch — vốn phân bổ từ Advance D3 + D5
+      </span>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi blue"><div class="lbl">Phí LNCS (Σ F)</div><div class="val">${abs(g.totF)}</div><div class="sub">đ · tính riêng ${gdName}</div></div>
+      <div class="kpi ${g.totG>=g.totF?'green':'amber'}"><div class="lbl">LNCS đã thu</div><div class="val">${abs(g.totG)}</div><div class="sub">${g.totG>=g.totF?'✓ Đủ':'còn nợ '+abs(g.totF-g.totG)+' đ'}</div></div>
+      <div class="kpi amber"><div class="lbl">Phí VAT</div><div class="val">${abs(g.cumVat)}</div><div class="sub">đã thu: ${abs(g.totJ)} đ · còn: ${abs(g.cumVat-g.totJ)} đ</div></div>
+      <div class="kpi ${profit>0?'green':profit<0?'red':''}"><div class="lbl">Lợi nhuận tạm tính</div><div class="val">${signed(profit)}</div><div class="sub">đ · ${gdName}</div></div>
+    </div>
+    <div class="settle-formula">
+      <span class="lbl">Công thức quyết toán ${gdName}</span>
+      <div class="row"><span class="key">INV (tỉ giá INV)</span><span class="val-g">+ ${abs(invVnd)} đ &nbsp;<span style="opacity:.6;font-size:10px">${invUsd.toLocaleString('vi-VN')} USD</span></span></div>
+      <div class="row"><span class="key">CLTG (FIFO)</span><span class="${cltg>=0?'val-g':'val-r'}">${signed(cltg)} đ</span></div>
+      <div class="row"><span class="key">Bill CF thuần</span><span class="val-r">− ${abs(billNet)} đ</span></div>
+      <div class="row"><span class="key">Phí LNCS (Σ F)</span><span class="val-b">− ${abs(g.totF)} đ</span></div>
+      <div class="row"><span class="key">Phí VAT</span><span class="val-a">− ${abs(g.cumVat)} đ</span></div>
+      <div class="row total"><span class="key">= Lợi nhuận tạm tính</span><span class="${profit>=0?'val-g':'val-r'}" style="font-size:15px">${signed(profit)} đ</span></div>
+    </div>
+    <div class="alloc-detail">
+      <div class="hd">Chi tiết dòng tiền ${gdName} — phân bổ vốn riêng</div>
+      <table><thead><tr>
+        <th style="text-align:left">Ngày</th><th style="text-align:left">Type</th>
+        <th style="text-align:left">Sự kiện</th><th>Số tiền</th>
+        <th style="color:var(--blue)">F</th><th style="color:var(--blue)">G</th>
+        <th style="color:var(--amber)">J</th><th>Dư nợ gốc</th>
+      </tr></thead><tbody>${evDetail}</tbody></table>
+    </div>`;
+}
+
+/** O/S Snapshot — các ngày không phải quyết toán GD */
+function renderSettleOS(i) {
+  const s = calcSettle(ROWS, i);
+  const r = s.r;
+  const thuDetail = s.thuRows.map(x => `
+    <tr>
+      <td>D${x.day} · ${x.label.split('—')[0].trim()}</td>
+      <td>+${abs(x.amt)}</td>
+      <td class="${x.G>0?'pos':'amt-zero'}">${x.G>0?abs(x.G):'—'}</td>
+      <td class="${x.J>0?'pos':'amt-zero'}">${x.J>0?abs(x.J):'—'}</td>
+      <td class="${(x.amt-x.G-x.J)>0?'hi-goc':'amt-zero'}">${(x.amt-x.G-x.J)>0?abs(x.amt-x.G-x.J):'—'}</td>
+    </tr>`).join('');
+
+  document.getElementById('settleBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div class="formula-badge badge-amber" style="font-size:13px">📊 O/S Snapshot tại D${r.day}</div>
+      <span style="font-size:12px;color:var(--ink-s);font-style:italic;font-family:'Fraunces',serif">
+        Tích lũy toàn bộ SO · Quyết toán GD chỉ có tại D15 và D30
+      </span>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi blue"><div class="lbl">Phí LNCS (Σ F)</div><div class="val">${abs(s.totF)}</div><div class="sub">đ · D3→D${r.day}</div></div>
+      <div class="kpi ${s.totG>=s.totF?'green':'amber'}"><div class="lbl">LNCS đã thu</div><div class="val">${abs(s.totG)}</div><div class="sub">${s.totG>=s.totF?'✓ Đủ':'còn nợ '+abs(s.totF-s.totG)+' đ'}</div></div>
+      <div class="kpi amber"><div class="lbl">Phí VAT tích lũy</div><div class="val">${abs(s.cumVat)}</div><div class="sub">thu: ${abs(s.totJ)} · còn: ${abs(s.cumVat-s.totJ)} đ</div></div>
+      <div class="kpi ${r.L<=0?'green':'red'}"><div class="lbl">Outstanding L</div><div class="val">${signedVnd(r.L)}</div><div class="sub">${r.L<0?'Thu dư':r.L>0?'Còn phải thu':'Cân bằng ✓'}</div></div>
+    </div>
+    <div class="alloc-detail">
+      <div class="hd">Chi tiết phân bổ tiền IN — LNCS → VAT → Gốc</div>
+      ${s.thuRows.length > 0 ? `<table><thead><tr>
+        <th style="text-align:left">THU</th><th>Số tiền</th>
+        <th style="color:var(--blue)">G (LNCS)</th><th style="color:var(--amber)">J (VAT)</th><th>Gốc</th>
+      </tr></thead><tbody>${thuDetail}</tbody></table>`
+      : '<div class="dim" style="padding:8px 0">Chưa có THU</div>'}
+    </div>
+    <div class="settle-formula">
+      <span class="lbl">Outstanding L = I + H + K tại D${r.day}</span>
+      <div class="row"><span class="key">I — Dư nợ gốc</span><span class="${Math.round(r.I)>0?'val-r':Math.round(r.I)<0?'val-g':'key'}">${signed(r.I)} đ</span></div>
+      <div class="row"><span class="key">H — LNCS chưa thu</span><span class="${r.H>0?'val-b':'key'}">${r.H>0?'+ '+abs(r.H):'0'} đ</span></div>
+      <div class="row"><span class="key">K — VAT chưa thu</span><span class="${r.K>0?'val-a':'key'}">${r.K>0?'+ '+abs(r.K):'0'} đ</span></div>
+      <div class="row total"><span class="key">= L Outstanding</span><span class="${r.L<0?'val-g':r.L>0?'val-r':'key'}" style="font-size:15px">${signed(r.L)} đ</span></div>
+    </div>`;
+}
+
+/* ── INIT ── */
+document.getElementById('iRate').addEventListener('input', renderAll);
+document.getElementById('iVat').addEventListener('input', renderAll);
+renderAll();
+</script>
+</div>
+</body>
+</html>
