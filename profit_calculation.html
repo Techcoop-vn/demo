@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechCoop — Principle-Based vs Fee-Based Profit Calculation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F4EFE6;
+    --paper-raised: #FAF5EC;
+    --paper-sunken: #EDE6D8;
+    --ink: #1B1B1B;
+    --ink-muted: #5C564D;
+    --ink-soft: #8C8374;
+    --rule: #D8CFBE;
+    --rule-strong: #B8AE98;
+    --accent: #2D5E3C;
+    --accent-deep: #1F4529;
+    --accent-tint: #D9E4DD;
+    --danger: #8B1A1A;
+    --danger-tint: #F0DCDC;
+    --warn: #A86B0A;
+    --warn-tint: #F2E4C4;
+    --blue: #1E4A7A;
+    --blue-tint: #D6E0EE;
+    --purple: #5A3A7A;
+    --purple-tint: #E2D9EC;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 12% 6%, rgba(45,94,60,0.045), transparent 38%),
+      radial-gradient(circle at 88% 94%, rgba(139,26,26,0.035), transparent 42%),
+      radial-gradient(circle at 50% 50%, rgba(30,74,122,0.02), transparent 60%);
+    min-height: 100vh;
+  }
+  .app { max-width: 1400px; margin: 0 auto; padding: 28px 28px 80px; }
+
+  /* TOP NAV */
+  .topnav {
+    display:flex;gap:8px;align-items:center;padding:8px 12px;margin-bottom:10px;
+    background:var(--paper-sunken);border:1px solid var(--rule);border-radius:8px;
+    font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;
+  }
+  .topnav .lbl { color:var(--ink-soft);margin-right:6px; }
+  .topnav a { padding:4px 10px;border-radius:999px;color:var(--ink-muted);text-decoration:none; }
+  .topnav a.active { background:var(--ink);color:var(--paper); }
+  .topnav a:not(.active):hover { color:var(--ink); }
+
+  /* SUB NAV */
+  .subnav {
+    display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+    padding:6px 12px;margin-bottom:20px;
+    background:var(--paper-raised);border:1px dashed var(--rule-strong);border-radius:8px;
+    font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;
+  }
+  .subnav .lbl { color:var(--ink-soft);margin-right:4px; font-style:italic; text-transform:none; letter-spacing:0; font-weight:500; font-family:'Fraunces',serif; }
+  .subnav a { padding:4px 10px;border-radius:999px;color:var(--ink-muted);text-decoration:none; border:1px solid transparent; }
+  .subnav a.active { background:var(--purple);color:var(--paper); border-color:var(--purple); }
+  .subnav a:not(.active):hover { color:var(--ink); border-color:var(--rule); }
+
+  /* HEADER */
+  header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px; padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 40px;
+    line-height: 1.02; letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 144;
+    margin: 0;
+  }
+  .title em { font-style: italic; font-weight: 400; color: var(--purple); }
+  .subtitle {
+    color: var(--ink-muted); font-size: 13px; margin-top: 7px;
+    font-style: italic; font-family: 'Fraunces', serif;
+    max-width: 720px;
+  }
+  .eyebrow {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; color: var(--purple);
+    background: var(--purple-tint);
+    padding: 4px 9px; border-radius: 3px;
+    text-transform: uppercase;
+    display: inline-block; margin-bottom: 10px;
+  }
+
+  /* TWO MODELS COMPARE */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  .model {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 24px 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .model::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .model.principle::before { background: var(--accent); }
+  .model.fee::before { background: var(--warn); }
+  .model .role {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .model.principle .role { color: var(--accent); }
+  .model.fee .role { color: var(--warn); }
+  .model .name {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 24px; letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+  .model .name em { font-style: italic; font-weight: 400; }
+  .model.principle .name em { color: var(--accent-deep); }
+  .model.fee .name em { color: var(--warn); }
+  .model .desc {
+    font-size: 13px; color: var(--ink-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .model .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--paper-sunken);
+    border: 1px dashed var(--rule-strong);
+    padding: 10px 14px; border-radius: 6px;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.65;
+  }
+  .model .when {
+    font-size: 12px; color: var(--ink-muted);
+    border-top: 1px dashed var(--rule);
+    padding-top: 12px; margin-top: 8px;
+  }
+  .model .when strong { color: var(--ink); font-weight: 600; }
+
+  /* PAGE INDEX CARDS */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 8px 0 16px;
+  }
+  .section-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 22px; letter-spacing: -0.01em; margin: 0;
+  }
+  .section-head h2 .num {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--purple);
+    background: var(--purple-tint);
+    padding: 3px 7px; border-radius: 3px;
+    vertical-align: middle; margin-right: 10px;
+    transform: translateY(-3px);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .section-sub {
+    font-size: 12.5px; color: var(--ink-muted);
+    font-style: italic; font-family: 'Fraunces', serif;
+  }
+  .pages {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .page-card {
+    display: block;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+  }
+  .page-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--rule-strong);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+  .page-card .tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .page-card.principle .tag { color: var(--accent); }
+  .page-card.fee .tag { color: var(--warn); }
+  .page-card.both .tag { color: var(--purple); }
+  .page-card .ttl {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 18px; letter-spacing: -0.005em;
+    margin-bottom: 6px;
+  }
+  .page-card .desc {
+    font-size: 12.5px; color: var(--ink-muted);
+    line-height: 1.55;
+  }
+  .page-card .arrow {
+    position: absolute; top: 18px; right: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-soft); font-size: 14px;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .page-card:hover .arrow { transform: translateX(3px); color: var(--ink); }
+
+  /* FOOTER */
+  footer {
+    margin-top: 40px; padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px; color: var(--ink-soft);
+    font-style: italic; font-family: 'Fraunces', serif;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .compare { grid-template-columns: 1fr; }
+    .pages { grid-template-columns: 1fr; }
+    .title { font-size: 28px; }
+    header { flex-direction: column; align-items: flex-start; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="topnav">
+    <span class="lbl">Pages →</span>
+    <a href="index.html">Flow Visualization</a>
+    <a href="flow_examples.html">Examples</a>
+    <a href="profit_calculation.html" class="active">Principle vs Fee-Based</a>
+    <a href="120526-demo-outstanding-analysis.html">Outstanding-Analysis</a>
+  </nav>
+
+  <nav class="subnav">
+    <span class="lbl">Profit calc →</span>
+    <a href="profit_calculation.html" class="active">Overview</a>
+    <a href="flow_schema_and_calculation.html">Schema &amp; Calculation</a>
+    <a href="cashflow_quyettoan.html">Quyết Toán</a>
+    <a href="CashFlow_FX_USD_v2_260506.html">FX USD v2</a>
+    <a href="CashFlow_FinOps_260506.html">FinOps</a>
+    <a href="CashFlow_FX_ChauHoang_v2_260506.html">FX Châu Hoàng v2</a>
+  </nav>
+
+  <header>
+    <div>
+      <span class="eyebrow">Profit Calculation</span>
+      <h1 class="title">Principle-Based <em>vs</em> Fee-Based</h1>
+      <div class="subtitle">
+        Two ways TechCoop recognizes profit on the same goods-and-money flow —
+        one books gross trading margin, the other books a service fee on a pass-through.
+        Pick the right lens, then dive into the schema, FX timing, and reconciliation pages.
+      </div>
+    </div>
+  </header>
+
+  <!-- TWO MODELS -->
+  <section class="compare">
+    <div class="model principle">
+      <div class="role">Model A</div>
+      <div class="name">Principle-<em>Based</em></div>
+      <div class="desc">
+        TechCoop takes <strong>title</strong> to the goods. Buys from the supplier,
+        sells to the customer. Revenue is the full sale price; cost is the purchase
+        price. Profit is the gross trading margin.
+      </div>
+      <div class="formula">
+        revenue&nbsp;&nbsp;= sale_price × qty<br>
+        cost&nbsp;&nbsp;&nbsp;&nbsp; = buy_price  × qty<br>
+        <strong>profit = revenue − cost − fx_adj − fees</strong>
+      </div>
+      <div class="when">
+        <strong>Use when</strong> TechCoop bears price/inventory/FX risk, issues
+        its own sales invoice, and the customer's contract is with TechCoop.
+      </div>
+    </div>
+
+    <div class="model fee">
+      <div class="role">Model B</div>
+      <div class="name">Fee-<em>Based</em></div>
+      <div class="desc">
+        TechCoop acts as agent. Money and goods <strong>pass through</strong>; only
+        the service fee is recognized as revenue. The supplier–customer contract
+        is the principal transaction.
+      </div>
+      <div class="formula">
+        gmv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= sale_price × qty&nbsp;&nbsp;<span style="color:var(--ink-soft)">// not revenue</span><br>
+        fee&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= gmv × fee_rate&nbsp;(or flat)<br>
+        <strong>profit = fee − fx_adj − processing_costs</strong>
+      </div>
+      <div class="when">
+        <strong>Use when</strong> TechCoop never holds title, isn't on the hook for
+        defects/returns, and the customer pays the supplier (with TechCoop facilitating).
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE INDEX -->
+  <div class="section-head">
+    <h2><span class="num">PAGES</span>Drill in</h2>
+    <span class="section-sub">Each page applies one or both models to a concrete flow</span>
+  </div>
+
+  <div class="pages">
+    <a class="page-card both" href="flow_schema_and_calculation.html">
+      <span class="arrow">→</span>
+      <div class="tag">Both models · Reference</div>
+      <div class="ttl">Schema &amp; Calculation</div>
+      <div class="desc">
+        Field-level schema for goods/money events and the calc rules that derive
+        revenue, cost, fee, and profit under each model. Start here.
+      </div>
+    </a>
+
+    <a class="page-card principle" href="cashflow_quyettoan.html">
+      <span class="arrow">→</span>
+      <div class="tag">Principle-Based · VND</div>
+      <div class="ttl">CashFlow Quyết Toán</div>
+      <div class="desc">
+        End-of-period reconciliation flow: matches goods receipts against payments,
+        closes out trading positions, and books realized margin.
+      </div>
+    </a>
+
+    <a class="page-card principle" href="CashFlow_FX_USD_v2_260506.html">
+      <span class="arrow">→</span>
+      <div class="tag">Principle-Based · USD</div>
+      <div class="ttl">CashFlow FX USD v2</div>
+      <div class="desc">
+        Cross-currency trading flow with USD invoicing. Tracks FX rate at booking
+        vs. settlement and isolates FX gain/loss from trading margin.
+      </div>
+    </a>
+
+    <a class="page-card fee" href="CashFlow_FinOps_260506.html">
+      <span class="arrow">→</span>
+      <div class="tag">Fee-Based · Operations</div>
+      <div class="ttl">CashFlow FinOps</div>
+      <div class="desc">
+        Pass-through facilitation flow. TechCoop receives funds, deducts the service
+        fee, and disburses the net to the counterparty.
+      </div>
+    </a>
+
+    <a class="page-card fee" href="CashFlow_FX_ChauHoang_v2_260506.html">
+      <span class="arrow">→</span>
+      <div class="tag">Fee-Based · FX scenario</div>
+      <div class="ttl">CashFlow FX Châu Hoàng v2</div>
+      <div class="desc">
+        Worked example with the Châu Hoàng counterparty: cross-currency
+        fee recognition, FX timing, and how the fee is carved out of the flow.
+      </div>
+    </a>
+  </div>
+
+  <footer>
+    TechCoop · Principle-Based vs Fee-Based profit calculation · 2026
+  </footer>
+
+</div>
+</body>
+</html>
