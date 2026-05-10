@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>salefarmgate · Order Lifespan & Disbursement</title>
+<style>
+  :root {
+    --navy: #0B2B4A;
+    --teal: #007A86;
+    --purple: #6B46C1;
+    --red: #C0392B;
+    --orange: #E07B00;
+    --green: #278E4A;
+    --gray-d: #333;
+    --gray-m: #666;
+    --gray-l: #AAA;
+    --bg: #FAFBFC;
+    --card: #FFFFFF;
+    --border: #E5E8EB;
+    --slide-w: 1100px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--gray-d);
+    line-height: 1.5;
+    scroll-behavior: smooth;
+  }
+  body { padding: 40px 0; }
+
+  .deck { max-width: var(--slide-w); margin: 0 auto; padding: 0 24px; }
+
+  .slide {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 56px 56px 48px;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    page-break-after: always;
+    min-height: 540px;
+  }
+  .slide-num {
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1 { font-size: 38px; color: var(--navy); margin-bottom: 16px; line-height: 1.15; font-weight: 700; }
+  h2 { font-size: 26px; color: var(--navy); margin-bottom: 18px; font-weight: 700; }
+  h3 { font-size: 16px; color: var(--gray-m); margin: 18px 0 10px; font-weight: 600; }
+  p { margin-bottom: 14px; }
+  .subtitle { color: var(--gray-m); font-size: 16px; font-style: italic; margin-bottom: 28px; }
+
+  /* KPI tiles */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0 32px; }
+  .kpi {
+    background: linear-gradient(135deg, #f7f9fb 0%, #eff3f7 100%);
+    border-radius: 10px; padding: 20px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .kpi .num { font-size: 32px; font-weight: 800; line-height: 1; }
+  .kpi .lbl { font-size: 12px; color: var(--gray-m); margin-top: 8px; }
+  .kpi.purple .num { color: var(--purple); }
+  .kpi.teal   .num { color: var(--teal); }
+  .kpi.red    .num { color: var(--red); }
+  .kpi.orange .num { color: var(--orange); }
+  .kpi.navy   .num { color: var(--navy); }
+
+  /* Callout */
+  .callout {
+    border-radius: 10px; padding: 18px 22px; margin: 22px 0;
+    border-left: 4px solid var(--teal);
+    background: #E8F4F5;
+  }
+  .callout.navy   { background: #E3EAF2; border-left-color: var(--navy); }
+  .callout.purple { background: #EDE7F6; border-left-color: var(--purple); }
+  .callout.orange { background: #FFF4E5; border-left-color: var(--orange); }
+  .callout.red    { background: #FBE9E7; border-left-color: var(--red); }
+  .callout .lbl { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .callout.teal   .lbl { color: var(--teal); }
+  .callout.navy   .lbl { color: var(--navy); }
+  .callout.purple .lbl { color: var(--purple); }
+  .callout.orange .lbl { color: var(--orange); }
+  .callout.red    .lbl { color: var(--red); }
+  .callout p { margin-bottom: 0; font-size: 14px; }
+
+  /* Bar charts */
+  .chart { margin: 18px 0; }
+  .bar-row { display: flex; align-items: center; margin: 8px 0; }
+  .bar-label { width: 200px; font-size: 13px; color: var(--gray-d); padding-right: 12px; text-align: right; }
+  .bar-track { flex: 1; height: 26px; background: #F2F4F6; border-radius: 4px; position: relative; overflow: visible; }
+  .bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.2,0.8,0.2,1);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 8px; color: white; font-size: 12px; font-weight: 700;
+  }
+  .bar-fill.outside { color: var(--gray-d); padding-left: 8px; padding-right: 0; justify-content: flex-start; }
+  .bar-value-outside { position: absolute; right: -52px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 700; color: var(--gray-d); }
+  .bar-fill.purple { background: var(--purple); }
+  .bar-fill.teal   { background: var(--teal); }
+  .bar-fill.red    { background: var(--red); }
+  .bar-fill.orange { background: var(--orange); }
+  .bar-fill.navy   { background: var(--navy); }
+  .bar-fill.green  { background: var(--green); }
+  .bar-fill.gray   { background: var(--gray-l); }
+  .bar-100-line { position: absolute; top: -4px; bottom: -4px; border-left: 2px dashed var(--red); }
+  .bar-100-label { position: absolute; top: -18px; transform: translateX(-50%); font-size: 10px; color: var(--red); font-weight: 700; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+  th { background: var(--navy); color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: #F8F9FB; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.bold { font-weight: 700; }
+  td.purple { color: var(--purple); font-weight: 600; }
+  td.red    { color: var(--red); font-weight: 600; }
+  td.green  { color: var(--green); font-weight: 600; }
+  td.teal   { color: var(--teal); font-weight: 600; }
+
+  /* Cycle diagram */
+  .cycle {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px; margin: 24px 0;
+  }
+  .cycle-event {
+    border-radius: 10px; padding: 18px; text-align: center;
+    border: 2px solid var(--border); background: white;
+  }
+  .cycle-event .day { font-size: 28px; font-weight: 800; color: var(--purple); }
+  .cycle-event .what { font-size: 13px; color: var(--gray-d); font-weight: 600; margin-top: 6px; }
+  .cycle-event .pct { font-size: 11px; color: var(--gray-m); margin-top: 4px; font-style: italic; }
+
+  .cycle-timeline {
+    background: linear-gradient(to right,
+      #E0E0E0 0%, #E0E0E0 23%,
+      #FFE5D9 23%, #FFE5D9 50%,
+      #D9F0E5 50%, #D9F0E5 100%);
+    height: 36px; border-radius: 6px;
+    position: relative; margin: 18px 0 32px;
+  }
+  .cycle-marker {
+    position: absolute; top: -6px; bottom: -6px;
+    border-left: 3px solid var(--navy);
+  }
+  .cycle-marker .lbl {
+    position: absolute; top: -22px; transform: translateX(-50%); font-size: 11px; color: var(--navy); font-weight: 700; white-space: nowrap;
+  }
+  .cycle-marker .day-lbl {
+    position: absolute; bottom: -22px; transform: translateX(-50%); font-size: 11px; color: var(--gray-m); white-space: nowrap;
+  }
+
+  /* Symmetry comparison */
+  .symmetry { margin: 20px 0; }
+  .sym-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 10px 0; }
+  .sym-bar { height: 32px; display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; color: white; font-size: 13px; font-weight: 700; border-radius: 4px; }
+  .sym-bar.left  { background: var(--teal); justify-content: flex-end; }
+  .sym-bar.right { background: var(--red); justify-content: flex-start; }
+  .sym-axis { text-align: center; font-size: 12px; color: var(--gray-m); margin-bottom: 6px; }
+  .sym-pct-row { display: grid; grid-template-columns: 80px 1fr 80px; align-items: center; gap: 8px; margin: 6px 0; font-size: 12px; }
+  .sym-pct-row .pct-label { color: var(--gray-m); font-weight: 600; }
+  .sym-pct-row .pct-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .sym-pct-row .pct-val { font-weight: 700; }
+
+  /* Footer */
+  footer { text-align: center; color: var(--gray-l); font-size: 12px; padding: 20px; }
+
+  /* Print */
+  @media print {
+    body { padding: 0; }
+    .slide { box-shadow: none; border: none; margin: 0; page-break-after: always; }
+  }
+
+  /* Section divider style */
+  .divider { height: 1px; background: var(--border); margin: 26px 0; }
+
+  /* Two-col layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  /* Highlight legend */
+  .legend { font-size: 12px; color: var(--gray-m); display: flex; gap: 16px; align-items: center; margin: 8px 0 14px; }
+  .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- ======================== SLIDE 1: COVER ======================== -->
+<div class="slide">
+  <div class="slide-num">TECHCOOP · DATA · SALEFARMGATE</div>
+  <h1>How long an order lives,<br>and how much money moves through it</h1>
+  <p class="subtitle">Lifespan, disbursement, and credit utilization across 340 active sale orders</p>
+
+  <div class="kpi-row">
+    <div class="kpi purple"><div class="num">32 d</div><div class="lbl">p50 order lifespan</div></div>
+    <div class="kpi purple"><div class="num">64 d</div><div class="lbl">p90 order lifespan</div></div>
+    <div class="kpi teal"><div class="num">~55 %</div><div class="lbl">p90 disbursement vs credit</div></div>
+    <div class="kpi orange"><div class="num">62 %</div><div class="lbl">SOs without credit_limit on file</div></div>
+  </div>
+
+  <div class="callout purple">
+    <div class="lbl">The takeaway</div>
+    <p>A typical trade closes in ~32 days. The typical-large trade (p90) uses ~50–60% of the customer's credit line on both sides — well within headroom. Only the top 1% crosses the line. A single SO does not saturate a credit; credit accumulates utilization across many trades over time.</p>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 2: LIFESPAN ======================== -->
+<div class="slide">
+  <div class="slide-num">A · Order Lifespan</div>
+  <h2>The physical trade is over in ~32 days</h2>
+  <p class="subtitle">Measured against actual delivery dates on the linked outgoing stock_move row. 175 of 340 SOs have these populated.</p>
+
+  <h3>Physical lifespan vs cash cycle — bars scaled to 225 d (cash p99)</h3>
+  <div class="legend">
+    <span><span class="legend-dot" style="background:var(--purple)"></span>Physical lifespan (order → goods arrived)</span>
+    <span><span class="legend-dot" style="background:var(--orange)"></span>Cash cycle / net float (TC's exposure window)</span>
+  </div>
+  <div class="chart">
+    <div class="bar-row">
+      <div class="bar-label"><strong>p50</strong></div>
+      <div class="bar-track">
+        <div class="bar-fill purple" style="width: 14.2%">32 d</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">&nbsp;</div>
+      <div class="bar-track">
+        <div class="bar-fill orange" style="width: 24.9%">56 d</div>
+      </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="bar-row">
+      <div class="bar-label"><strong>p90</strong></div>
+      <div class="bar-track">
+        <div class="bar-fill purple" style="width: 28.4%">64 d</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">&nbsp;</div>
+      <div class="bar-track">
+        <div class="bar-fill orange" style="width: 46.2%">104 d</div>
+      </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="bar-row">
+      <div class="bar-label"><strong>p99</strong></div>
+      <div class="bar-track">
+        <div class="bar-fill purple" style="width: 68.9%">155 d</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">&nbsp;</div>
+      <div class="bar-track">
+        <div class="bar-fill orange" style="width: 100%">225 d</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Other lifespan signals for reference</h3>
+  <table>
+    <thead><tr><th>Definition</th><th class="num">N</th><th class="num">p50</th><th class="num">p90</th><th class="num">p99</th></tr></thead>
+    <tbody>
+      <tr><td>date_ordered → atd (actual departure)</td><td class="num">185</td><td class="num">16</td><td class="num">55</td><td class="num">117</td></tr>
+      <tr><td>atd → ata (transit only)</td><td class="num">175</td><td class="num">6</td><td class="num">25</td><td class="num">61</td></tr>
+      <tr><td>etd → ata (planned dep → actual arrival)</td><td class="num">175</td><td class="num">16</td><td class="num">44</td><td class="num">119</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout navy">
+    <div class="lbl">Read</div>
+    <p>The physical trade is over in ~32 days median (p90: 64 d). But TC's cash is out the door longer — the <strong>net float runs ~56 d at p50, 104 d at p90, 225 d at p99</strong>. The cash cycle is what drives interest cost, not the physical lifespan.</p>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 3: DISBURSEMENT VS CREDIT ======================== -->
+<div class="slide">
+  <div class="slide-num">B · Disbursement vs Customer Credit_limit</div>
+  <h2>Money in and out are nearly symmetric</h2>
+  <p class="subtitle">Where each SO's customer has a real credit_limit on file (130 of 340 SOs across 24 distinct customers — 38% coverage).</p>
+
+  <h3>% of credit limit consumed (per SO)</h3>
+  <div class="legend">
+    <span><span class="legend-dot" style="background:var(--teal)"></span>Money in (customer → TC)</span>
+    <span><span class="legend-dot" style="background:var(--red)"></span>Money out (TC → vendors)</span>
+  </div>
+
+  <div class="chart" style="position:relative;">
+    <!-- 100% reference line -->
+    <div style="position:relative; padding-bottom: 12px;">
+
+    <div class="bar-row">
+      <div class="bar-label">p50</div>
+      <div class="bar-track" style="position:relative;">
+        <div class="bar-fill teal" style="width: 8%">8 %</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">&nbsp;</div>
+      <div class="bar-track">
+        <div class="bar-fill red" style="width: 6%">6 %</div>
+      </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="bar-row">
+      <div class="bar-label">p90</div>
+      <div class="bar-track">
+        <div class="bar-fill teal" style="width: 60%">60 %</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">&nbsp;</div>
+      <div class="bar-track">
+        <div class="bar-fill red" style="width: 49%">49 %</div>
+      </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="bar-row">
+      <div class="bar-label">p99</div>
+      <div class="bar-track">
+        <div class="bar-fill teal" style="width: 100%">133 %</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">&nbsp;</div>
+      <div class="bar-track">
+        <div class="bar-fill red" style="width: 96%">128 %</div>
+      </div>
+    </div>
+
+    </div>
+    <div style="font-size: 11px; color: var(--gray-m); margin-top: 6px;">Bars scaled to p99 (133 % of credit_limit); &nbsp;100 % = saturating one credit line.</div>
+  </div>
+
+  <table style="margin-top: 24px;">
+    <thead>
+      <tr>
+        <th>Direction</th>
+        <th class="num">n</th>
+        <th class="num">p50 (VND)</th>
+        <th class="num">p90 (VND)</th>
+        <th class="num">p99 (VND)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="teal">Money in (customer → TC)</td><td class="num">96</td><td class="num">0.42 B</td><td class="num">3.61 B</td><td class="num">9.72 B</td></tr>
+      <tr><td class="red">Money out (TC → vendors)</td><td class="num">110</td><td class="num">0.39 B</td><td class="num">3.79 B</td><td class="num">9.15 B</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout teal">
+    <div class="lbl">Read</div>
+    <p>Customer payments and vendor disbursements are nearly symmetric at every percentile — closed trades have matching settlement on both sides. The typical-large trade (p90) uses ~50–60% of the customer's credit headroom, well within bounds. Only the top 1% (p99 ≈ 128–133%) crosses the line.</p>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 4: MONEY CYCLE ======================== -->
+<div class="slide">
+  <div class="slide-num">C · The Money Cycle</div>
+  <h2>The cash cycle runs longer than the trade itself</h2>
+  <p class="subtitle">Physical lifespan ≠ cash lifespan. Three durations measured on the same credit-joined subset (n = 96).</p>
+
+  <h3>p50 timeline (median trade, in days from date_ordered)</h3>
+  <div class="cycle-timeline">
+    <div class="cycle-marker" style="left: 0%">
+      <div class="lbl">date_ordered</div>
+      <div class="day-lbl">day 0</div>
+    </div>
+    <div class="cycle-marker" style="left: 22.2%">
+      <div class="lbl">first vendor pay</div>
+      <div class="day-lbl">day ~14</div>
+    </div>
+    <div class="cycle-marker" style="left: 50.7%">
+      <div class="lbl">last customer receipt</div>
+      <div class="day-lbl">day 70</div>
+    </div>
+    <div class="cycle-marker" style="left: 100%">
+      <div class="lbl">last vendor pay</div>
+      <div class="day-lbl">day 81</div>
+    </div>
+  </div>
+  <p style="text-align: center; font-size: 12px; color: var(--gray-m); margin-top: -10px; margin-bottom: 24px;">
+    The orange band (≈ day 14 → day 70) is the <strong>net float</strong> — TC's cash exposure window: <strong>56 d at p50</strong>.
+  </p>
+
+  <table>
+    <thead><tr><th>Duration</th><th>What it measures</th><th class="num">p50</th><th class="num">p90</th><th class="num">p99</th></tr></thead>
+    <tbody>
+      <tr><td>Order → last customer receipt</td><td>DSO equivalent</td><td class="num">70 d</td><td class="num">103 d</td><td class="num">212 d</td></tr>
+      <tr><td>Order → last vendor payment</td><td>How long until TC closes vendor obligations</td><td class="num">81 d</td><td class="num">168 d</td><td class="num">249 d</td></tr>
+      <tr style="background: #EDE7F6;"><td class="purple bold">Net float</td><td class="purple"><strong>Cash-conversion cycle — interest-cost window</strong></td><td class="num purple bold">56 d</td><td class="num purple bold">104 d</td><td class="num purple bold">225 d</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout navy">
+    <div class="lbl">Two surprises</div>
+    <p><strong>(1)</strong> Customer settlement closes faster than vendor settlement on average — TC collects from customers (70 d p50) before finishing vendor payments (81 d p50). <strong>(2)</strong> The 56-day net float is what matters for interest cost — not the 32-day physical lifespan.</p>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 6: INTEREST METHODS ======================== -->
+<div class="slide">
+  <div class="slide-num">D · Interest Calculation</div>
+  <h2>How big is the method-choice lever?</h2>
+  <p class="subtitle">Two ways to recognize interest revenue when customers pay back. Same total accrued — different timing of when principal falls. Question: does the choice meaningfully move the number?</p>
+
+  <div class="two-col">
+    <div style="background: #EDE7F6; padding: 18px; border-radius: 10px; border-left: 4px solid var(--purple);">
+      <h3 style="color: var(--purple); margin-top: 0;">Method A — Fees first</h3>
+      <p style="font-size: 13px; margin-bottom: 12px;">Each customer payment kills accrued interest first, then reduces principal. Fees show up smoothly throughout the trade.</p>
+      <div style="background: white; border-left: 3px solid var(--purple); padding: 10px 14px; border-radius: 4px;">
+        <div style="font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--purple); margin-bottom: 4px;">Best when</div>
+        <p style="font-size: 13px; margin-bottom: 0;"><strong>You want smooth fee-revenue recognition</strong> across the trade — better for periodic P&amp;L reporting.</p>
+      </div>
+    </div>
+    <div style="background: #E8F4F5; padding: 18px; border-radius: 10px; border-left: 4px solid var(--teal);">
+      <h3 style="color: var(--teal); margin-top: 0;">Method B — Principal first</h3>
+      <p style="font-size: 13px; margin-bottom: 12px;">Each payment reduces principal directly. All fees accrue separately and are settled at the end (balloon).</p>
+      <div style="background: white; border-left: 3px solid var(--teal); padding: 10px 14px; border-radius: 4px;">
+        <div style="font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin-bottom: 4px;">Best when</div>
+        <p style="font-size: 13px; margin-bottom: 0;"><strong>You want simple customer-facing installments</strong> — every payment is "principal repayment."</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Two scenarios that bracket the answer</h3>
+  <p style="font-size: 13px; color: var(--gray-m);">A 5 B VND credit line at 2.5 % per 30 days, paid back in 3 installments. Numbers in the table below are total interest revenue per trade.</p>
+
+  <table style="margin-top: 14px;">
+    <thead>
+      <tr>
+        <th style="width: 28%;">Scenario</th>
+        <th class="num">Method A revenue</th>
+        <th class="num">Method B revenue</th>
+        <th class="num">Method gap (M VND)</th>
+        <th class="num">Gap (% of P per 30 d)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong style="color: var(--green);">Realistic typical trade</strong><br>
+          <span style="font-size: 12px; color: var(--gray-m);">~56-day cash cycle (median)</span>
+        </td>
+        <td class="num">157 M VND</td>
+        <td class="num">154 M VND</td>
+        <td class="num"><strong>+3.2 M</strong></td>
+        <td class="num">0.034 %</td>
+      </tr>
+      <tr>
+        <td>
+          <strong style="color: var(--orange);">Realistic large trade</strong><br>
+          <span style="font-size: 12px; color: var(--gray-m);">~104-day cash cycle (top 10 %)</span>
+        </td>
+        <td class="num">299 M VND</td>
+        <td class="num">288 M VND</td>
+        <td class="num"><strong>+11 M</strong></td>
+        <td class="num">0.065 %</td>
+      </tr>
+      <tr style="background: #FBE9E7;">
+        <td>
+          <strong style="color: var(--red);">Bounded worst case</strong><br>
+          <span style="font-size: 12px; color: var(--gray-m);">Full 5 B stuck 225 d (near-default)</span>
+        </td>
+        <td class="num red bold">678 M VND</td>
+        <td class="num red bold">625 M VND</td>
+        <td class="num red bold">+53 M</td>
+        <td class="num red bold">0.142 %</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout navy" style="margin-top: 12px; padding: 12px 16px;">
+    <div class="lbl">Reading the rightmost column</div>
+    <p style="font-size: 13px;"><strong>Method gap as % of principal per 30 days</strong> — normalized against TC's natural rate period. Strips out trade size and duration so scenarios sit on equal footing. <strong>Anchor it against the 2.5 % rate</strong>: the typical-trade method gap (0.034 %) is ~1.4 % of the rate; the worst-case gap (0.142 %) is ~5.7 %. Per-30-day gap quadruples from typical to worst case.</p>
+  </div>
+
+  <div class="callout purple">
+    <div class="lbl">The answer</div>
+    <p>For a typical trade the method choice is worth <strong>~3 M VND</strong> per trade (0.034 % of principal per 30 days — about 1.4 % of TC's 2.5 % rate). For a stuck near-default trade it's worth <strong>~53 M VND</strong> (0.142 % per 30 d — 5.7 % of the rate). The lever is small per typical trade but the per-30-day rate quadruples on stuck exposure. The choice is an accounting workflow question for the bulk of the book, but a meaningful one on stuck trades.</p>
+  </div>
+
+  <p style="font-size: 12px; color: var(--gray-l); font-style: italic; margin-top: 8px;">
+    Why the per-30-day gap grows: Method A keeps principal slightly higher per installment, so a tiny extra accrual compounds against itself. The effect scales as r² × T × P / 2 — quadratic in rate <strong>and</strong> linear in time, so the per-period rate scales with T. At 2.5 %/30 d the gap stays under 9 % of total interest even at 225-day exposure.
+  </p>
+</div>
+
+<!-- ======================== SLIDE 7: METHOD GAP CHART ======================== -->
+<div class="slide">
+  <div class="slide-num">D · Interest Methods — visual</div>
+  <h2>Method gap grows with lifespan</h2>
+  <p class="subtitle">The choice between fees-first and principal-first becomes meaningful only on stuck trades.</p>
+
+  <h3>Method gap as % of principal per 30 days · bars scaled to 0.142 % (worst case)</h3>
+  <div class="callout navy" style="margin-top: 8px; margin-bottom: 16px; padding: 14px 18px;">
+    <div class="lbl">Reading the chart</div>
+    <p style="font-size: 13px;"><strong>% of principal per 30 days</strong> — normalized against TC's natural rate period (2.5 %/30 d). Strips out trade size and duration so a 56-day trade and a 225-day trade can be compared on equal footing. <strong>Anchor against the rate</strong>: a typical-trade gap (0.034 %) is ~1.4 % of the 2.5 % rate; a worst-case gap (0.142 %) is ~5.7 % of the rate.</p>
+  </div>
+
+  <div class="chart">
+    <div class="bar-row">
+      <div class="bar-label">Realistic typical (56 d)</div>
+      <div class="bar-track"><div class="bar-fill purple" style="width: 24%; padding-right: 6px;">0.034 %</div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Realistic large (104 d)</div>
+      <div class="bar-track"><div class="bar-fill purple" style="width: 45.5%; padding-right: 6px;">0.065 %</div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Bounded worst-case (225 d)</div>
+      <div class="bar-track"><div class="bar-fill red" style="width: 100%">0.142 %</div></div>
+    </div>
+  </div>
+
+  <p style="font-size: 13px; color: var(--gray-d); margin: 16px 0;">
+    The per-30-day rate <strong>quadruples</strong> from typical to worst case (0.034 % → 0.142 %). This isn't compounding interest — it's the second-order Method-A-vs-B effect compounding against itself as the trade stretches. Roughly: doubling the duration doubles the per-30-day gap.
+  </p>
+
+  <div class="callout purple">
+    <div class="lbl">Why it matters</div>
+    <p>Choosing fees-first is approximately a <strong>0.034 % per 30 days advantage</strong> on a typical trade — about 1.4 % of TC's 2.5 % rate. On stuck trades it's <strong>0.142 % per 30 days</strong> (5.7 % of the rate), and the per-trade absolute gap reaches ~50 M VND. The lever is small per normal trade but worth flagging as risk-of-default rises.</p>
+  </div>
+</div>
+
+</div> <!-- /deck -->
+
+<footer>salefarmgate · 2026-05-10 · 6 slides · keyboard: ↓ scroll, Cmd/Ctrl+P to print</footer>
+
+</body>
+</html>

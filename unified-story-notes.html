@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Outstanding & sharing-profit · presenter notes</title>
+<style>
+  :root {
+    --navy: #0B2B4A; --teal: #007A86; --purple: #6B46C1;
+    --red: #C0392B; --orange: #E07B00; --green: #278E4A;
+    --gray-d: #333; --gray-m: #666; --gray-l: #AAA;
+    --bg: #FAFBFC; --card: #FFFFFF; --border: #E5E8EB;
+    --note-bg: #FFFAE6; --note-border: #F2C94C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--gray-d);line-height:1.55;scroll-behavior:smooth}
+  body{padding:40px 0}
+  .deck{max-width:1100px;margin:0 auto;padding:0 24px}
+  .slide{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:44px 52px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.04);page-break-after:always}
+  .slide-num{color:var(--teal);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+  h1{font-size:32px;color:var(--navy);margin-bottom:14px;line-height:1.2;font-weight:700}
+  h2{font-size:22px;color:var(--navy);margin-bottom:14px;font-weight:700}
+  h3{font-size:14px;color:var(--gray-m);margin:20px 0 10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  p{margin-bottom:12px}
+  .subtitle{color:var(--gray-m);font-size:15px;font-style:italic;margin-bottom:20px}
+
+  /* presenter notes block */
+  .notes{background:var(--note-bg);border-left:4px solid var(--note-border);border-radius:8px;padding:16px 22px;margin:14px 0;font-size:14px}
+  .notes .lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#A07800;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .notes .lbl::before{content:"●";color:var(--note-border)}
+  .notes ul{margin:6px 0 0 18px}
+  .notes li{margin-bottom:5px}
+  .notes p{margin-bottom:8px}
+  .notes p:last-child{margin-bottom:0}
+
+  .callout{border-radius:10px;padding:16px 22px;margin:14px 0;border-left:4px solid var(--teal);background:#E8F4F5;font-size:14px}
+  .callout.navy{background:#E3EAF2;border-left-color:var(--navy)}
+  .callout.purple{background:#EDE7F6;border-left-color:var(--purple)}
+  .callout.orange{background:#FFF4E5;border-left-color:var(--orange)}
+  .callout.red{background:#FBE9E7;border-left-color:var(--red)}
+  .callout.green{background:#E8F5E9;border-left-color:var(--green)}
+  .callout .lbl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .callout.teal .lbl{color:var(--teal)}.callout.navy .lbl{color:var(--navy)}.callout.purple .lbl{color:var(--purple)}.callout.orange .lbl{color:var(--orange)}.callout.red .lbl{color:var(--red)}.callout.green .lbl{color:var(--green)}
+  .callout p{margin-bottom:0}
+
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:var(--navy);color:white;padding:9px 12px;text-align:left;font-weight:600}
+  td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  tr:nth-child(even) td{background:#F8F9FB}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  td.bold{font-weight:700}
+  td.red{color:var(--red);font-weight:600}td.green{color:var(--green);font-weight:600}td.purple{color:var(--purple);font-weight:600}td.teal{color:var(--teal);font-weight:600}td.orange{color:var(--orange);font-weight:600}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .method-card{background:white;padding:16px;border-radius:10px;border:1px solid var(--border)}
+  .method-card.farmnet{background:#FBE9E7;border-left:4px solid var(--red)}
+  .method-card.farmgate{background:#E8F4F5;border-left:4px solid var(--teal)}
+  .method-card.purple{background:#EDE7F6;border-left:4px solid var(--purple)}
+  .method-card.orange{background:#FFF4E5;border-left:4px solid var(--orange)}
+
+  /* stacked-bar visualization */
+  .stack-row{display:grid;grid-template-columns:140px 1fr 90px;align-items:center;gap:10px;margin:6px 0;font-size:13px}
+  .stack-label{text-align:right;color:var(--gray-d);font-weight:600}
+  .stack-track{height:30px;background:#F2F4F6;border-radius:5px;display:flex;overflow:hidden}
+  .stack-seg{height:100%;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;white-space:nowrap}
+  .stack-seg.principal{background:var(--teal)}
+  .stack-seg.margin{background:var(--purple)}
+  .stack-seg.vat{background:var(--orange)}
+  .stack-seg.fee{background:#A07800}
+  .stack-total{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  .legend{font-size:12px;color:var(--gray-m);display:flex;gap:14px;margin:6px 0 12px;align-items:center;flex-wrap:wrap}
+  .legend-dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
+  .legend-dot.principal{background:var(--teal)}
+  .legend-dot.margin{background:var(--purple)}
+  .legend-dot.vat{background:var(--orange)}
+  .legend-dot.fee{background:#A07800}
+
+  /* horizontal bar chart for gap visualization */
+  .bar-row{display:flex;align-items:center;margin:6px 0}
+  .bar-label{width:200px;font-size:13px;padding-right:10px;text-align:right;color:var(--gray-d)}
+  .bar-track{flex:1;height:24px;background:#F2F4F6;border-radius:4px;position:relative}
+  .bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:white;font-size:12px;font-weight:700}
+  .bar-fill.green{background:var(--green)}
+  .bar-fill.orange{background:var(--orange)}
+  .bar-fill.red{background:var(--red)}
+
+  /* installment timeline */
+  .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+  .step{background:white;border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;text-align:center}
+  .step .label{font-weight:700;color:var(--purple);margin-bottom:4px;font-size:10px;letter-spacing:0.5px;text-transform:uppercase}
+  .step .num{font-size:14px;font-weight:700;color:var(--gray-d)}
+  .step .sub{font-size:10px;color:var(--gray-m);margin-top:3px}
+  .step.principal-first .label{color:var(--teal)}
+
+  .pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+  .pill.farmnet{background:#FBE9E7;color:var(--red)}
+  .pill.farmgate{background:#E8F4F5;color:var(--teal)}
+  .pill.notes{background:var(--note-bg);color:#A07800;border:1px solid var(--note-border)}
+
+  /* TOC banner at top */
+  .banner{background:var(--note-bg);border:1px solid var(--note-border);border-radius:10px;padding:18px 24px;margin-bottom:28px}
+  .banner h2{margin-bottom:10px;font-size:20px;color:#A07800}
+  .banner p{margin-bottom:6px;font-size:14px}
+
+  footer{text-align:center;color:var(--gray-l);font-size:12px;padding:20px}
+  @media print{body{padding:0}.slide{box-shadow:none;border:none;margin:0}}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<div class="banner">
+  <h2>Presenter notes — long-form version</h2>
+  <p>Full talking points and worked examples to back the 7-slide deck in <code>unified-story.html</code>. Each section maps 1:1 to a slide. Yellow blocks are spoken-word notes; the rest mirrors what the audience sees.</p>
+  <p style="margin-bottom:0;color:var(--gray-m);font-style:italic;font-size:13px">Use this view to rehearse, hand out as the appendix, or read alongside the live deck.</p>
+</div>
+
+<!-- ======== SECTION 1: COVER ======== -->
+<div class="slide">
+  <div class="slide-num">SLIDE 1 · Cover</div>
+  <h1>"Outstanding" and "sharing profit"<br>mean different things in different systems</h1>
+  <p class="subtitle">Two ambiguities behind the same vocabulary. One is structural. One is a quiet choice.</p>
+
+  <div class="callout purple">
+    <div class="lbl">The problem</div>
+    <p>farmnet and salefarmgate both use the words "outstanding" and "sharing profit" — but the underlying math is different. Reports that combine the two systems silently mix two different definitions.</p>
+  </div>
+
+  <div class="callout navy">
+    <div class="lbl">The two answers</div>
+    <p><strong>Story 1 (cross-system):</strong> farmnet's "outstanding" = principal + markup; salefarmgate's = principal only. The mismatch is structural. Fix the definition before any TC-wide roll-up.<br><br>
+    <strong>Story 2 (within salefarmgate):</strong> two ways to accrue the sharing-profit fee. Gap is negligible on normal trades. Pick the one that fits the team's workflow — it's not a revenue lever.</p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Talking points</div>
+    <ul>
+      <li>Open with: "The two systems both have a column called <em>outstanding</em>. The numbers in those columns are not measuring the same thing — even though we treat them that way in cross-system reporting."</li>
+      <li>Pause to let "same word, different math" land. Most non-technical viewers assume two columns named the same hold the same kind of number.</li>
+      <li>Frame the deck as <strong>two stories, not one</strong>. The first deserves engineering attention; the second is a small operational decision.</li>
+      <li>If asked "which one should we tackle first?" — Story 1, every time. It's a definition mismatch that will only get worse as TC builds dashboards on top of both systems.</li>
+    </ul>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Anchoring example to mention out loud</div>
+    <p>"Imagine you ask the team: <em>how much money do our customers owe us right now?</em> If you read farmnet's number you get principal plus our profit margin plus VAT — let's call that 1.07 B on a 1 B loan. If you read salefarmgate's number you get just the 1 B. Same question, two different answers — and depending on which one you trust, you'd make different decisions about credit risk, margin, and tax."</p>
+  </div>
+</div>
+
+<!-- ======== SECTION 2: LANDSCAPE ======== -->
+<div class="slide">
+  <div class="slide-num">SLIDE 2 · The landscape</div>
+  <h2>Two systems, two markets, same vocabulary</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th><span class="pill farmnet">farmnet</span></th>
+        <th><span class="pill farmgate">salefarmgate</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="bold">Customers</td><td>Domestic Vietnamese coops</td><td>Export buyers (SG, CN, JP)</td></tr>
+      <tr><td class="bold">Active SOs</td><td class="num">4,961</td><td class="num">340</td></tr>
+      <tr><td class="bold">"Outstanding"</td><td>Principal + margin + VAT (one number)</td><td>Principal only (cash gap)</td></tr>
+      <tr><td class="bold">"Sharing profit"</td><td>Baked into outstanding at SO creation</td><td>Separate column, time-accrued</td></tr>
+      <tr><td class="bold">Customer overlap</td><td colspan="2" class="bold" style="text-align:center;color:var(--gray-m)">None — no usable bridge</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout navy">
+    <div class="lbl">Implication</div>
+    <p>Adding "farmnet outstanding" + "salefarmgate outstanding" mixes a marked-up number with a principal-only number. Same word, different math.</p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Talking points</div>
+    <ul>
+      <li><strong>Why they're different by design</strong>: farmnet was built for domestic financing where TC sets a profit margin at SO creation and folds it into what the customer owes. salefarmgate was built for export trades where the customer pays at vendor cost; profit-share is a separate financing fee.</li>
+      <li><strong>"No customer overlap"</strong> is important: the same customer never appears in both systems. That means we cannot reconcile row-by-row, only methodology-by-methodology.</li>
+      <li>If asked "why don't we just unify them?" — that's the structural fix Story 1 calls for, but it's a multi-quarter modeling effort.</li>
+    </ul>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">If someone asks about the volume disparity (4,961 vs 340)</div>
+    <p>"farmnet has 14× the SO volume but salefarmgate trades are individually larger and more complex (per-delivery cost allocations, lot tracking, freight). The two systems serve different parts of the business. Volume isn't the issue — definition is."</p>
+  </div>
+</div>
+
+<!-- ======== SECTION 3: STORY 1 RECIPES ======== -->
+<div class="slide">
+  <div class="slide-num">SLIDE 3 · Story 1 — same word, two recipes</div>
+  <h2>Worked example: 1 B VND disbursement, customer hasn't paid back</h2>
+
+  <div class="two-col">
+    <div class="method-card farmnet">
+      <h3 style="color:var(--red);margin-top:0;margin-bottom:10px">farmnet: <span style="font-weight:800">1.07 B VND</span></h3>
+      <table style="font-size:13px;margin:0">
+        <tbody>
+          <tr><td>Cash to vendor</td><td class="num">1.00 B</td></tr>
+          <tr><td>+ profit margin (~ 5 %)</td><td class="num">+ 0.05 B</td></tr>
+          <tr><td>+ VAT (~ 2 %)</td><td class="num">+ 0.02 B</td></tr>
+          <tr style="background:#FBE9E7"><td class="bold">= outstanding</td><td class="num bold red">1.07 B</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;margin-top:10px">Principal, profit, and VAT are <strong>fused into one number</strong> at SO creation. No way to read the parts later.</p>
+    </div>
+
+    <div class="method-card farmgate">
+      <h3 style="color:var(--teal);margin-top:0;margin-bottom:10px">salefarmgate: <span style="font-weight:800">1.00 B</span> &nbsp;<span style="font-size:13px;color:var(--orange);font-weight:600">+ 33 M fee (separate)</span></h3>
+      <table style="font-size:13px;margin:0">
+        <tbody>
+          <tr><td>Cash to vendor</td><td class="num">1.00 B</td></tr>
+          <tr><td>− Cash from customer</td><td class="num">− 0.00 B</td></tr>
+          <tr style="background:#E8F4F5"><td class="bold"><code>outstanding</code> (principal)</td><td class="num bold teal">1.00 B</td></tr>
+          <tr style="background:#FFF4E5"><td><code>profit_sharing</code> (time-accrued fee)</td><td class="num" style="color:var(--orange);font-weight:600">+ 0.033 B</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;margin-top:10px">Outstanding is just the cash gap. Fee lives in a <strong>separate column</strong>. Parts stay visible.</p>
+    </div>
+  </div>
+
+  <h3>Visual — what's inside each system's "outstanding"</h3>
+  <div class="legend">
+    <span><span class="legend-dot principal"></span>principal (cash to vendor)</span>
+    <span><span class="legend-dot margin"></span>profit margin</span>
+    <span><span class="legend-dot vat"></span>VAT on margin</span>
+    <span><span class="legend-dot fee"></span>fee (separate column, not in outstanding)</span>
+  </div>
+
+  <div class="stack-row">
+    <div class="stack-label">farmnet outstanding</div>
+    <div class="stack-track">
+      <div class="stack-seg principal" style="width:93.5%">1.00 B principal</div>
+      <div class="stack-seg margin" style="width:4.7%">0.05</div>
+      <div class="stack-seg vat" style="width:1.8%">0.02</div>
+    </div>
+    <div class="stack-total">1.07 B</div>
+  </div>
+  <div class="stack-row">
+    <div class="stack-label">salefarmgate outstanding</div>
+    <div class="stack-track">
+      <div class="stack-seg principal" style="width:100%">1.00 B principal</div>
+    </div>
+    <div class="stack-total">1.00 B</div>
+  </div>
+  <div class="stack-row">
+    <div class="stack-label" style="color:var(--gray-m);font-style:italic">salefarmgate profit_sharing<br><span style="font-size:11px">(separate column)</span></div>
+    <div class="stack-track" style="background:transparent">
+      <div class="stack-seg fee" style="width:3.3%;border-radius:5px">0.033</div>
+    </div>
+    <div class="stack-total" style="color:var(--orange)">+ 0.033 B</div>
+  </div>
+
+  <div class="callout red">
+    <div class="lbl">At production scale</div>
+    <p>Across 4,590 farmnet SOs: cash disbursed = <strong>8,626 B VND</strong>, customer-facing repayment = <strong>9,222 B VND</strong>. Difference = <strong>~ 597 B VND (~ 7 %)</strong> — the markup envelope hidden inside farmnet's outstanding.</p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Talking points</div>
+    <ul>
+      <li>Walk through the farmnet recipe one row at a time: <em>"TC pays the vendor 1 billion. The system marks up by 5 % to record the customer's debt at 1.05. Then it adds 2 % VAT on top. The outstanding column reads 1.07."</em></li>
+      <li>Then salefarmgate: <em>"TC pays the vendor 1 billion. Customer hasn't paid anything yet. Outstanding is 1 billion flat. Off to the side, in a different column, we accrue a small fee — 33 M after about a month."</em></li>
+      <li>Use the stacked-bar visual to make the recipe visible. The teal block is the same in both systems — that's the cash that's actually at risk. Everything else is bookkeeping.</li>
+      <li>Make the 597 B number tangible: <em>"Across the whole farmnet book, that hidden markup adds up to about 597 billion VND — close to 7 % of all the cash we've actually disbursed."</em></li>
+    </ul>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">A second concrete example (export-buyer side)</div>
+    <p>"On a typical salefarmgate export trade — say a Singaporean buyer ordering 5 B VND of goods from a Vietnamese vendor — TC pays the vendor 5 B upfront. The buyer settles 5 B back (cost only). Outstanding shows 0. But over the 56-day cash cycle, the <code>profit_sharing</code> column accrues ~150 M VND at the agreed rate. That fee is real revenue we're owed — it just doesn't sit inside <em>outstanding</em>."</p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Verified against source code</div>
+    <ul>
+      <li><strong>farmnet</strong>: <code>repayment_amount = disbursement × margin_hd</code> where <code>margin_hd = invoice_total / bill_total</code>. Both are VAT-inclusive — the ratio captures profit-share AND the VAT differential. <code>(farmnet_sale_order/models/disbursement.py:288)</code></li>
+      <li><strong>salefarmgate</strong>: <code>outstanding = max(0, Σvendor_payments − Σcustomer_receipts)</code>. <code>profit_sharing = outstanding × percent_per_month × days/30</code>, computed in the same SQL but stored in its own column. <code>(farmdigital_extension_stock_sales/models/payment_allocated.py:2458)</code></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ======== SECTION 4: WHY STORY 1 MATTERS ======== -->
+<div class="slide">
+  <div class="slide-num">SLIDE 4 · Why Story 1 matters</div>
+  <h2>Three business questions that get the wrong answer</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28%">Question</th>
+        <th>Reading farmnet naively</th>
+        <th>Reading salefarmgate naively</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="bold">Customer credit risk?</td><td>Overstated by ~ 7 % (markup ≠ cash at risk)</td><td>Understated (fee column missing)</td></tr>
+      <tr><td class="bold">Gross margin on open trades?</td><td>Hidden inside outstanding</td><td>Visible, but accrual, not realized</td></tr>
+      <tr><td class="bold">VAT owed to tax authority?</td><td>Folded in — no tax-reporting line</td><td>Tracked elsewhere — outstanding doesn't carry it</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout red" style="margin-top:18px">
+    <div class="lbl">Headline</div>
+    <p>"Outstanding" is not comparable across the two systems. A TC-wide credit dashboard built on these numbers will overstate farmnet exposure and miss salefarmgate's accruing fee. <strong>Align the definition before any cross-system reporting.</strong></p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Talking points</div>
+    <ul>
+      <li><strong>Credit risk</strong>: when the bank or the CFO asks "how much customer money is at risk if all customers default tomorrow?", the right answer is the principal — what TC actually paid out of pocket. farmnet's 820 B outstanding figure includes ~57 B of markup that isn't cash at risk; it's profit we wouldn't collect, but we wouldn't lose it either.</li>
+      <li><strong>Gross margin</strong>: a margin reporter wants to see "of the open trades, what's our expected profit?" In farmnet this lives <em>inside</em> outstanding and only crystallizes when a trade closes. In salefarmgate it's a separate column showing accrued — but it's still an accrual, not realized cash.</li>
+      <li><strong>VAT</strong>: tax accounting needs VAT as its own line. farmnet folds it into outstanding so a tax filing built on "VAT this period = 2 % of outstanding" would be wrong because the 2 % is already absorbed in another field.</li>
+    </ul>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Concrete scenario to mention</div>
+    <p>"Last quarter, finance asked for total customer credit exposure across both systems. The naive answer was: <em>820 B (farmnet) + 129 B (salefarmgate) = 949 B</em>. The honest answer is closer to <em>763 B principal at risk + 4 B fee receivable + 57 B unrealized margin</em>. That's a 949 vs 763 gap — about 24 % difference in stated exposure. Big enough to drive different decisions on credit lines and reserves."</p>
+  </div>
+</div>
+
+<!-- ======== SECTION 5: STORY 2 METHODS ======== -->
+<div class="slide">
+  <div class="slide-num">SLIDE 5 · Story 2 — sharing profit within salefarmgate</div>
+  <h2>Two ways to accrue the fee — both are fine</h2>
+  <p class="subtitle">When a customer's installment arrives, does it kill the accrued fee first, or reduce principal first? Different timing — almost identical totals.</p>
+
+  <div class="two-col">
+    <div class="method-card purple">
+      <h3 style="color:var(--purple);margin-top:0;margin-bottom:8px">Method A — Fees first</h3>
+      <p style="font-size:13px;margin-bottom:10px">Each payment kills accrued fee, then knocks down principal. Fee revenue spreads smoothly across the trade.</p>
+      <div style="background:white;border-left:3px solid var(--purple);padding:10px 14px;border-radius:4px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:4px">Best when</div>
+        <p style="font-size:13px;margin-bottom:0">Smoother P&amp;L reporting — fee revenue period by period.</p>
+      </div>
+    </div>
+    <div class="method-card farmgate">
+      <h3 style="color:var(--teal);margin-top:0;margin-bottom:8px">Method B — Principal first</h3>
+      <p style="font-size:13px;margin-bottom:10px">Each payment reduces principal. Fee accrues alone, settled in one piece at trade close.</p>
+      <div style="background:white;border-left:3px solid var(--teal);padding:10px 14px;border-radius:4px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:4px">Best when</div>
+        <p style="font-size:13px;margin-bottom:0">Simpler customer installments — one final fee invoice.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Worked example — 5 B VND credit, 2.5 % / 30 d, 3 equal payments over 56 days</h3>
+  <div class="two-col">
+    <div>
+      <p style="font-size:12px;color:var(--purple);font-weight:700;margin-bottom:6px;letter-spacing:0.5px">METHOD A · FEES FIRST</p>
+      <div class="timeline">
+        <div class="step"><div class="label">Day 0</div><div class="num">5.00 B</div><div class="sub">principal</div></div>
+        <div class="step"><div class="label">Pay #1 (d18)</div><div class="num">−1.61 B</div><div class="sub">fee 0.07 + prin 1.54</div></div>
+        <div class="step"><div class="label">Pay #2 (d36)</div><div class="num">−1.66 B</div><div class="sub">fee 0.05 + prin 1.61</div></div>
+        <div class="step"><div class="label">Pay #3 (d56)</div><div class="num">−1.78 B</div><div class="sub">fee 0.04 + prin 1.74</div></div>
+      </div>
+      <p style="font-size:12px;color:var(--gray-m);margin-top:6px">Total fee revenue: <strong>~ 157 M VND</strong>, recognized smoothly across the trade.</p>
+    </div>
+    <div>
+      <p style="font-size:12px;color:var(--teal);font-weight:700;margin-bottom:6px;letter-spacing:0.5px">METHOD B · PRINCIPAL FIRST</p>
+      <div class="timeline">
+        <div class="step principal-first"><div class="label">Day 0</div><div class="num">5.00 B</div><div class="sub">principal</div></div>
+        <div class="step principal-first"><div class="label">Pay #1 (d18)</div><div class="num">−1.67 B</div><div class="sub">100 % principal</div></div>
+        <div class="step principal-first"><div class="label">Pay #2 (d36)</div><div class="num">−1.67 B</div><div class="sub">100 % principal</div></div>
+        <div class="step principal-first"><div class="label">Pay #3 (d56)</div><div class="num">−1.67 B + fee</div><div class="sub">prin 1.67 + 0.154 fee</div></div>
+      </div>
+      <p style="font-size:12px;color:var(--gray-m);margin-top:6px">Total fee revenue: <strong>~ 154 M VND</strong>, balloon at trade close.</p>
+    </div>
+  </div>
+
+  <h3>How big is the gap across realistic scenarios?</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:32%">Scenario</th>
+        <th class="num">Method A</th>
+        <th class="num">Method B</th>
+        <th class="num">Gap</th>
+        <th class="num">% of principal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong style="color:var(--green)">Typical</strong> <span style="color:var(--gray-m);font-size:12px">(56 d cash cycle)</span></td>
+        <td class="num">157 M</td><td class="num">154 M</td><td class="num bold">+ 3 M</td><td class="num">0.06 %</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--orange)">Large</strong> <span style="color:var(--gray-m);font-size:12px">(104 d, top 10 %)</span></td>
+        <td class="num">299 M</td><td class="num">288 M</td><td class="num bold">+ 11 M</td><td class="num">0.22 %</td>
+      </tr>
+      <tr style="background:#FBE9E7">
+        <td><strong style="color:var(--red)">Stuck</strong> <span style="color:var(--gray-m);font-size:12px">(225 d, near-default)</span></td>
+        <td class="num red bold">678 M</td><td class="num red bold">625 M</td><td class="num red bold">+ 53 M</td><td class="num red bold">1.07 %</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Method gap, normalized — % of principal per 30 days</h3>
+  <p style="font-size:12px;color:var(--gray-m);margin-bottom:8px">Bars scaled to the worst case (0.142 %). The 2.5 %/30 d rate sits at 100 × this scale, so even the worst case is &lt; 6 % of the rate.</p>
+  <div class="bar-row">
+    <div class="bar-label">Typical (56 d)</div>
+    <div class="bar-track"><div class="bar-fill green" style="width:24%">0.034 %</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">Large (104 d)</div>
+    <div class="bar-track"><div class="bar-fill orange" style="width:46%">0.065 %</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">Stuck (225 d)</div>
+    <div class="bar-track"><div class="bar-fill red" style="width:100%">0.142 %</div></div>
+  </div>
+
+  <div class="callout green">
+    <div class="lbl">Headline</div>
+    <p>Typical trade: <strong>~ 3 M VND gap</strong> (&lt; 0.1 % of principal). Negligible for the bulk of the book. Only stuck trades push the gap toward 50 M.</p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Talking points</div>
+    <ul>
+      <li>Open with the central question: <em>"When a customer pays back 1.67 B, does that money first kill the small fee that's accrued, or does it knock the principal down by the full amount and let the fee pile up to settle at the end?"</em></li>
+      <li>Walk through both timelines side-by-side. Same total cash in (5 B principal + ~155 M fee), different month-to-month recognition.</li>
+      <li>Method A's fee revenue line in monthly P&amp;L: smooth, ~50 M/month for 3 months. Method B: zero-zero-150 lump sum.</li>
+      <li>The methods produce <strong>almost the same total fee</strong> (157 M vs 154 M = 3 M gap on a 5 B trade). The difference is timing, not money.</li>
+      <li>The gap grows quadratically with how long money stays out: 56 d → 0.06 %, 104 d → 0.22 %, 225 d → 1.07 %. But even at 225 days stuck, you're only talking about ~50 M VND on a 5 B trade.</li>
+    </ul>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Why the gap exists at all (if anyone asks)</div>
+    <p>"Method A keeps principal slightly lower over time because each installment pays down some principal AND some fee. Method B leaves principal high until the end, so the fee accrues on a slightly bigger base. The compound effect is what creates the gap. It's <em>second-order</em> — proportional to rate squared times duration. Doubling the rate quadruples the gap; doubling the duration doubles the gap."</p>
+  </div>
+</div>
+
+<!-- ======== SECTION 6: STORY 2 TRADEOFF ======== -->
+<div class="slide">
+  <div class="slide-num">SLIDE 6 · Story 2 — the business tradeoff</div>
+  <h2>Pick the method that fits the team's workflow</h2>
+
+  <div class="two-col">
+    <div class="method-card purple">
+      <h3 style="color:var(--purple);margin-top:0">Method A · Fees first</h3>
+      <p style="font-size:14px"><strong style="color:var(--green)">+</strong> Smoother P&amp;L — fee revenue recognized period by period.</p>
+      <p style="font-size:14px"><strong style="color:var(--red)">−</strong> Each payment splits into fee + principal. Two ledger lines per installment.</p>
+    </div>
+    <div class="method-card farmgate">
+      <h3 style="color:var(--teal);margin-top:0">Method B · Principal first</h3>
+      <p style="font-size:14px"><strong style="color:var(--green)">+</strong> Simple customer installments — every payment is principal. One fee invoice at the end.</p>
+      <p style="font-size:14px"><strong style="color:var(--red)">−</strong> Fee revenue lumps at trade close, not period by period.</p>
+    </div>
+  </div>
+
+  <div class="callout navy">
+    <div class="lbl">The honest framing</div>
+    <p>Same total fee on a typical trade. Choose between <strong>smoother P&amp;L (A)</strong> and <strong>simpler ops (B)</strong>. Either is defensible.</p>
+  </div>
+
+  <div class="callout orange">
+    <div class="lbl">Footnote</div>
+    <p>Gap reaches ~ 1 % of principal on stuck trades. Re-visit if long-tail / default volume grows.</p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Talking points</div>
+    <ul>
+      <li><strong>Method A real-world example</strong>: "If finance prefers monthly P&amp;L statements with steady fee-revenue recognition — Method A. The CFO sees ~50 M of fee revenue every month a trade is active, instead of 0-0-150."</li>
+      <li><strong>Method B real-world example</strong>: "If customer-ops prefers clean, predictable installments where every payment notification reads <em>'principal repayment'</em> with one final fee invoice — Method B. Cleaner customer-facing statements, fewer support questions about why a payment was split into two pieces."</li>
+      <li>Emphasize: <em>"This is not a system-design question. It's a workflow preference. Either choice is defensible. Both teams can build their reporting around either method."</em></li>
+      <li>If pushed for a recommendation: <em>"If we don't have a strong opinion from finance, default to Method B because it's simpler operationally. We can switch to Method A later if monthly P&amp;L cleanness becomes a priority — the underlying ledger captures enough detail to reconstruct either."</em></li>
+    </ul>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">When the footnote starts to matter</div>
+    <p>"At 1 % of principal on stuck trades, a 5 B near-default trade gives Method A a ~50 M revenue advantage. If TC's salefarmgate book starts seeing more long-tail or defaulted trades — say 5 % of book volume crossing 200 days — Method A becomes worth ~250 M/year on a hypothetical book scale. For now it's noise; we'd flag it for re-evaluation if duration profiles shift."</p>
+  </div>
+</div>
+
+<!-- ======== SECTION 7: SIDE BY SIDE ======== -->
+<div class="slide">
+  <div class="slide-num">SLIDE 7 · Side by side</div>
+  <h2>One is structural. One is a quiet choice.</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:18%"></th>
+        <th style="width:41%">Story 1 · Outstanding across systems</th>
+        <th style="width:41%">Story 2 · Sharing-profit within salefarmgate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="bold">Where</td><td>Between farmnet and salefarmgate</td><td>Between Method A and Method B inside salefarmgate</td></tr>
+      <tr><td class="bold">Size</td><td class="red bold">~ 7 % of cash disbursed (~ 597 B VND)</td><td class="green bold">&lt; 0.1 % of principal (~ 3 M VND typical)</td></tr>
+      <tr><td class="bold">Type</td><td>Modeling — different things under the same name</td><td>Workflow — same thing, different timing</td></tr>
+      <tr><td class="bold">Decision</td><td>Align the definition before any TC-wide roll-up</td><td>Pick A or B based on team preference</td></tr>
+      <tr><td class="bold">Urgency</td><td class="red">High if cross-system reporting is on the roadmap</td><td class="green">Low — re-visit only if stuck-trade volume grows</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Visual — relative size, on a log scale</h3>
+  <p style="font-size:12px;color:var(--gray-m);margin-bottom:8px">Story 1 sits on the order of 597 B; Story 2 sits on the order of 3 M. Three orders of magnitude apart.</p>
+  <div class="bar-row">
+    <div class="bar-label" style="color:var(--red);font-weight:700">Story 1 · cross-system</div>
+    <div class="bar-track"><div class="bar-fill red" style="width:100%">~ 597,000 M VND</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label" style="color:var(--green);font-weight:700">Story 2 · within-system</div>
+    <div class="bar-track"><div class="bar-fill green" style="width:0.0005%;min-width:6px"></div></div>
+    <div style="position:relative;left:8px;font-size:12px;font-weight:700;color:var(--green)">~ 3 M VND (per trade)</div>
+  </div>
+
+  <div class="callout purple" style="margin-top:18px">
+    <div class="lbl">Single takeaway</div>
+    <p style="font-size:15px">Same vocabulary, two different situations. <strong>Story 1: structural — fix before TC-wide reporting.</strong> <strong>Story 2: pick a method, move on.</strong></p>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Talking points</div>
+    <ul>
+      <li>Drive home the contrast: <em>"Story 1 is on the order of half a trillion VND of definition mismatch across the book. Story 2 is on the order of 3 million per trade. They look similar on the surface — both are 'definition issues' — but one is system-shaping and one is bookkeeping preference."</em></li>
+      <li>Use the log-scale visual to ground the size disparity. They are <em>literally</em> not in the same league.</li>
+      <li>Close with the call to action: <strong>Story 1 needs a definition-alignment workstream before the next TC-wide dashboard. Story 2 can be decided in a 30-minute meeting between finance and customer-ops.</strong></li>
+    </ul>
+  </div>
+
+  <div class="notes">
+    <div class="lbl">Likely Q&A</div>
+    <ul>
+      <li><strong>Q: How long would Story 1 alignment take?</strong><br>A: A multi-quarter modeling effort — needs new fields on the canonical proto, a backfill of farmnet's 30k disbursements to split principal vs markup, and UI work in farmnet to expose the breakdown to customers. Detailed migration path lives in the engineering-only doc.</li>
+      <li><strong>Q: Can we just sum the two outstanding columns and accept the error?</strong><br>A: For an order-of-magnitude view, sure. For credit-risk decisions (sizing reserves, setting customer credit lines, reporting to lenders) — no. The 7 % overstatement on farmnet is meaningful at TC's scale.</li>
+      <li><strong>Q: Why does farmnet bake margin in but salefarmgate doesn't?</strong><br>A: They were built for different business models. farmnet's domestic-coop product sets a profit margin at SO creation and the customer pays the full marked-up price. salefarmgate's export-buyer product bills cost-plus-fee, where the fee is itemized separately. Both are valid; the canonical model just hasn't unified them.</li>
+      <li><strong>Q: For Story 2, which method is "more correct" accounting-wise?</strong><br>A: Method A (fees first) is closer to GAAP/IFRS accrual best practice — it recognizes fee revenue in the period it's earned, not at trade close. But for a trade-finance business with clear closeout dates, Method B is also defensible and used by many lenders for simplicity.</li>
+    </ul>
+  </div>
+
+  <p style="font-size:11px;color:var(--gray-l);font-style:italic;margin-top:24px">
+    Source · salefarmgate-db-1 (local, 340 active SOs) + farmnet_service prod via AAD (4,590 SOs, 29,720 disbursements) · 2026-05-10. Companions: <code>unified-story.html</code> (live deck), <code>outstanding-analysis.html</code>, <code>salefarmgate-stats.html</code>.
+  </p>
+</div>
+
+</div>
+<footer>presenter notes · long-form companion to unified-story.html · 2026-05-10</footer>
+</body>
+</html>
