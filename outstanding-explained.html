@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Outstanding — formula & rationale · salefarmgate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B2B4A; --teal: #007A86; --purple: #6B46C1;
+    --red: #C0392B; --orange: #E07B00; --green: #278E4A;
+    --gray-d: #333; --gray-m: #666; --gray-l: #AAA;
+    --paper: #F4EFE6; --paper-raised: #FAF5EC; --paper-sunken: #EDE6D8;
+    --ink: #1B1B1B; --ink-muted: #5C564D; --ink-soft: #8C8374;
+    --rule: #D8CFBE; --rule-strong: #B8AE98;
+    --bg: var(--paper); --card: var(--paper-raised); --border: var(--rule);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+  body{
+    padding:0;
+    background-image:
+      radial-gradient(circle at 12% 6%, rgba(45,94,60,0.045), transparent 38%),
+      radial-gradient(circle at 88% 94%, rgba(139,26,26,0.035), transparent 42%),
+      radial-gradient(circle at 50% 50%, rgba(30,74,122,0.02), transparent 60%);
+    min-height:100vh;
+  }
+  .deck{max-width:1400px;margin:0 auto;padding:28px 28px 80px}
+  .deck-inner{max-width:1100px;margin:0 auto}
+  .slide{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:48px 56px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,0.04);page-break-after:always;min-height:540px}
+  .slide-num{color:var(--teal);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+  h1{font-size:36px;color:var(--navy);margin-bottom:16px;line-height:1.15;font-weight:700}
+  h2{font-size:24px;color:var(--navy);margin-bottom:18px;font-weight:700}
+  h3{font-size:15px;color:var(--gray-m);margin:18px 0 10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  p{margin-bottom:14px}
+  .subtitle{color:var(--gray-m);font-size:15px;font-style:italic;margin-bottom:22px}
+
+  .callout{border-radius:10px;padding:16px 22px;margin:18px 0;border-left:4px solid var(--teal);background:#E8F4F5}
+  .callout.navy{background:#E3EAF2;border-left-color:var(--navy)}
+  .callout.purple{background:#EDE7F6;border-left-color:var(--purple)}
+  .callout.orange{background:#FFF4E5;border-left-color:var(--orange)}
+  .callout.green{background:#E8F5E9;border-left-color:var(--green)}
+  .callout .lbl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .callout.teal .lbl{color:var(--teal)}.callout.navy .lbl{color:var(--navy)}.callout.purple .lbl{color:var(--purple)}.callout.orange .lbl{color:var(--orange)}.callout.green .lbl{color:var(--green)}
+  .callout p{margin-bottom:0;font-size:14px}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .method-card{background:white;padding:18px;border-radius:10px;border:1px solid var(--border)}
+  .method-card.purple{background:#EDE7F6;border-left:4px solid var(--purple)}
+  .method-card.teal{background:#E8F4F5;border-left:4px solid var(--teal)}
+  .method-card.orange{background:#FFF4E5;border-left:4px solid var(--orange)}
+  .method-card.green{background:#E8F5E9;border-left:4px solid var(--green)}
+  .method-card.navy{background:#E3EAF2;border-left:4px solid var(--navy)}
+  .method-card.red{background:#FBE9E7;border-left:4px solid var(--red)}
+
+  .pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+
+  /* formula display */
+  .formula-block{background:var(--navy);color:white;border-radius:12px;padding:28px 36px;text-align:center;margin:20px 0}
+  .formula-block .formula{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:600;letter-spacing:0.02em;color:white}
+  .formula-block .formula-sub{font-size:13px;color:rgba(255,255,255,0.6);margin-top:10px}
+
+  .var-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+  .var-card{border-radius:8px;padding:14px 16px;border:1px solid var(--border)}
+  .var-card .var-name{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;margin-bottom:6px}
+  .var-card .var-label{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:4px}
+  .var-card .var-desc{font-size:12px;color:var(--ink-muted);line-height:1.4}
+
+  .compare-row{display:grid;grid-template-columns:160px 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:16px 0}
+  .compare-row .hdr{background:var(--navy);color:white;padding:10px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center}
+  .compare-row .cell{padding:12px 16px;border-left:1px solid var(--border);font-size:13px;display:flex;align-items:center}
+  .compare-row .cell.alt{background:#F8F9FB}
+
+  /* event walkthrough tables */
+  table.evt{width:100%;border-collapse:collapse;margin:16px 0;font-size:12.5px}
+  table.evt th{background:var(--navy);color:white;padding:8px 10px;font-weight:600;text-align:left;font-size:11px;letter-spacing:0.3px}
+  table.evt td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+  table.evt tr.alt td{background:#F8F9FB}
+  table.evt td.day{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gray-m);white-space:nowrap}
+  table.evt td.event{font-weight:600}
+  table.evt td.mono{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gray-m)}
+  table.evt td.cash-only{font-family:'JetBrains Mono',monospace;font-weight:600;text-align:right}
+  table.evt td.os-val{font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;font-size:14px}
+  /* outstanding colour signals */
+  .os-zero{color:var(--green)}
+  .os-pos{color:var(--orange)}
+  .os-neg{color:var(--teal)}
+  .os-neg-large{color:var(--red)}
+  .os-open{color:var(--red)}
+  /* row-level highlights */
+  table.evt tr.warn td{background:#FFF4E5}
+  table.evt tr.danger td{background:#FBE9E7}
+  table.evt tr.good td{background:#E8F5E9}
+
+  /* outstanding journey tracker */
+  .os-journey{display:flex;align-items:flex-start;gap:0;margin:20px 0 28px;overflow-x:auto;padding-bottom:4px}
+  .os-step{display:flex;flex-direction:column;align-items:center;min-width:72px}
+  .os-step .day{font-size:10px;color:var(--gray-m);font-weight:700;margin-bottom:5px;font-family:'JetBrains Mono',monospace}
+  .os-step .val{padding:7px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;text-align:center;white-space:nowrap;min-width:60px}
+  .os-step .lbl{font-size:9px;color:var(--gray-m);margin-top:5px;text-align:center;max-width:68px;line-height:1.3}
+  .os-arr{display:flex;align-items:center;padding:0 3px;margin-top:18px;color:var(--gray-l);font-size:14px}
+  .val-zero{background:#F2F4F6;color:var(--gray-m)}
+  .val-pos{background:#FFF4E5;color:var(--orange)}
+  .val-neg{background:#E3EAF2;color:var(--navy)}
+  .val-neg-large{background:#FBE9E7;color:var(--red)}
+  .val-end-ok{background:#E8F5E9;color:var(--green)}
+  .val-end-open{background:#FBE9E7;color:var(--red)}
+
+  footer{text-align:center;color:var(--gray-l);font-size:12px;padding:20px}
+  @media print{body{padding:0}.slide{box-shadow:none;border:none;margin:0}}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<nav style="display:flex;gap:8px;align-items:center;padding:8px 12px;margin-bottom:18px;background:var(--paper-sunken);border:1px solid var(--rule);border-radius:8px;font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif;flex-wrap:wrap;">
+  <span style="color:var(--ink-soft);margin-right:6px;">Pages →</span>
+  <a href="index.html" style="padding:4px 10px;border-radius:999px;color:var(--ink-muted);text-decoration:none;">Flow Visualization</a>
+  <a href="flow_examples.html" style="padding:4px 10px;border-radius:999px;color:var(--ink-muted);text-decoration:none;">Examples</a>
+  <a href="profit_calculation.html" style="padding:4px 10px;border-radius:999px;color:var(--ink-muted);text-decoration:none;">Principle vs Fee-Based</a>
+  <a href="120526-demo-outstanding-analysis.html" style="padding:4px 10px;border-radius:999px;color:var(--ink-muted);text-decoration:none;">LNCS-Analysis</a>
+  <a href="outstanding-explained.html" style="padding:4px 10px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;">Outstanding — Explained</a>
+</nav>
+
+<div class="deck-inner">
+
+<!-- ======== SLIDE 1: COVER ======== -->
+<div class="slide">
+  <div class="slide-num">TECHCOOP · DATA · SALEFARMGATE</div>
+  <h1>What is "Outstanding" —<br>and why it's not just cash in and out</h1>
+  <p class="subtitle">Sharing Profit tracks what cash has actually moved. Outstanding tracks what TC is still committed to — and that requires looking at Bills and Invoices too.</p>
+
+  <div class="two-col" style="margin-top:28px">
+    <div class="method-card purple">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:8px">Sharing Profit</div>
+      <p style="font-size:14px;margin-bottom:10px">Accrues on actual cash movements only.</p>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--purple);background:white;border-radius:6px;padding:10px 14px">
+        Out − In
+      </div>
+      <p style="font-size:12px;color:var(--gray-m);margin-top:8px;margin-bottom:0">Clock starts when TC pays vendors. Stops when customers pay TC. Simple.</p>
+    </div>
+    <div class="method-card teal">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:8px">Outstanding</div>
+      <p style="font-size:14px;margin-bottom:10px">Tracks TC's total capital exposure — cash <em>and</em> committed positions.</p>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--teal);background:white;border-radius:6px;padding:10px 14px">
+        (Out − Bill) + (Inv − In)
+      </div>
+      <p style="font-size:12px;color:var(--gray-m);margin-top:8px;margin-bottom:0">Subtracts vendor bills from cash paid out (unpaid bills reduce net deployment); adds customer invoices not yet collected.</p>
+    </div>
+  </div>
+
+  <div class="callout navy" style="margin-top:28px">
+    <div class="lbl">The core difference</div>
+    <p>Sharing Profit only cares about cash that has <strong>actually moved</strong>. Outstanding must also account for capital that is <strong>committed but not yet settled</strong> — vendor bills TC owes and customer invoices TC is owed. Ignoring these gives a misleading picture of how much capital TC has in play.</p>
+  </div>
+</div>
+
+<!-- ======== SLIDE 2: THE GAP — WHERE CASH MISSES THE PICTURE ======== -->
+<div class="slide">
+  <div class="slide-num">1 · Why cash alone is not enough for Outstanding</div>
+  <h2>Bills and Invoices sit between commitment and settlement</h2>
+  <p class="subtitle">A vendor bill means TC has taken on an obligation — even if no cash has moved yet. A customer invoice means TC has earned a receivable — even if the customer hasn't paid.</p>
+
+  <div class="compare-row">
+    <div class="hdr"></div>
+    <div class="hdr" style="justify-content:center;color:#B8E0FF">Cash-only view<br><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:400">Out − In</span></div>
+    <div class="hdr" style="justify-content:center;color:#A8F0C8">Full accrual view<br><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:400">(Out − Bill) + (Inv − In)</span></div>
+  </div>
+
+  <div class="compare-row" style="border-top:none;border-radius:0 0 10px 10px;margin-top:0">
+    <div class="cell" style="background:var(--navy);color:white;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Vendor bill issued,<br>not yet paid</div>
+    <div class="cell alt" style="color:var(--red)"><strong>Missed.</strong> Cash hasn't moved, so exposure looks smaller than it is.</div>
+    <div class="cell" style="color:var(--green)"><strong>Captured.</strong> Bill reduces net vendor cash deployment — TC hasn't actually deployed that cash yet.</div>
+  </div>
+  <div class="compare-row" style="border-top:none;border-radius:0;margin-top:0">
+    <div class="cell" style="background:var(--navy);color:white;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Customer invoice issued,<br>not yet collected</div>
+    <div class="cell alt" style="color:var(--red)"><strong>Missed.</strong> Cash hasn't arrived, so the uncollected receivable goes uncaptured — outstanding is understated.</div>
+    <div class="cell" style="color:var(--green)"><strong>Captured.</strong> Invoice is recorded as a committed receivable — it correctly surfaces TC's full outstanding exposure.</div>
+  </div>
+  <div class="compare-row" style="border-top:none;border-radius:0 0 10px 10px;margin-top:0">
+    <div class="cell" style="background:var(--navy);color:white;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Cash paid out /<br>cash received</div>
+    <div class="cell alt" style="color:var(--green)"><strong>Captured.</strong> Actual movements are the base of both formulas.</div>
+    <div class="cell" style="color:var(--green)"><strong>Captured.</strong> Same — actual cash movements are included.</div>
+  </div>
+
+  <div class="callout orange" style="margin-top:22px">
+    <div class="lbl">The problem with cash-only</div>
+    <p>If TC buys goods on a 30-day vendor bill, a cash-only view shows zero outstanding until the bill is paid — even though TC has already taken on the obligation. Similarly, once TC invoices a customer, that receivable exists and should be counted in TC's outstanding position — but cash-only waits for the cash transfer to happen first.</p>
+  </div>
+</div>
+
+<!-- ======== SLIDE 3: THE FORMULA ======== -->
+<div class="slide">
+  <div class="slide-num">2 · The formula</div>
+  <h2>Outstanding = (Out − Bill) + (Inv − In)</h2>
+  <p class="subtitle">Two components, each measuring the unsettled gap on one side of the trade.</p>
+
+  <div class="formula-block">
+    <div class="formula">Outstanding &nbsp;=&nbsp; ( Out &minus; Bill ) &nbsp;+&nbsp; ( Inv &minus; In )</div>
+    <div class="formula-sub">net vendor cash deployed &nbsp;+&nbsp; uncollected customer receivables</div>
+  </div>
+
+  <div class="var-grid">
+    <div class="var-card" style="background:#FFF4E5;border-color:#F5C880">
+      <div class="var-name" style="color:var(--orange)">Out</div>
+      <div class="var-label" style="color:var(--orange)">Cash out to vendors</div>
+      <div class="var-desc">Actual buy payments TC has already made to suppliers. Cash that has left TC's account.</div>
+    </div>
+    <div class="var-card" style="background:#FBE9E7;border-color:#E8A89E">
+      <div class="var-name" style="color:var(--red)">Bill</div>
+      <div class="var-label" style="color:var(--red)">Total vendor bills received</div>
+      <div class="var-desc">Cumulative value of all vendor bills issued to TC. Paired with Out, the gap (Out − Bill) shows how much TC still owes vendors or has overpaid in advance.</div>
+    </div>
+    <div class="var-card" style="background:#E8F5E9;border-color:#88C89A">
+      <div class="var-name" style="color:var(--green)">Inv</div>
+      <div class="var-label" style="color:var(--green)">Customer invoices issued</div>
+      <div class="var-desc">Sales invoices TC has sent to customers. Customers owe this to TC — cash hasn't arrived yet.</div>
+    </div>
+    <div class="var-card" style="background:#E8F4F5;border-color:#80C0C8">
+      <div class="var-name" style="color:var(--teal)">In</div>
+      <div class="var-label" style="color:var(--teal)">Cash in from customers</div>
+      <div class="var-desc">Actual sales receipts TC has already collected. Cash that has entered TC's account.</div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top:8px">
+    <div class="method-card orange">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:8px">Component 1 · Out − Bill</div>
+      <p style="font-size:13px;margin-bottom:0">TC's <strong>net vendor position</strong>: cash paid minus total bills received. Negative means TC still owes vendors (common mid-trade); positive means TC has an advance credit with no bill yet. Zero means vendor side is fully settled.</p>
+    </div>
+    <div class="method-card green">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:8px">Component 2 · Inv − In</div>
+      <p style="font-size:13px;margin-bottom:0">TC's <strong>uncollected customer receivables</strong>: what customers have been invoiced but haven't paid yet. TC has delivered the value and is owed this amount.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== SLIDE 4: WHY THIS FORMULA ======== -->
+<div class="slide">
+  <div class="slide-num">3 · Why we propose this formula</div>
+  <h2>Four reasons the accrual view is the right one</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px">
+    <div class="method-card navy" style="background:#E3EAF2;border-left:4px solid var(--navy)">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--navy);margin-bottom:8px">1 · Bills create real obligations</div>
+      <p style="font-size:13px;margin-bottom:0">When TC issues or receives a vendor bill, TC has legally committed to that payment. Excluding it understates TC's true liability — the cash will go out, the obligation exists now.</p>
+    </div>
+    <div class="method-card green">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:8px">2 · Invoices complete the outstanding picture</div>
+      <p style="font-size:13px;margin-bottom:0">Once TC invoices a customer, TC has a legal claim on that money. It should be captured in Outstanding immediately — waiting for cash arrival leaves the receivable invisible and understates what TC is still owed.</p>
+    </div>
+    <div class="method-card orange">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:8px">3 · Cash-only is a lagging indicator</div>
+      <p style="font-size:13px;margin-bottom:0">Cash movements happen after commitments. A cash-only view always trails reality — it tells you what TC paid, not what TC owes. Outstanding should be a current snapshot, not a rearview mirror.</p>
+    </div>
+    <div class="method-card purple">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:8px">4 · Sharing Profit already handles cash</div>
+      <p style="font-size:13px;margin-bottom:0">Sharing Profit (<code style="font-size:12px">Out − In</code>) already captures the time-weighted cash exposure. Outstanding should be the complementary view — what's committed but not yet settled. Each formula answers a different question.</p>
+    </div>
+  </div>
+
+  <div class="callout teal" style="margin-top:22px">
+    <div class="lbl">In plain terms</div>
+    <p>Sharing Profit asks: <strong>"How long has TC's cash been out in the market?"</strong><br>
+    Outstanding asks: <strong>"How much of TC's capital is still in play right now — cash deployed plus commitments not yet settled?"</strong><br>
+    The formula <code style="font-size:13px">(Out − Bill) + (Inv − In)</code> answers the second question correctly.</p>
+  </div>
+</div>
+
+<!-- ======== SLIDE 5: HAPPY CASE ======== -->
+<div class="slide">
+  <div class="slide-num">4 · Concrete example — happy case</div>
+  <h2>A clean 200M trade: vendor payment comes after buyer pays</h2>
+  <p class="subtitle">TC bridges the gap — vendor advance goes out first, bill is settled only after the buyer pays. The formula tracks every commitment the whole way through.</p>
+
+  <!-- journey tracker -->
+  <div class="os-journey">
+    <div class="os-step"><div class="day">D0</div><div class="val val-zero">0</div><div class="lbl">Trade opens</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D5</div><div class="val val-pos">+60M</div><div class="lbl">Vendor Advance</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D7</div><div class="val val-zero">0</div><div class="lbl">Buyer Advance</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D12</div><div class="val val-neg-large">−150M</div><div class="lbl">Bill confirmed</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D14</div><div class="val val-pos">+50M</div><div class="lbl">Invoice issued</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D25</div><div class="val val-neg">−90M</div><div class="lbl">Buyer pays</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D27</div><div class="val val-end-ok">0 ✓</div><div class="lbl">Vendor Payment</div></div>
+  </div>
+
+  <table class="evt">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Event</th>
+        <th style="text-align:right;width:90px">Out</th>
+        <th style="text-align:right;width:90px">Bill</th>
+        <th style="text-align:right;width:90px">Inv</th>
+        <th style="text-align:right;width:90px">In</th>
+        <th style="text-align:right;width:110px">Cash-only<br><span style="font-weight:400;opacity:.7">(Out−In)</span></th>
+        <th style="text-align:right;width:130px">Formula Outstanding<br><span style="font-weight:400;opacity:.7">(Out−Bill)+(Inv−In)</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="alt">
+        <td class="day">D0</td>
+        <td class="event">Trade opens</td>
+        <td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">0</td>
+        <td class="cash-only os-zero">0</td>
+        <td class="os-val os-zero">0</td>
+      </tr>
+      <tr>
+        <td class="day">D5</td>
+        <td class="event">Vendor Advance — TC pays 60M upfront to secure supply</td>
+        <td class="mono" style="text-align:right">60</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">0</td>
+        <td class="cash-only os-pos">+60M</td>
+        <td class="os-val os-pos">+60M</td>
+      </tr>
+      <tr class="alt">
+        <td class="day">D7</td>
+        <td class="event">Buyer Advance — customer deposits 60M</td>
+        <td class="mono" style="text-align:right">60</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">60</td>
+        <td class="cash-only os-zero">0</td>
+        <td class="os-val os-zero">0</td>
+      </tr>
+      <tr class="danger">
+        <td class="day">D12</td>
+        <td class="event">Bill confirmed — vendor bills full 150M; advance (60M) applied, 90M still owed</td>
+        <td class="mono" style="text-align:right">60</td><td class="mono" style="text-align:right">150</td><td class="mono" style="text-align:right">0</td><td class="mono" style="text-align:right">60</td>
+        <td class="cash-only" style="color:var(--gray-m)">0 ←</td>
+        <td class="os-val os-neg-large">−150M ⚠</td>
+      </tr>
+      <tr class="warn">
+        <td class="day">D14</td>
+        <td class="event">Invoice issued — TC delivers goods and invoices customer 200M</td>
+        <td class="mono" style="text-align:right">60</td><td class="mono" style="text-align:right">150</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right">60</td>
+        <td class="cash-only" style="color:var(--gray-m)">0 ←</td>
+        <td class="os-val os-pos">+50M</td>
+      </tr>
+      <tr class="alt">
+        <td class="day">D25</td>
+        <td class="event">Buyer Payment — customer pays remaining 140M</td>
+        <td class="mono" style="text-align:right">60</td><td class="mono" style="text-align:right">150</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right">200</td>
+        <td class="cash-only" style="color:var(--gray-m)">−140M ←</td>
+        <td class="os-val os-neg">−90M</td>
+      </tr>
+      <tr class="good">
+        <td class="day">D27</td>
+        <td class="event">Vendor Payment — TC pays remaining 90M bill using buyer's proceeds</td>
+        <td class="mono" style="text-align:right">150</td><td class="mono" style="text-align:right">150</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right">200</td>
+        <td class="cash-only" style="color:var(--green)">−50M</td>
+        <td class="os-val os-zero" style="color:var(--green);font-size:16px">0 ✓</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px">
+    <div style="background:#FBE9E7;border-left:4px solid var(--red);border-radius:8px;padding:12px 16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:5px">D12 &amp; D14 — cash-only goes blind</div>
+      <p style="font-size:12px;margin-bottom:0">At D12 and D14, cash-only shows <strong>0</strong> both times (advances cancel out, no other cash moved). Formula shows <strong>−150M</strong> then <strong>+50M</strong> — capturing the vendor obligation and the customer receivable that cash-only can't see at all.</p>
+    </div>
+    <div style="background:#FFF4E5;border-left:4px solid var(--orange);border-radius:8px;padding:12px 16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:5px">D25 — cash-only overstates the profit</div>
+      <p style="font-size:12px;margin-bottom:0">After buyer pays, cash-only shows <strong>−140M</strong> (looks like TC pocketed 140M). Formula shows <strong>−90M</strong>: TC still owes vendor 90M from the bill. The real profit is only 50M — locked in only after vendor is paid at D27.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== SLIDE 6: LOSS CASE ======== -->
+<div class="slide">
+  <div class="slide-num">5 · Concrete example — loss case</div>
+  <h2>Unexpected bills paid immediately; buyer dispute leaves the trade stuck open</h2>
+  <p class="subtitle">Same trade. Two surprise bills arrive and must be paid on the spot — TC pays them immediately, so formula Outstanding holds at +50M (Out and Bill rise equally). The loss crystallizes only when the buyer disputes 25M of the invoice, leaving a stuck +25M receivable at close.</p>
+
+  <!-- journey tracker -->
+  <div class="os-journey">
+    <div class="os-step"><div class="day">D14</div><div class="val val-pos">+50M</div><div class="lbl">Invoice issued<br>(same start)</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D16</div><div class="val val-pos" style="background:#E8F5E9;color:#278E4A">+50M</div><div class="lbl">Storage bill 20M<br>paid same day →</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D18</div><div class="val val-pos" style="background:#E8F5E9;color:#278E4A">+50M</div><div class="lbl">Penalty bill 25M<br>paid same day →</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D25</div><div class="val val-neg-large">−65M</div><div class="lbl">Buyer pays<br>115M only</div></div>
+    <div class="os-arr">→</div>
+    <div class="os-step"><div class="day">D28</div><div class="val val-end-open">+25M ✗</div><div class="lbl">Vendor paid;<br>dispute open</div></div>
+  </div>
+
+  <table class="evt">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Event</th>
+        <th style="text-align:right;width:90px">Out</th>
+        <th style="text-align:right;width:90px">Bill</th>
+        <th style="text-align:right;width:90px">Inv</th>
+        <th style="text-align:right;width:90px">In</th>
+        <th style="text-align:right;width:110px">Cash-only<br><span style="font-weight:400;opacity:.7">(Out−In)</span></th>
+        <th style="text-align:right;width:130px">Formula Outstanding<br><span style="font-weight:400;opacity:.7">(Out−Bill)+(Inv−In)</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="alt">
+        <td class="day">D14</td>
+        <td class="event">Invoice issued — same as happy case so far</td>
+        <td class="mono" style="text-align:right">60</td><td class="mono" style="text-align:right">150</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right">60</td>
+        <td class="cash-only" style="color:var(--gray-m)">0</td>
+        <td class="os-val os-pos">+50M</td>
+      </tr>
+      <tr class="danger">
+        <td class="day">D16</td>
+        <td class="event" style="color:var(--red)">⚠ Storage / demurrage bill 20M — arrives and paid same day</td>
+        <td class="mono" style="text-align:right;color:var(--red);font-weight:700">80</td><td class="mono" style="text-align:right;color:var(--red);font-weight:700">170</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right">60</td>
+        <td class="cash-only" style="color:var(--orange)">+20M ↑</td>
+        <td class="os-val os-pos" style="color:var(--gray-m)">+50M →</td>
+      </tr>
+      <tr class="danger">
+        <td class="day">D18</td>
+        <td class="event" style="color:var(--red)">⚠ Penalty / damage bill 25M — arrives and paid same day</td>
+        <td class="mono" style="text-align:right;color:var(--red);font-weight:700">105</td><td class="mono" style="text-align:right;color:var(--red);font-weight:700">195</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right">60</td>
+        <td class="cash-only" style="color:var(--orange)">+45M ↑</td>
+        <td class="os-val os-pos" style="color:var(--gray-m)">+50M →</td>
+      </tr>
+      <tr style="background:#FBE9E7">
+        <td class="day">D25</td>
+        <td class="event" style="color:var(--red);font-weight:700">Buyer pays only 115M — disputes 25M of invoice</td>
+        <td class="mono" style="text-align:right">105</td><td class="mono" style="text-align:right">195</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right;color:var(--red);font-weight:700">175</td>
+        <td class="cash-only" style="color:var(--gray-m)">−70M</td>
+        <td class="os-val os-neg-large">−65M</td>
+      </tr>
+      <tr style="background:#FBE9E7">
+        <td class="day">D28</td>
+        <td class="event" style="color:var(--red)">Vendor Payment — TC pays remaining 90M to close vendor bill</td>
+        <td class="mono" style="text-align:right;color:var(--red);font-weight:700">195</td><td class="mono" style="text-align:right">195</td><td class="mono" style="text-align:right">200</td><td class="mono" style="text-align:right">175</td>
+        <td class="cash-only" style="color:var(--red);font-weight:700">+20M</td>
+        <td class="os-val" style="color:var(--red);font-weight:700;font-size:16px">+25M ✗</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px">
+    <div style="background:#FBE9E7;border-left:4px solid var(--orange);border-radius:8px;padding:12px 16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:5px">D16–D18 — no formula signal</div>
+      <p style="font-size:12px;margin-bottom:0">Bills paid immediately: Out and Bill increase by the same 20M / 25M, so Out − Bill is unchanged. Formula holds at <strong>+50M</strong>. Cash-only climbs from 0 → +20M → +45M, showing capital being deployed — but both views leave the trade looking viable until the buyer underpays.</p>
+    </div>
+    <div style="background:#FBE9E7;border-left:4px solid var(--red);border-radius:8px;padding:12px 16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:5px">D28 — formula pins the open amount</div>
+      <p style="font-size:12px;margin-bottom:0">Vendor is fully settled. Formula: <strong>+25M ✗</strong> — the exact amount of the buyer's disputed invoice still outstanding. Cash-only: <strong>+20M</strong> — shows TC is 20M cash-negative but does not identify the 25M receivable keeping the trade open. Formula makes the stuck position precise.</p>
+    </div>
+  </div>
+
+  <div class="callout navy" style="margin-top:16px">
+    <div class="lbl">Reading the signal</div>
+    <p>In the happy case Outstanding falls cleanly to <strong>0</strong> at vendor payment. In the loss case it stops at <strong>+25M</strong> — the 25M disputed receivable TC cannot yet collect. A trade that doesn't close to zero has an unresolved position. The formula makes that visible; cash-only does not.</p>
+  </div>
+</div>
+
+<!-- ======== SLIDE 7: FARMNET ALIGNMENT ======== -->
+<div class="slide">
+  <div class="slide-num">6 · Alignment question — Farmgate vs Farmnet</div>
+  <h2>Farmnet bundles Sharing Profit into Outstanding. Should we align — or name the difference?</h2>
+  <p class="subtitle">TC's formula separates capital exposure from earned profit. Farmnet treats them as one number. Before we ship, this needs a decision.</p>
+
+  <div class="two-col" style="gap:24px;margin-bottom:22px">
+    <!-- TC formula card -->
+    <div style="background:var(--paper-raised);border:1px solid var(--rule);border-radius:10px;padding:20px 24px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:8px">Farmgate's proposed formula</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--navy);margin-bottom:10px">(Out − Bill) + (Inv − In)</div>
+      <ul style="font-size:13px;color:var(--ink-muted);padding-left:16px;line-height:1.7">
+        <li>Tracks capital exposure only — bills committed, invoices issued, cash in/out</li>
+        <li>Sharing Profit is a <em>separate</em> metric: <span style="font-family:'JetBrains Mono',monospace;font-size:12px">Out − In</span></li>
+        <li>A fully settled, profitable trade closes to exactly <strong>0</strong></li>
+        <li>Profit sits outside Outstanding — it's earned, not outstanding</li>
+      </ul>
+    </div>
+    <!-- Farmnet card -->
+    <div style="background:#EEF2F8;border:1px solid #B8C8DC;border-radius:10px;padding:20px 24px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--navy);margin-bottom:8px">Farmnet's Outstanding</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--navy);margin-bottom:10px">TC Outstanding + Sharing Profit</div>
+      <ul style="font-size:13px;color:var(--ink-muted);padding-left:16px;line-height:1.7">
+        <li>Bundles capital exposure <em>and</em> earned profit into one balance</li>
+        <li>Sharing Profit is absorbed into Outstanding — not tracked separately</li>
+        <li>Profit owed back to TC is treated as part of the open balance</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- open question callout -->
+  <div class="callout orange">
+    <div class="lbl">Open question — two paths</div>
+    <p style="margin-bottom:0"><strong>Name the combined metric.</strong> Keep Farmgate Outstanding as the pure accrual formula. Define a new term — e.g. <em>Net Settlement Balance</em> or <em>Total TC Position</em> — for Outstanding + Sharing Profit. Clearer semantics; requires agreeing on a name and explaining the split to Farmnet.</p>
+  </div>
+</div>
+
+</div><!-- /deck-inner -->
+
+<footer>outstanding — formula &amp; rationale · salefarmgate · 7 slides · 2026-05-11</footer>
+</div><!-- /deck -->
+</body>
+</html>
