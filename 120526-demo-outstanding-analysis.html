@@ -122,79 +122,9 @@
   </div>
 </div>
 
-<!-- ======== SLIDE 2: BRIEF BACKSTORY — STORY 1 IN ONE SLIDE ======== -->
+<!-- ======== SLIDE 2: SHARING-PROFIT METHODS (opening content slide) ======== -->
 <div class="slide">
-  <div class="slide-num">1 · Backstory — why the same word means two things</div>
-  <h2>farmnet and salefarmgate define "outstanding" differently</h2>
-  <p class="subtitle">Brief context before we dig into salefarmgate. Full details in the cross-system companion deck.</p>
-
-  <div class="two-col">
-    <div class="method-card farmnet">
-      <h3 style="color:var(--red);margin-top:0;margin-bottom:6px"><span class="pill farmnet">farmnet</span></h3>
-      <p style="font-size:13px;margin-bottom:0"><strong>Outstanding = principal + margin + VAT</strong>, fused into one number at SO creation.</p>
-    </div>
-    <div class="method-card farmgate">
-      <h3 style="color:var(--teal);margin-top:0;margin-bottom:6px"><span class="pill farmgate">salefarmgate</span></h3>
-      <p style="font-size:13px;margin-bottom:0"><strong>Outstanding = principal only</strong> (cash gap). Sharing-profit lives in a separate, time-accrued column.</p>
-    </div>
-  </div>
-
-  <div class="callout navy">
-    <div class="lbl">Why this matters here</div>
-    <p>This deck focuses on the <strong>salefarmgate side</strong>: how it calculates outstanding and sharing-profit, and the operational choice between two valid methods. The cross-system mismatch is real and structural — but separate from today's question.</p>
-  </div>
-</div>
-
-<!-- ======== SLIDE 3: THE TRADE TIMELINE ======== -->
-<div class="slide">
-  <div class="slide-num">2 · The salefarmgate trade timeline</div>
-  <h2>Goods travel for ~32 days. TC's cash is out for ~56.</h2>
-  <p class="subtitle">salefarmgate trades have two clocks. The physical clock (order → goods arrive) drives operations. The cash clock (first vendor pay → last customer receipt) drives interest cost. The cash clock is what the calculation methods live on.</p>
-
-  <h3>Physical lifespan vs cash cycle</h3>
-  <div class="legend" style="font-size:12px;color:var(--gray-m);display:flex;gap:14px;margin:6px 0 10px;align-items:center">
-    <span><span style="display:inline-block;width:10px;height:10px;background:var(--purple);border-radius:2px;margin-right:5px;vertical-align:middle"></span>Physical lifespan (order → goods arrived)</span>
-    <span><span style="display:inline-block;width:10px;height:10px;background:var(--orange);border-radius:2px;margin-right:5px;vertical-align:middle"></span>Cash cycle / net float (TC's exposure window)</span>
-  </div>
-  <div style="margin:6px 0 16px">
-    <div class="bar-row">
-      <div class="bar-label"><strong>p50</strong> (typical trade)</div>
-      <div class="bar-track"><div class="bar-fill purple" style="width:30.8%">32 d</div></div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">&nbsp;</div>
-      <div class="bar-track"><div class="bar-fill orange" style="width:53.8%">56 d</div></div>
-    </div>
-    <div style="height:8px"></div>
-    <div class="bar-row">
-      <div class="bar-label"><strong>p90</strong> (top 10 % long)</div>
-      <div class="bar-track"><div class="bar-fill purple" style="width:61.5%">64 d</div></div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">&nbsp;</div>
-      <div class="bar-track"><div class="bar-fill orange" style="width:100%">104 d</div></div>
-    </div>
-  </div>
-  <p style="font-size:11px;color:var(--gray-m);margin-top:-4px;margin-bottom:14px">Bars scaled to p90 cash cycle (104 d). Both clocks measured against the same 175 sample SOs.</p>
-
-  <h3>p50 trade timeline — where the two clocks live</h3>
-  <div style="background:linear-gradient(to right,#E0E0E0 0%,#E0E0E0 25%,#FFE5D9 25%,#FFE5D9 87.5%,#D9F0E5 87.5%,#D9F0E5 100%);height:36px;border-radius:6px;position:relative;margin:24px 0 32px">
-    <div style="position:absolute;top:-6px;bottom:-6px;left:0;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">order placed</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day 0</div></div>
-    <div style="position:absolute;top:-6px;bottom:-6px;left:25%;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">first vendor pay</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day ~14</div></div>
-    <div style="position:absolute;top:-6px;bottom:-6px;left:87.5%;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">last customer receipt</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day 70</div></div>
-    <div style="position:absolute;top:-6px;bottom:-6px;right:0;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">last vendor pay</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day 81</div></div>
-  </div>
-  <p style="text-align:center;font-size:12px;color:var(--gray-m);margin-bottom:0">The <strong style="color:var(--orange)">orange band (day 14 → 70)</strong> is the net float — TC's cash exposure window. <strong>56 days at p50, 104 days at p90.</strong></p>
-
-  <div class="callout navy">
-    <div class="lbl">Why this matters</div>
-    <p>The longer cash sits out, the more sharing-profit accrues — and the more the two accrual methods we'll see next drift apart. <strong>Use the cash cycle, not the physical lifespan, when sizing the method-choice impact.</strong></p>
-  </div>
-</div>
-
-<!-- ======== SLIDE 4: SHARING-PROFIT METHODS ======== -->
-<div class="slide">
-  <div class="slide-num">3 · Two ways to accrue sharing-profit in salefarmgate</div>
+  <div class="slide-num">1 · Two ways to accrue sharing-profit in salefarmgate</div>
   <h2>Method A vs Method B — both are fine</h2>
   <p class="subtitle">When a customer's installment arrives, does it kill the accrued fee first, or reduce principal first? Different timing — almost identical totals.</p>
 
@@ -264,21 +194,56 @@
   </div>
 </div>
 
-<!-- ======== SLIDE 5: BUSINESS TRADEOFF ======== -->
+<!-- ======== SLIDE 3: CASH CYCLE (no physical-lifespan stats) ======== -->
 <div class="slide">
-  <div class="slide-num">4 · The business tradeoff</div>
+  <div class="slide-num">2 · Where the gap lives — the cash cycle</div>
+  <h2>TC's cash is out for ~56 days at p50, ~104 at p90</h2>
+  <p class="subtitle">The size of the method gap scales with how long cash sits out. salefarmgate's cash cycle — first vendor pay → last customer receipt — is the exposure window that drives sharing-profit accrual.</p>
+
+  <h3>Cash cycle / net float</h3>
+  <div style="margin:6px 0 16px">
+    <div class="bar-row">
+      <div class="bar-label"><strong>p50</strong> (typical trade)</div>
+      <div class="bar-track"><div class="bar-fill orange" style="width:53.8%">56 d</div></div>
+    </div>
+    <div style="height:8px"></div>
+    <div class="bar-row">
+      <div class="bar-label"><strong>p90</strong> (top 10 % long)</div>
+      <div class="bar-track"><div class="bar-fill orange" style="width:100%">104 d</div></div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--gray-m);margin-top:-4px;margin-bottom:14px">Cash cycle measured on 96 credit-joined SOs: from first <code>buy_payment</code> to last <code>sales_receipt</code>.</p>
+
+  <h3>p50 trade timeline — anatomy of the exposure window</h3>
+  <div style="background:linear-gradient(to right,#E0E0E0 0%,#E0E0E0 25%,#FFE5D9 25%,#FFE5D9 87.5%,#D9F0E5 87.5%,#D9F0E5 100%);height:36px;border-radius:6px;position:relative;margin:24px 0 32px">
+    <div style="position:absolute;top:-6px;bottom:-6px;left:0;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">order placed</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day 0</div></div>
+    <div style="position:absolute;top:-6px;bottom:-6px;left:25%;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">first vendor pay</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day ~14</div></div>
+    <div style="position:absolute;top:-6px;bottom:-6px;left:87.5%;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">last customer receipt</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day 70</div></div>
+    <div style="position:absolute;top:-6px;bottom:-6px;right:0;border-left:3px solid var(--navy)"><div style="position:absolute;top:-22px;transform:translateX(-50%);font-size:11px;color:var(--navy);font-weight:700;white-space:nowrap">last vendor pay</div><div style="position:absolute;bottom:-22px;transform:translateX(-50%);font-size:11px;color:var(--gray-m);white-space:nowrap">day 81</div></div>
+  </div>
+  <p style="text-align:center;font-size:12px;color:var(--gray-m);margin-bottom:0">The <strong style="color:var(--orange)">orange band (day 14 → 70)</strong> is the net float — TC's cash exposure window. <strong>56 days at p50, 104 days at p90.</strong></p>
+
+  <div class="callout navy">
+    <div class="lbl">Why this matters</div>
+    <p>The longer cash sits out, the more sharing-profit accrues — and the more Method A and Method B drift apart. But even at p90 cash cycle (104 d), the gap is only <strong>~ 0.22 % of principal</strong>. The cash cycle is the right yardstick, and it confirms the gap is small.</p>
+  </div>
+</div>
+
+<!-- ======== SLIDE 4: BUSINESS TRADEOFF + RTE / ACTIVE FRAMING ======== -->
+<div class="slide">
+  <div class="slide-num">3 · The business tradeoff</div>
   <h2>Pick the method that fits the team's workflow</h2>
 
   <div class="two-col">
     <div class="method-card purple">
       <h3 style="color:var(--purple);margin-top:0">Method A · Fees first</h3>
-      <p style="font-size:14px"><strong style="color:var(--green)">+</strong> Smoother P&amp;L — fee revenue recognized period by period.</p>
+      <p style="font-size:14px"><strong style="color:var(--green)">+</strong> Smoother P&amp;L — sharing-profit revenue recognized period by period.</p>
       <p style="font-size:14px"><strong style="color:var(--red)">−</strong> Each payment splits into fee + principal. Two ledger lines per installment.</p>
     </div>
     <div class="method-card farmgate">
       <h3 style="color:var(--teal);margin-top:0">Method B · Principal first</h3>
       <p style="font-size:14px"><strong style="color:var(--green)">+</strong> Simple customer installments — every payment is principal. One fee invoice at the end.</p>
-      <p style="font-size:14px"><strong style="color:var(--red)">−</strong> Fee revenue lumps at trade close, not period by period.</p>
+      <p style="font-size:14px"><strong style="color:var(--red)">−</strong> Sharing-profit revenue lumps at trade close, not period by period.</p>
     </div>
   </div>
 
@@ -287,15 +252,36 @@
     <p>Same total fee on a typical trade. Choose between <strong>smoother P&amp;L (A)</strong> and <strong>simpler ops (B)</strong>. Either is defensible.</p>
   </div>
 
+  <h3>Who shares the sharing-profit — and why TC wins either way</h3>
+  <p style="font-size:13px;color:var(--gray-m);margin-bottom:10px">The pool that gets accrued is split with a different counterparty depending on the order type. Both setups create value for TC beyond the cash itself.</p>
+
+  <div class="two-col">
+    <div class="method-card orange">
+      <h3 style="color:var(--orange);margin-top:0;margin-bottom:8px">RTE order — split with <strong>Supplier</strong></h3>
+      <p style="font-size:13px;margin-bottom:6px"><strong style="color:var(--green)">Tangible:</strong> direct revenue share from the trade.</p>
+      <p style="font-size:13px;margin-bottom:0"><strong style="color:var(--purple)">Intangible:</strong> increases capital available to the supplier — strengthens the supply base and TC's working relationship for future orders.</p>
+    </div>
+    <div class="method-card purple">
+      <h3 style="color:var(--purple);margin-top:0;margin-bottom:8px">Active order — split with <strong>Account Manager</strong></h3>
+      <p style="font-size:13px;margin-bottom:6px"><strong style="color:var(--green)">Tangible:</strong> direct revenue share from the trade.</p>
+      <p style="font-size:13px;margin-bottom:0"><strong style="color:var(--purple)">Intangible:</strong> incentivizes the Account Manager to source more opportunities — directly grows TC's deal flow.</p>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <div class="lbl">TC's position</div>
+    <p>Whichever counterparty receives the share, TC captures both <strong>tangible value</strong> (its own portion of the sharing-profit) and <strong>intangible value</strong> (deeper supplier capital base in the RTE case, or stronger AM incentive in the Active case). The method choice doesn't change either side of this — the pool is the same; only the timing of recognition differs.</p>
+  </div>
+
   <div class="callout orange">
     <div class="lbl">Footnote</div>
     <p>Gap reaches ~ 1 % of principal on stuck trades. Re-visit if long-tail / default volume grows.</p>
   </div>
 </div>
 
-<!-- ======== SLIDE 6: CLOSING — THE SALEFARMGATE DECISION ======== -->
+<!-- ======== SLIDE 5: CLOSING — THE SALEFARMGATE DECISION ======== -->
 <div class="slide">
-  <div class="slide-num">5 · The decision</div>
+  <div class="slide-num">4 · The decision</div>
   <h2>For salefarmgate: pick a method, move on</h2>
 
   <table>
@@ -317,6 +303,29 @@
   <div class="callout purple" style="margin-top:18px">
     <div class="lbl">Single takeaway</div>
     <p style="font-size:15px">The two methods produce essentially the same total sharing-profit on a typical salefarmgate trade. <strong>This is a workflow choice, not a revenue lever.</strong> Pick whichever fits the finance and customer-ops teams better.</p>
+  </div>
+</div>
+
+<!-- ======== SLIDE 6: BACKSTORY (moved to the end) ======== -->
+<div class="slide">
+  <div class="slide-num">5 · Backstory — why the same word means two things</div>
+  <h2>farmnet and salefarmgate define "outstanding" differently</h2>
+  <p class="subtitle">Brief cross-system context. Not part of today's decision — but useful when a TC-wide report combines numbers from both systems.</p>
+
+  <div class="two-col">
+    <div class="method-card farmnet">
+      <h3 style="color:var(--red);margin-top:0;margin-bottom:6px"><span class="pill farmnet">farmnet</span></h3>
+      <p style="font-size:13px;margin-bottom:0"><strong>Outstanding = principal + margin + VAT</strong>, fused into one number at SO creation.</p>
+    </div>
+    <div class="method-card farmgate">
+      <h3 style="color:var(--teal);margin-top:0;margin-bottom:6px"><span class="pill farmgate">salefarmgate</span></h3>
+      <p style="font-size:13px;margin-bottom:0"><strong>Outstanding = principal only</strong> (cash gap). Sharing-profit lives in a separate, time-accrued column.</p>
+    </div>
+  </div>
+
+  <div class="callout navy">
+    <div class="lbl">Why this matters when reading TC-wide reports</div>
+    <p>Summing "farmnet outstanding" + "salefarmgate outstanding" silently mixes a marked-up number with a principal-only number. Same word, different math. The cross-system mismatch is real and structural — but separate from today's question.</p>
   </div>
 
   <p style="font-size:11px;color:var(--ink-soft);font-style:italic;margin-top:24px">
